@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>systematic-debugging / root-cause-tracing · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 systematic-debugging</a> 
+</div>
+<h1>root-cause-tracing</h1>
+<div class="subtitle">systematic-debugging · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Root Cause Tracing</h1></div><div class="col-zh" lang="zh-Hant"><h1>根因追蹤</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>概述</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Bugs often manifest deep in the call stack (git init in wrong directory, file created in wrong location, database opened with wrong path). Your instinct is to fix where the error appears, but that's treating a symptom.</p></div><div class="col-zh" lang="zh-Hant"><p>Bug 往往在呼叫堆疊深處才顯現（git init 執行在錯誤的目錄、檔案建立到錯誤的位置、資料庫用錯誤的路徑開啟）。直覺會讓你想在錯誤出現的地方修，但那是治標不治本。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Trace backward through the call chain until you find the original trigger, then fix at the source.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 沿著呼叫鏈一路回溯，直到找到最初的觸發點，然後在源頭修復。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph when_to_use {
+    &quot;Bug appears deep in stack?&quot; [shape=diamond];
+    &quot;Can trace backwards?&quot; [shape=diamond];
+    &quot;Fix at symptom point&quot; [shape=box];
+    &quot;Trace to original trigger&quot; [shape=box];
+    &quot;BETTER: Also add defense-in-depth&quot; [shape=box];
+
+    &quot;Bug appears deep in stack?&quot; -&gt; &quot;Can trace backwards?&quot; [label=&quot;yes&quot;];
+    &quot;Can trace backwards?&quot; -&gt; &quot;Trace to original trigger&quot; [label=&quot;yes&quot;];
+    &quot;Can trace backwards?&quot; -&gt; &quot;Fix at symptom point&quot; [label=&quot;no - dead end&quot;];
+    &quot;Trace to original trigger&quot; -&gt; &quot;BETTER: Also add defense-in-depth&quot;;
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-dot">digraph when_to_use {
+    &quot;Bug appears deep in stack?&quot; [shape=diamond];
+    &quot;Can trace backwards?&quot; [shape=diamond];
+    &quot;Fix at symptom point&quot; [shape=box];
+    &quot;Trace to original trigger&quot; [shape=box];
+    &quot;BETTER: Also add defense-in-depth&quot; [shape=box];
+
+    &quot;Bug appears deep in stack?&quot; -&gt; &quot;Can trace backwards?&quot; [label=&quot;yes&quot;];
+    &quot;Can trace backwards?&quot; -&gt; &quot;Trace to original trigger&quot; [label=&quot;yes&quot;];
+    &quot;Can trace backwards?&quot; -&gt; &quot;Fix at symptom point&quot; [label=&quot;no - dead end&quot;];
+    &quot;Trace to original trigger&quot; -&gt; &quot;BETTER: Also add defense-in-depth&quot;;
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Use when:</strong>
+- Error happens deep in execution (not at entry point)
+- Stack trace shows long call chain
+- Unclear where invalid data originated
+- Need to find which test/code triggers the problem</p></div><div class="col-zh" lang="zh-Hant"><p><strong>適用時機：</strong>
+- 錯誤發生在執行過程深處（不是在進入點）
+- 堆疊追蹤顯示很長的呼叫鏈
+- 不清楚無效資料從哪裡來
+- 需要找出是哪個測試/程式碼觸發了問題</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Tracing Process</h2></div><div class="col-zh" lang="zh-Hant"><h2>追蹤流程</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>1. Observe the Symptom</h3>
+<pre><code>Error: git init failed in ~/project/packages/core
+</code></pre></div><div class="col-zh" lang="zh-Hant"><h3>1. 觀察症狀</h3>
+<pre><code>Error: git init failed in ~/project/packages/core
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>2. Find Immediate Cause</h3>
+<p><strong>What code directly causes this?</strong></p>
+<pre><code class="language-typescript">await execFileAsync('git', ['init'], { cwd: projectDir });
+</code></pre></div><div class="col-zh" lang="zh-Hant"><h3>2. 找出直接原因</h3>
+<p><strong>直接造成這問題的程式碼是什麼？</strong></p>
+<pre><code class="language-typescript">await execFileAsync('git', ['init'], { cwd: projectDir });
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>3. Ask: What Called This?</h3>
+<pre><code class="language-typescript">WorktreeManager.createSessionWorktree(projectDir, sessionId)
+  → called by Session.initializeWorkspace()
+  → called by Session.create()
+  → called by test at Project.create()
+</code></pre></div><div class="col-zh" lang="zh-Hant"><h3>3. 問：是誰呼叫它的？</h3>
+<pre><code class="language-typescript">WorktreeManager.createSessionWorktree(projectDir, sessionId)
+  → called by Session.initializeWorkspace()
+  → called by Session.create()
+  → called by test at Project.create()
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>4. Keep Tracing Up</h3>
+<p><strong>What value was passed?</strong>
+- <code>projectDir = ''</code> (empty string!)
+- Empty string as <code>cwd</code> resolves to <code>process.cwd()</code>
+- That's the source code directory!</p></div><div class="col-zh" lang="zh-Hant"><h3>4. 繼續往上追</h3>
+<p><strong>傳進來的是什麼值？</strong>
+- <code>projectDir = ''</code>（空字串！）
+- 空字串作為 <code>cwd</code> 會解析成 <code>process.cwd()</code>
+- 那就是原始碼目錄！</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>5. Find Original Trigger</h3>
+<p><strong>Where did empty string come from?</strong></p>
+<pre><code class="language-typescript">const context = setupCoreTest(); // Returns { tempDir: '' }
+Project.create('name', context.tempDir); // Accessed before beforeEach!
+</code></pre></div><div class="col-zh" lang="zh-Hant"><h3>5. 找出最初的觸發點</h3>
+<p><strong>空字串從哪裡來的？</strong></p>
+<pre><code class="language-typescript">const context = setupCoreTest(); // Returns { tempDir: '' }
+Project.create('name', context.tempDir); // Accessed before beforeEach!
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Adding Stack Traces</h2></div><div class="col-zh" lang="zh-Hant"><h2>加入堆疊追蹤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When you can't trace manually, add instrumentation:</p></div><div class="col-zh" lang="zh-Hant"><p>當你無法手動追蹤時，加入儀器：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">// Before the problematic operation
+async function gitInit(directory: string) {
+  const stack = new Error().stack;
+  console.error('DEBUG git init:', {
+    directory,
+    cwd: process.cwd(),
+    nodeEnv: process.env.NODE_ENV,
+    stack,
+  });
+
+  await execFileAsync('git', ['init'], { cwd: directory });
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">// Before the problematic operation
+async function gitInit(directory: string) {
+  const stack = new Error().stack;
+  console.error('DEBUG git init:', {
+    directory,
+    cwd: process.cwd(),
+    nodeEnv: process.env.NODE_ENV,
+    stack,
+  });
+
+  await execFileAsync('git', ['init'], { cwd: directory });
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Critical:</strong> Use <code>console.error()</code> in tests (not logger - may not show)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>關鍵：</strong> 測試中用 <code>console.error()</code>（不要用 logger——可能不會顯示）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Run and capture:</strong></p>
+<pre><code class="language-bash">npm test 2&gt;&amp;1 | grep 'DEBUG git init'
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>執行並擷取：</strong></p>
+<pre><code class="language-bash">npm test 2&gt;&amp;1 | grep 'DEBUG git init'
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Analyze stack traces:</strong>
+- Look for test file names
+- Find the line number triggering the call
+- Identify the pattern (same test? same parameter?)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>分析堆疊追蹤：</strong>
+- 尋找測試檔名
+- 找出觸發呼叫的行號
+- 識別模式（同一個測試？同一個參數？）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Finding Which Test Causes Pollution</h2></div><div class="col-zh" lang="zh-Hant"><h2>找出是哪個測試造成污染</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If something appears during tests but you don't know which test:</p></div><div class="col-zh" lang="zh-Hant"><p>如果測試期間出現某些東西，但你不知道是哪個測試：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use the bisection script <code>find-polluter.sh</code> in this directory:</p></div><div class="col-zh" lang="zh-Hant"><p>使用本目錄中的二分搜尋腳本 <code>find-polluter.sh</code>：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">./find-polluter.sh '.git' 'src/**/*.test.ts'
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">./find-polluter.sh '.git' 'src/**/*.test.ts'
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Runs tests one-by-one, stops at first polluter. See script for usage.</p></div><div class="col-zh" lang="zh-Hant"><p>它會一個一個跑測試，在第一個污染源停下。用法請見腳本。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Real Example: Empty projectDir</h2></div><div class="col-zh" lang="zh-Hant"><h2>真實案例：空的 projectDir</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Symptom:</strong> <code>.git</code> created in <code>packages/core/</code> (source code)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>症狀：</strong> <code>.git</code> 被建立在 <code>packages/core/</code>（原始碼）裡</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Trace chain:</strong>
+1. <code>git init</code> runs in <code>process.cwd()</code> ← empty cwd parameter
+2. WorktreeManager called with empty projectDir
+3. Session.create() passed empty string
+4. Test accessed <code>context.tempDir</code> before beforeEach
+5. setupCoreTest() returns <code>{ tempDir: '' }</code> initially</p></div><div class="col-zh" lang="zh-Hant"><p><strong>追蹤鏈：</strong>
+1. <code>git init</code> 在 <code>process.cwd()</code> 執行 ← 空的 cwd 參數
+2. WorktreeManager 收到空的 projectDir
+3. Session.create() 傳入空字串
+4. 測試在 beforeEach 之前就讀取 <code>context.tempDir</code>
+5. setupCoreTest() 初始回傳 <code>{ tempDir: '' }</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Root cause:</strong> Top-level variable initialization accessing empty value</p></div><div class="col-zh" lang="zh-Hant"><p><strong>根因：</strong> 頂層變數初始化時讀取了空值</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Fix:</strong> Made tempDir a getter that throws if accessed before beforeEach</p></div><div class="col-zh" lang="zh-Hant"><p><strong>修復：</strong> 把 tempDir 改成 getter，若在 beforeEach 之前被讀取就丟例外</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Also added defense-in-depth:</strong>
+- Layer 1: Project.create() validates directory
+- Layer 2: WorkspaceManager validates not empty
+- Layer 3: NODE_ENV guard refuses git init outside tmpdir
+- Layer 4: Stack trace logging before git init</p></div><div class="col-zh" lang="zh-Hant"><p><strong>同時加入縱深防禦：</strong>
+- 第一層：Project.create() 驗證目錄
+- 第二層：WorkspaceManager 驗證非空
+- 第三層：NODE_ENV 守衛，拒絕在 tmpdir 之外執行 git init
+- 第四層：git init 之前記錄堆疊追蹤</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Key Principle</h2></div><div class="col-zh" lang="zh-Hant"><h2>核心原則</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph principle {
+    &quot;Found immediate cause&quot; [shape=ellipse];
+    &quot;Can trace one level up?&quot; [shape=diamond];
+    &quot;Trace backwards&quot; [shape=box];
+    &quot;Is this the source?&quot; [shape=diamond];
+    &quot;Fix at source&quot; [shape=box];
+    &quot;Add validation at each layer&quot; [shape=box];
+    &quot;Bug impossible&quot; [shape=doublecircle];
+    &quot;NEVER fix just the symptom&quot; [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
+
+    &quot;Found immediate cause&quot; -&gt; &quot;Can trace one level up?&quot;;
+    &quot;Can trace one level up?&quot; -&gt; &quot;Trace backwards&quot; [label=&quot;yes&quot;];
+    &quot;Can trace one level up?&quot; -&gt; &quot;NEVER fix just the symptom&quot; [label=&quot;no&quot;];
+    &quot;Trace backwards&quot; -&gt; &quot;Is this the source?&quot;;
+    &quot;Is this the source?&quot; -&gt; &quot;Trace backwards&quot; [label=&quot;no - keeps going&quot;];
+    &quot;Is this the source?&quot; -&gt; &quot;Fix at source&quot; [label=&quot;yes&quot;];
+    &quot;Fix at source&quot; -&gt; &quot;Add validation at each layer&quot;;
+    &quot;Add validation at each layer&quot; -&gt; &quot;Bug impossible&quot;;
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-dot">digraph principle {
+    &quot;Found immediate cause&quot; [shape=ellipse];
+    &quot;Can trace one level up?&quot; [shape=diamond];
+    &quot;Trace backwards&quot; [shape=box];
+    &quot;Is this the source?&quot; [shape=diamond];
+    &quot;Fix at source&quot; [shape=box];
+    &quot;Add validation at each layer&quot; [shape=box];
+    &quot;Bug impossible&quot; [shape=doublecircle];
+    &quot;NEVER fix just the symptom&quot; [shape=octagon, style=filled, fillcolor=red, fontcolor=white];
+
+    &quot;Found immediate cause&quot; -&gt; &quot;Can trace one level up?&quot;;
+    &quot;Can trace one level up?&quot; -&gt; &quot;Trace backwards&quot; [label=&quot;yes&quot;];
+    &quot;Can trace one level up?&quot; -&gt; &quot;NEVER fix just the symptom&quot; [label=&quot;no&quot;];
+    &quot;Trace backwards&quot; -&gt; &quot;Is this the source?&quot;;
+    &quot;Is this the source?&quot; -&gt; &quot;Trace backwards&quot; [label=&quot;no - keeps going&quot;];
+    &quot;Is this the source?&quot; -&gt; &quot;Fix at source&quot; [label=&quot;yes&quot;];
+    &quot;Fix at source&quot; -&gt; &quot;Add validation at each layer&quot;;
+    &quot;Add validation at each layer&quot; -&gt; &quot;Bug impossible&quot;;
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>NEVER fix just where the error appears.</strong> Trace back to find the original trigger.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>絕對不要只修錯誤出現的地方。</strong> 回溯找出最初的觸發點。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Stack Trace Tips</h2></div><div class="col-zh" lang="zh-Hant"><h2>堆疊追蹤小技巧</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>In tests:</strong> Use <code>console.error()</code> not logger - logger may be suppressed
+<strong>Before operation:</strong> Log before the dangerous operation, not after it fails
+<strong>Include context:</strong> Directory, cwd, environment variables, timestamps
+<strong>Capture stack:</strong> <code>new Error().stack</code> shows complete call chain</p></div><div class="col-zh" lang="zh-Hant"><p><strong>測試中：</strong> 用 <code>console.error()</code>，不要用 logger——logger 可能被抑制
+<strong>操作之前：</strong> 在危險操作「之前」記錄，不要在失敗之後
+<strong>包含上下文：</strong> 目錄、cwd、環境變數、時間戳
+<strong>擷取堆疊：</strong> <code>new Error().stack</code> 會顯示完整的呼叫鏈</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Real-World Impact</h2></div><div class="col-zh" lang="zh-Hant"><h2>實際影響</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>From debugging session (2025-10-03):
+- Found root cause through 5-level trace
+- Fixed at source (getter validation)
+- Added 4 layers of defense
+- 1847 tests passed, zero pollution</p></div><div class="col-zh" lang="zh-Hant"><p>來自除錯 session（2025-10-03）：
+- 透過 5 層追蹤找出根因
+- 在源頭修復（getter 驗證）
+- 加入 4 層防禦
+- 1847 個測試全數通過，零污染</p></div></div>
+
+</div>
+</body>
+</html>

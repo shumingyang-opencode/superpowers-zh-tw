@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brainstorming · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>brainstorming</code></td></tr>
+<tr><td>description (EN)</td><td>You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior. Explores user intent, requirements and design before implementation.</td></tr>
+<tr><td>說明 (繁中)</td><td>在任何創意工作之前你必須使用此技能——建立功能、建構元件、新增功能、或修改行為。在實作之前探索使用者的意圖、需求與設計。</td></tr>
+</table>
+<h1>brainstorming</h1>
+<div class="subtitle">動工前的第一站：把你的點子敲成具體設計，問到你講清楚為止。</div>
+<div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="spec-document-reviewer-prompt.html">spec-document-reviewer-prompt</a>　·　<a href="visual-companion.html">visual-companion</a></div>
+<div class="pair"><div class="col-en" lang="en"><h1>Brainstorming Ideas Into Designs</h1></div><div class="col-zh" lang="zh-Hant"><h1>把點子腦力激盪成設計</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Help turn ideas into fully formed designs and specs through natural collaborative dialogue.</p></div><div class="col-zh" lang="zh-Hant"><p>透過自然的協作對話，幫助把點子變成完整的設計與規格。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.</p></div><div class="col-zh" lang="zh-Hant"><p>先理解目前的專案上下文，然後一次一個問題地提問，逐步精煉點子。一旦你了解要建構什麼，就呈現設計並取得使用者核准。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><HARD-GATE>
+Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
+</HARD-GATE></p></div><div class="col-zh" lang="zh-Hant"><p><HARD-GATE>
+在你呈現設計且使用者核准之前，不要呼叫任何實作技能、撰寫任何程式碼、搭建任何專案、或採取任何實作行動。這適用於每個專案，無論它看似多麼簡單。
+</HARD-GATE></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Anti-Pattern: "This Is Too Simple To Need A Design"</h2></div><div class="col-zh" lang="zh-Hant"><h2>反模式：「這太簡單了，不需要設計」</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.</p></div><div class="col-zh" lang="zh-Hant"><p>每個專案都要走過這個流程。待辦清單、單一函式的工具、設定變更——全部都是。「簡單」的專案正是未經檢視的假設造成最多浪費工作的地方。設計可以很短（對真正簡單的專案而言，幾句話就夠），但你必須呈現它並取得核准。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Checklist</h2></div><div class="col-zh" lang="zh-Hant"><h2>檢查清單</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>You MUST create a task for each of these items and complete them in order:</p></div><div class="col-zh" lang="zh-Hant"><p>你必須為以下每一項建立一個任務，並依序完成它們：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Explore project context</strong> — check files, docs, recent commits</li>
+<li><strong>Offer the visual companion just-in-time</strong> — NOT upfront. The first time a question would genuinely be clearer shown than described, offer it then (its own message); on approval its browser tab opens for you. If no visual question ever arises, never offer it. See the Visual Companion section below.</li>
+<li><strong>Ask clarifying questions</strong> — one at a time, understand purpose/constraints/success criteria</li>
+<li><strong>Propose 2-3 approaches</strong> — with trade-offs and your recommendation</li>
+<li><strong>Present design</strong> — in sections scaled to their complexity, get user approval after each section</li>
+<li><strong>Write design doc</strong> — save to <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code> and commit</li>
+<li><strong>Spec self-review</strong> — quick inline check for placeholders, contradictions, ambiguity, scope (see below)</li>
+<li><strong>User reviews written spec</strong> — ask user to review the spec file before proceeding</li>
+<li><strong>Transition to implementation</strong> — invoke writing-plans skill to create implementation plan</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>探索專案上下文</strong> ——檢查檔案、文件、最近的 commits</li>
+<li><strong>在適當時機提供視覺夥伴</strong> ——不是在一開始。當某個問題確實「展示」會比「描述」更清楚時（首次出現時），在那時提供它（獨立一則訊息）；核准後它的瀏覽器分頁會為你開啟。若從未出現視覺問題，就永遠不要提供它。見下方「視覺夥伴」一節。</li>
+<li><strong>提出釐清問題</strong> ——一次一個，理解目的／約束／成功準則</li>
+<li><strong>提出 2-3 種做法</strong> ——附上取捨與你的建議</li>
+<li><strong>呈現設計</strong> ——以配合其複雜度的段落呈現，每個段落後取得使用者核准</li>
+<li><strong>撰寫設計文件</strong> ——儲存到 <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code> 並 commit</li>
+<li><strong>規格自我審查</strong> ——快速就地檢查佔位符、矛盾、歧義、範圍（見下方）</li>
+<li><strong>使用者審查書面規格</strong> ——繼續前請使用者審查規格檔案</li>
+<li><strong>轉入實作</strong> ——呼叫 writing-plans 技能以建立實作計畫</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Process Flow</h2></div><div class="col-zh" lang="zh-Hant"><h2>流程圖</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph brainstorming {
+    &quot;Explore project context&quot; [shape=box];
+    &quot;Ask clarifying questions&quot; [shape=box];
+    &quot;Propose 2-3 approaches&quot; [shape=box];
+    &quot;Present design sections&quot; [shape=box];
+    &quot;User approves design?&quot; [shape=diamond];
+    &quot;Write design doc&quot; [shape=box];
+    &quot;Spec self-review\n(fix inline)&quot; [shape=box];
+    &quot;User reviews spec?&quot; [shape=diamond];
+    &quot;Invoke writing-plans skill&quot; [shape=doublecircle];
+
+    &quot;Explore project context&quot; -&gt; &quot;Ask clarifying questions&quot;;
+    &quot;Ask clarifying questions&quot; -&gt; &quot;Propose 2-3 approaches&quot;;
+    &quot;Propose 2-3 approaches&quot; -&gt; &quot;Present design sections&quot;;
+    &quot;Present design sections&quot; -&gt; &quot;User approves design?&quot;;
+    &quot;User approves design?&quot; -&gt; &quot;Present design sections&quot; [label=&quot;no, revise&quot;];
+    &quot;User approves design?&quot; -&gt; &quot;Write design doc&quot; [label=&quot;yes&quot;];
+    &quot;Write design doc&quot; -&gt; &quot;Spec self-review\n(fix inline)&quot;;
+    &quot;Spec self-review\n(fix inline)&quot; -&gt; &quot;User reviews spec?&quot;;
+    &quot;User reviews spec?&quot; -&gt; &quot;Write design doc&quot; [label=&quot;changes requested&quot;];
+    &quot;User reviews spec?&quot; -&gt; &quot;Invoke writing-plans skill&quot; [label=&quot;approved&quot;];
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-dot">digraph brainstorming {
+    &quot;Explore project context&quot; [shape=box];
+    &quot;Ask clarifying questions&quot; [shape=box];
+    &quot;Propose 2-3 approaches&quot; [shape=box];
+    &quot;Present design sections&quot; [shape=box];
+    &quot;User approves design?&quot; [shape=diamond];
+    &quot;Write design doc&quot; [shape=box];
+    &quot;Spec self-review\n(fix inline)&quot; [shape=box];
+    &quot;User reviews spec?&quot; [shape=diamond];
+    &quot;Invoke writing-plans skill&quot; [shape=doublecircle];
+
+    &quot;Explore project context&quot; -&gt; &quot;Ask clarifying questions&quot;;
+    &quot;Ask clarifying questions&quot; -&gt; &quot;Propose 2-3 approaches&quot;;
+    &quot;Propose 2-3 approaches&quot; -&gt; &quot;Present design sections&quot;;
+    &quot;Present design sections&quot; -&gt; &quot;User approves design?&quot;;
+    &quot;User approves design?&quot; -&gt; &quot;Present design sections&quot; [label=&quot;no, revise&quot;];
+    &quot;User approves design?&quot; -&gt; &quot;Write design doc&quot; [label=&quot;yes&quot;];
+    &quot;Write design doc&quot; -&gt; &quot;Spec self-review\n(fix inline)&quot;;
+    &quot;Spec self-review\n(fix inline)&quot; -&gt; &quot;User reviews spec?&quot;;
+    &quot;User reviews spec?&quot; -&gt; &quot;Write design doc&quot; [label=&quot;changes requested&quot;];
+    &quot;User reviews spec?&quot; -&gt; &quot;Invoke writing-plans skill&quot; [label=&quot;approved&quot;];
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>The terminal state is invoking writing-plans.</strong> Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>終點狀態是呼叫 writing-plans。</strong> 不要呼叫 frontend-design、mcp-builder 或任何其他實作技能。brainstorming 之後你唯一會呼叫的技能是 writing-plans。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Process</h2></div><div class="col-zh" lang="zh-Hant"><h2>流程</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Understanding the idea:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>理解點子：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Check out the current project state first (files, docs, recent commits)</li>
+<li>Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.</li>
+<li>If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.</li>
+<li>For appropriately-scoped projects, ask questions one at a time to refine the idea</li>
+<li>Prefer multiple choice questions when possible, but open-ended is fine too</li>
+<li>Only one question per message - if a topic needs more exploration, break it into multiple questions</li>
+<li>Focus on understanding: purpose, constraints, success criteria</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>先查看目前專案狀態（檔案、文件、最近的 commits）</li>
+<li>在提出詳細問題之前，先評估範圍：若請求描述多個獨立子系統（例如「建立一個含聊天、檔案儲存、帳單與分析的平台」），立刻標示出來。不要花問題去精煉一個需要先拆解的專案的細節。</li>
+<li>若專案大到無法塞進單一規格，幫助使用者拆解成子專案：獨立的片段有哪些、它們如何關聯、應以什麼順序建構？然後以正常設計流程腦力激盪第一個子專案。每個子專案都有自己的規格 → 計畫 → 實作循環。</li>
+<li>對範圍適當的專案，一次一個問題地提問，逐步精煉點子</li>
+<li>盡可能偏好選擇題，但開放式問題也可以</li>
+<li>每則訊息只有一個問題——若某個主題需要更多探索，把它拆成多個問題</li>
+<li>聚焦於理解：目的、約束、成功準則</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Exploring approaches:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>探索做法：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Propose 2-3 different approaches with trade-offs</li>
+<li>Present options conversationally with your recommendation and reasoning</li>
+<li>Lead with your recommended option and explain why</li>
+<li>YAGNI ruthlessly - remove unnecessary features from every approach and design</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>提出 2-3 種不同的做法並附上取捨</li>
+<li>以對話方式呈現選項，附上你的建議與理由</li>
+<li>以你建議的選項開頭並解釋原因</li>
+<li>無情地 YAGNI——從每個做法與設計中移除不必要的功能</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Presenting the design:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>呈現設計：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Once you believe you understand what you're building, present the design</li>
+<li>Scale each section to its complexity: a few sentences if straightforward, up to 200-300 words if nuanced</li>
+<li>Ask after each section whether it looks right so far</li>
+<li>Cover: architecture, components, data flow, error handling, testing</li>
+<li>Be ready to go back and clarify if something doesn't make sense</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>一旦你相信你了解要建構什麼，就呈現設計</li>
+<li>每個段落配合其複雜度調整篇幅：直截了當則幾句話，細膩處則 200-300 字</li>
+<li>每個段落後詢問目前看起來是否正確</li>
+<li>涵蓋：架構、元件、資料流、錯誤處理、測試</li>
+<li>準備好在某些內容不合理時回頭釐清</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Design for isolation and clarity:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>為隔離與清晰而設計：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently</li>
+<li>For each unit, you should be able to answer: what does it do, how do you use it, and what does it depend on?</li>
+<li>Can someone understand what a unit does without reading its internals? Can you change the internals without breaking consumers? If not, the boundaries need work.</li>
+<li>Smaller, well-bounded units are also easier for you to work with - you reason better about code you can hold in context at once, and your edits are more reliable when files are focused. When a file grows large, that's often a signal that it's doing too much.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>把系統拆成更小的單元，每個單元有單一清楚的目的、透過定義良好的介面溝通、並能被獨立理解與測試</li>
+<li>對每個單元，你應該能回答：它做什麼、你如何使用它、它依賴什麼？</li>
+<li>有人能在不讀內部實作的情況下理解一個單元做什麼嗎？你能在不破壞使用者的情況下變更內部實作嗎？若不行，邊界需要調整。</li>
+<li>更小、邊界良好的單元對你也更容易處理——你最擅長推理能一次完整放入上下文的程式碼，而檔案保持聚焦時你的編輯也更可靠。當檔案變大時，那往往是它做太多的訊號。</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Working in existing codebases:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>在既有程式庫中工作：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Explore the current structure before proposing changes. Follow existing patterns.</li>
+<li>Where existing code has problems that affect the work (e.g., a file that's grown too large, unclear boundaries, tangled responsibilities), include targeted improvements as part of the design - the way a good developer improves code they're working in.</li>
+<li>Don't propose unrelated refactoring. Stay focused on what serves the current goal.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>在提出變更前先探索目前的結構。遵循既有模式。</li>
+<li>在既有程式碼有影響此工作的問題處（例如檔案成長過大、邊界不明確、職責纏繞），把有針對性的改善納入設計——以一位優秀開發者改善其所處程式碼的方式。</li>
+<li>不要提出無關的重構。保持聚焦於服務目前目標的事物。</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>After the Design</h2></div><div class="col-zh" lang="zh-Hant"><h2>設計之後</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Documentation:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>文件：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Write the validated design (spec) to <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code></li>
+<li>(User preferences for spec location override this default)</li>
+<li>Use elements-of-style:writing-clearly-and-concisely skill if available</li>
+<li>Commit the design document to git</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>把經驗證的設計（規格）寫到 <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code></li>
+<li>（使用者對規格位置的偏好會覆寫此預設值）</li>
+<li>若可用，使用 elements-of-style:writing-clearly-and-concisely 技能</li>
+<li>把設計文件 commit 到 git</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Spec Self-Review:</strong>
+After writing the spec document, look at it with fresh eyes:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>規格自我審查：</strong>
+寫完規格文件後，以全新的眼光檢視它：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Placeholder scan:</strong> Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.</li>
+<li><strong>Internal consistency:</strong> Do any sections contradict each other? Does the architecture match the feature descriptions?</li>
+<li><strong>Scope check:</strong> Is this focused enough for a single implementation plan, or does it need decomposition?</li>
+<li><strong>Ambiguity check:</strong> Could any requirement be interpreted two different ways? If so, pick one and make it explicit.</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>佔位符掃描：</strong> 有任何「TBD」、「TODO」、未完成的區段、或含糊的需求嗎？修正它們。</li>
+<li><strong>內部一致性：</strong> 有區段互相矛盾嗎？架構符合功能描述嗎？</li>
+<li><strong>範圍檢查：</strong> 它是否夠聚焦以成為單一實作計畫，還是需要拆解？</li>
+<li><strong>歧義檢查：</strong> 有任何需求能被兩種不同方式解讀嗎？若是，選一個並讓它明確。</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Fix any issues inline. No need to re-review — just fix and move on.</p></div><div class="col-zh" lang="zh-Hant"><p>就地修正任何問題。不需要重新審查——直接修正並繼續。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>User Review Gate:</strong>
+After the spec review loop passes, ask the user to review the written spec before proceeding:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用者審查關卡：</strong>
+規格審查迴圈通過後，在繼續前請使用者審查書面規格：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><blockquote>
+<p>"Spec written and committed to <code>&lt;path&gt;</code>. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."</p>
+</blockquote></div><div class="col-zh" lang="zh-Hant"><blockquote>
+<p>「規格已寫好並 commit 到 <code>&lt;path&gt;</code>。請審查它，並在我們開始撰寫實作計畫之前讓我知道你是否想做任何修改。」</p>
+</blockquote></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.</p></div><div class="col-zh" lang="zh-Hant"><p>等待使用者的回應。若他們要求修改，就修改並重跑規格審查迴圈。只有使用者核准後才繼續。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Implementation:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>實作：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Invoke the writing-plans skill to create a detailed implementation plan</li>
+<li>Do NOT invoke any other skill. writing-plans is the next step.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>呼叫 writing-plans 技能以建立詳細的實作計畫</li>
+<li>不要呼叫任何其他技能。writing-plans 是下一步。</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Visual Companion</h2></div><div class="col-zh" lang="zh-Hant"><h2>視覺夥伴</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A browser-based companion for showing mockups, diagrams, and visual options during brainstorming. Available as a tool — not a mode. Accepting the companion means it's available for questions that benefit from visual treatment; it does NOT mean every question goes through the browser.</p></div><div class="col-zh" lang="zh-Hant"><p>一個以瀏覽器為基礎的夥伴，用於在腦力激盪期間展示 mockups、圖表與視覺選項。它以工具的形式提供——不是一種模式。接受這個夥伴表示它可用於受益於視覺化處理的問題；並不代表每個問題都要透過瀏覽器。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Offering the companion (just-in-time):</strong> Do NOT offer it upfront. Wait until a question would genuinely be clearer shown than told — a real mockup / layout / diagram question, not merely a UI <em>topic</em>. The first time that happens, offer it then, as its own message:</p>
+<blockquote>
+<p>"This next part might be easier if I show you — I can put together mockups, diagrams, and comparisons in a browser tab as we go. It's still new and can be token-intensive. Want me to? I'll open it for you."</p>
+</blockquote></div><div class="col-zh" lang="zh-Hant"><p><strong>提供夥伴（在適當時機）：</strong> 不要在一開始提供它。等到某個問題確實「展示」會比「說明」更清楚時——一個真正的 mockup／佈局／圖表問題，而不只是 UI <em>主題</em>。首次發生時，在那時提供它，作為獨立一則訊息：</p>
+<blockquote>
+<p>「這一段用展示的可能更容易——我可以在進行時於瀏覽器分頁中組合 mockups、圖表與比較。它還是很新，而且可能很耗 tokens。要我這樣做嗎？我會為你開啟它。」</p>
+</blockquote></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>This offer MUST be its own message.</strong> Only the offer — no clarifying question, summary, or other content. Wait for the user's response. If they accept, start the server with <code>--open</code> so their browser opens to the first screen automatically. If they decline, continue text-only and don't offer again unless they raise it.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>這個提議必須是獨立一則訊息。</strong> 只有提議——沒有釐清問題、摘要或其他內容。等待使用者的回應。若他們接受，用 <code>--open</code> 啟動伺服器，讓他們的瀏覽器自動開啟到第一個畫面。若他們婉拒，繼續純文字模式，且除非他們主動提起，否則不再提供。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Per-question decision:</strong> Even after the user accepts, decide FOR EACH QUESTION whether to use the browser or the terminal. The test: <strong>would the user understand this better by seeing it than reading it?</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>逐問題決定：</strong> 即使使用者接受後，仍要為每個問題決定使用瀏覽器或終端機。判斷標準：<strong>使用者「看」會比「讀」更容易理解嗎？</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Use the browser</strong> for content that IS visual — mockups, wireframes, layout comparisons, architecture diagrams, side-by-side visual designs</li>
+<li><strong>Use the terminal</strong> for content that is text — requirements questions, conceptual choices, tradeoff lists, A/B/C/D text options, scope decisions</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>內容本質上就是視覺的，使用瀏覽器</strong> ——mockups、線框圖、佈局比較、架構圖、並排的視覺設計</li>
+<li><strong>內容是文字的，使用終端機</strong> ——需求問題、概念選擇、取捨清單、A/B/C/D 文字選項、範圍決策</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A question about a UI topic is not automatically a visual question. "What does personality mean in this context?" is a conceptual question — use the terminal. "Which wizard layout works better?" is a visual question — use the browser.</p></div><div class="col-zh" lang="zh-Hant"><p>關於 UI 主題的問題不自動是視覺問題。「個性在此情境下意味著什麼？」是概念問題——使用終端機。「哪個精靈佈局更好？」是視覺問題——使用瀏覽器。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If they agree to the companion, read the detailed guide before proceeding:
+<code>skills/brainstorming/visual-companion.md</code></p></div><div class="col-zh" lang="zh-Hant"><p>若他們同意使用夥伴，在繼續前先讀詳細指南：
+<code>skills/brainstorming/visual-companion.md</code></p></div></div>
+
+</div>
+</body>
+</html>

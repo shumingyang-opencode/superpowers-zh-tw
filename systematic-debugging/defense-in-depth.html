@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>systematic-debugging / defense-in-depth · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 systematic-debugging</a> 
+</div>
+<h1>defense-in-depth</h1>
+<div class="subtitle">systematic-debugging · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Defense-in-Depth Validation</h1></div><div class="col-zh" lang="zh-Hant"><h1>縱深防禦驗證</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>概述</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When you fix a bug caused by invalid data, adding validation at one place feels sufficient. But that single check can be bypassed by different code paths, refactoring, or mocks.</p></div><div class="col-zh" lang="zh-Hant"><p>當你修好一個由無效資料造成的 bug 時，只在一處加入驗證，感覺上就足夠了。但這個單一檢查可能被不同的程式路徑、重構或模擬繞過。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Validate at EVERY layer data passes through. Make the bug structurally impossible.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 在資料流經的「每一層」都做驗證。讓這個 bug 在結構上變得不可能發生。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Why Multiple Layers</h2></div><div class="col-zh" lang="zh-Hant"><h2>為什麼要多層</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Single validation: "We fixed the bug"
+Multiple layers: "We made the bug impossible"</p></div><div class="col-zh" lang="zh-Hant"><p>單一驗證：「我們修好了這個 bug」
+多層驗證：「我們讓這個 bug 不可能發生」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Different layers catch different cases:
+- Entry validation catches most bugs
+- Business logic catches edge cases
+- Environment guards prevent context-specific dangers
+- Debug logging helps when other layers fail</p></div><div class="col-zh" lang="zh-Hant"><p>不同的層次捕捉不同的情況：
+- 進入點驗證捕捉大部分的 bug
+- 業務邏輯捕捉邊角情況
+- 環境守衛防止與特定情境相關的危險
+- 除錯日誌在其他層失守時派上用場</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Four Layers</h2></div><div class="col-zh" lang="zh-Hant"><h2>四層架構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Layer 1: Entry Point Validation</h3>
+<p><strong>Purpose:</strong> Reject obviously invalid input at API boundary</p></div><div class="col-zh" lang="zh-Hant"><h3>第一層：進入點驗證</h3>
+<p><strong>目的：</strong> 在 API 邊界拒絕明顯無效的輸入</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">function createProject(name: string, workingDirectory: string) {
+  if (!workingDirectory || workingDirectory.trim() === '') {
+    throw new Error('workingDirectory cannot be empty');
+  }
+  if (!existsSync(workingDirectory)) {
+    throw new Error(`workingDirectory does not exist: ${workingDirectory}`);
+  }
+  if (!statSync(workingDirectory).isDirectory()) {
+    throw new Error(`workingDirectory is not a directory: ${workingDirectory}`);
+  }
+  // ... proceed
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">function createProject(name: string, workingDirectory: string) {
+  if (!workingDirectory || workingDirectory.trim() === '') {
+    throw new Error('workingDirectory cannot be empty');
+  }
+  if (!existsSync(workingDirectory)) {
+    throw new Error(`workingDirectory does not exist: ${workingDirectory}`);
+  }
+  if (!statSync(workingDirectory).isDirectory()) {
+    throw new Error(`workingDirectory is not a directory: ${workingDirectory}`);
+  }
+  // ... proceed
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Layer 2: Business Logic Validation</h3>
+<p><strong>Purpose:</strong> Ensure data makes sense for this operation</p></div><div class="col-zh" lang="zh-Hant"><h3>第二層：業務邏輯驗證</h3>
+<p><strong>目的：</strong> 確保資料對這項操作來說是合理的</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">function initializeWorkspace(projectDir: string, sessionId: string) {
+  if (!projectDir) {
+    throw new Error('projectDir required for workspace initialization');
+  }
+  // ... proceed
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">function initializeWorkspace(projectDir: string, sessionId: string) {
+  if (!projectDir) {
+    throw new Error('projectDir required for workspace initialization');
+  }
+  // ... proceed
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Layer 3: Environment Guards</h3>
+<p><strong>Purpose:</strong> Prevent dangerous operations in specific contexts</p></div><div class="col-zh" lang="zh-Hant"><h3>第三層：環境守衛</h3>
+<p><strong>目的：</strong> 防止在特定情境下執行危險操作</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">async function gitInit(directory: string) {
+  // In tests, refuse git init outside temp directories
+  if (process.env.NODE_ENV === 'test') {
+    const normalized = normalize(resolve(directory));
+    const tmpDir = normalize(resolve(tmpdir()));
+
+    if (!normalized.startsWith(tmpDir)) {
+      throw new Error(
+        `Refusing git init outside temp dir during tests: ${directory}`
+      );
+    }
+  }
+  // ... proceed
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">async function gitInit(directory: string) {
+  // In tests, refuse git init outside temp directories
+  if (process.env.NODE_ENV === 'test') {
+    const normalized = normalize(resolve(directory));
+    const tmpDir = normalize(resolve(tmpdir()));
+
+    if (!normalized.startsWith(tmpDir)) {
+      throw new Error(
+        `Refusing git init outside temp dir during tests: ${directory}`
+      );
+    }
+  }
+  // ... proceed
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Layer 4: Debug Instrumentation</h3>
+<p><strong>Purpose:</strong> Capture context for forensics</p></div><div class="col-zh" lang="zh-Hant"><h3>第四層：除錯儀器</h3>
+<p><strong>目的：</strong> 擷取上下文以供事後調查</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">async function gitInit(directory: string) {
+  const stack = new Error().stack;
+  logger.debug('About to git init', {
+    directory,
+    cwd: process.cwd(),
+    stack,
+  });
+  // ... proceed
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">async function gitInit(directory: string) {
+  const stack = new Error().stack;
+  logger.debug('About to git init', {
+    directory,
+    cwd: process.cwd(),
+    stack,
+  });
+  // ... proceed
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Applying the Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2>套用這個模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When you find a bug:</p></div><div class="col-zh" lang="zh-Hant"><p>當你發現一個 bug 時：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Trace the data flow</strong> - Where does bad value originate? Where used?</li>
+<li><strong>Map all checkpoints</strong> - List every point data passes through</li>
+<li><strong>Add validation at each layer</strong> - Entry, business, environment, debug</li>
+<li><strong>Test each layer</strong> - Try to bypass layer 1, verify layer 2 catches it</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>追蹤資料流</strong> —— 壞值從哪裡來？用到哪裡？</li>
+<li><strong>列出所有檢查點</strong> —— 列出資料流經的每一處</li>
+<li><strong>在每一層加入驗證</strong> —— 進入點、業務、環境、除錯</li>
+<li><strong>測試每一層</strong> —— 試著繞過第一層，驗證第二層會攔住它</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Example from Session</h2></div><div class="col-zh" lang="zh-Hant"><h2>來自 session 的範例</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Bug: Empty <code>projectDir</code> caused <code>git init</code> in source code</p></div><div class="col-zh" lang="zh-Hant"><p>Bug：空的 <code>projectDir</code> 導致 <code>git init</code> 執行在原始碼目錄</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Data flow:</strong>
+1. Test setup → empty string
+2. <code>Project.create(name, '')</code>
+3. <code>WorkspaceManager.createWorkspace('')</code>
+4. <code>git init</code> runs in <code>process.cwd()</code></p></div><div class="col-zh" lang="zh-Hant"><p><strong>資料流：</strong>
+1. 測試設定 → 空字串
+2. <code>Project.create(name, '')</code>
+3. <code>WorkspaceManager.createWorkspace('')</code>
+4. <code>git init</code> 在 <code>process.cwd()</code> 執行</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Four layers added:</strong>
+- Layer 1: <code>Project.create()</code> validates not empty/exists/writable
+- Layer 2: <code>WorkspaceManager</code> validates projectDir not empty
+- Layer 3: <code>WorktreeManager</code> refuses git init outside tmpdir in tests
+- Layer 4: Stack trace logging before git init</p></div><div class="col-zh" lang="zh-Hant"><p><strong>加入的四層：</strong>
+- 第一層：<code>Project.create()</code> 驗證非空/存在/可寫
+- 第二層：<code>WorkspaceManager</code> 驗證 projectDir 非空
+- 第三層：測試中 <code>WorktreeManager</code> 拒絕在 tmpdir 之外執行 git init
+- 第四層：git init 之前記錄堆疊追蹤</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Result:</strong> All 1847 tests passed, bug impossible to reproduce</p></div><div class="col-zh" lang="zh-Hant"><p><strong>結果：</strong> 全部 1847 個測試通過，bug 無法重現</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Key Insight</h2></div><div class="col-zh" lang="zh-Hant"><h2>關鍵領悟</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>All four layers were necessary. During testing, each layer caught bugs the others missed:
+- Different code paths bypassed entry validation
+- Mocks bypassed business logic checks
+- Edge cases on different platforms needed environment guards
+- Debug logging identified structural misuse</p></div><div class="col-zh" lang="zh-Hant"><p>四層都是必要的。測試過程中，每一層都捕捉了其他層漏掉的 bug：
+- 不同的程式路徑繞過了進入點驗證
+- 模擬繞過了業務邏輯檢查
+- 不同平台上的邊角情況需要環境守衛
+- 除錯日誌辨識出結構性的誤用</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Don't stop at one validation point.</strong> Add checks at every layer.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不要只停在一個驗證點。</strong> 在每一層都加入檢查。</p></div></div>
+
+</div>
+</body>
+</html>

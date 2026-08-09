@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>subagent-driven-development / re-review-prompt · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 subagent-driven-development</a> 
+</div>
+<h1>re-review-prompt</h1>
+<div class="subtitle">subagent-driven-development · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Scoped Re-Review Prompt Template</h1></div><div class="col-zh" lang="zh-Hant"><h1>限定範圍重審 Prompt 範本</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use this template when dispatching a re-review after a fix round. The
+re-reviewer verifies the findings were addressed and checks the fix diff for
+new breakage. It is not a fresh review — the full review already happened.</p></div><div class="col-zh" lang="zh-Hant"><p>修正輪之後派發重審時使用此範本。重審者驗證發現是否已被處理，並檢查修正 diff 是否引入新的破壞。它不是一次全新的審查——完整審查已經發生過了。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Purpose:</strong> Verify each finding from the previous review was addressed, and
+that the fix itself broke nothing.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>目的：</strong> 驗證先前審查的每個發現都已被處理，且修正本身沒有破壞任何事物。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Subagent (general-purpose):
+  description: &quot;Re-review Task N fix round R&quot;
+  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
+         model silently inherits the session's most expensive one]
+  prompt: |
+    You are re-reviewing one task's fix round. A previous review produced
+    findings; an implementer has attempted to fix them. Your job is to
+    verdict each finding and inspect the fix diff — nothing else.
+
+    ## The Task
+
+    Read the task brief: [BRIEF_FILE]
+
+    ## The Findings Under Verification
+
+    [FINDINGS]
+
+    ## The Fix
+
+    Read the implementer's report (fix reports are appended at the end):
+    [REPORT_FILE]
+
+    **Fix base:** [FIX_BASE_SHA] (the head the previous review saw)
+    **Head:** [HEAD_SHA]
+    **Diff file:** [DIFF_FILE]
+
+    Read the diff file once — it contains the fix commits, a stat summary,
+    and the fix diff with surrounding context. Do not re-run git commands.
+    If the diff file is missing, fetch the diff yourself:
+    `git diff --stat [FIX_BASE_SHA]..[HEAD_SHA]` and
+    `git diff [FIX_BASE_SHA]..[HEAD_SHA]`.
+
+    Your review is read-only on this checkout. Do not mutate the working
+    tree, the index, HEAD, or branch state in any way.
+
+    ## Scope
+
+    Your scope is the findings list and the fix diff. Verdict every finding.
+    Inspect the fix diff for new problems the fix itself introduced. Do NOT
+    re-review code the fix did not touch: if you notice an issue entirely
+    outside the fix diff, report it under Out-of-Scope Observations — it
+    does not block this task and does not extend the loop. A broad
+    whole-branch review happens after all tasks are complete.
+
+    ## Tests
+
+    The implementer re-ran the tests covering the amended code and appended
+    the results to the report file. Treat the report as unverified claims:
+    confirm the fix report names the covering tests and shows their output,
+    and verify the claims against the diff. Do not re-run the suite to
+    confirm their report. Run a test only when reading the code raises a
+    specific doubt that no existing run answers — and then a focused test,
+    never a package-wide suite.
+
+    ## Output Format
+
+    Your final message is the report itself: begin directly with the first
+    finding's verdict. Every line is a verdict, a finding with file:line,
+    or a check you ran — no preamble, no process narration.
+
+    ### Finding Verdicts
+
+    For each finding in The Findings Under Verification, in order:
+    - **[finding one-liner]** — ADDRESSED | NOT ADDRESSED, with file:line
+      evidence. &quot;Attempted&quot; is not addressed: the specific defect must no
+      longer exist.
+
+    ### New Breakage in the Fix Diff
+
+    Anything the fix itself broke or introduced, with severity
+    (Critical/Important/Minor) and file:line. &quot;None&quot; if clean.
+
+    ### Out-of-Scope Observations
+
+    Issues you noticed entirely outside the fix diff. Non-blocking; the
+    controller ledgers these for the final review. &quot;None&quot; if none.
+
+    ### Verdict
+
+    **Fix round:** [All findings addressed, no new Critical/Important
+    breakage | Findings remain open] — list the open ones.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Subagent (general-purpose):
+  description: &quot;Re-review Task N fix round R&quot;
+  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
+         model silently inherits the session's most expensive one]
+  prompt: |
+    你正在重審一個任務的修正輪。先前的審查產生了發現；
+    實作子代理已嘗試修正它們。你的工作是對每個發現下判決
+    並檢查修正 diff——僅此而已。
+
+    ## 任務
+
+    讀任務簡報：[BRIEF_FILE]
+
+    ## 待驗證的發現
+
+    [FINDINGS]
+
+    ## 修正
+
+    讀實作子代理的報告（修正報告附加在末尾）：
+    [REPORT_FILE]
+
+    **修正基線：** [FIX_BASE_SHA]（先前審查所見的 head）
+    **Head：** [HEAD_SHA]
+    **Diff 檔案：** [DIFF_FILE]
+
+    把 diff 檔案讀一遍——它包含修正 commits、統計摘要、
+    以及含周邊上下文的修正 diff。不要重跑 git 指令。
+    若 diff 檔案缺失，自行取得 diff：
+    `git diff --stat [FIX_BASE_SHA]..[HEAD_SHA]` 與
+    `git diff [FIX_BASE_SHA]..[HEAD_SHA]`。
+
+    你的審查在此 checkout 上是唯讀的。絕不要以任何方式更動工作
+    樹、索引、HEAD 或分支狀態。
+
+    ## 範圍
+
+    你的範圍是發現清單與修正 diff。對每個發現下判決。
+    檢查修正 diff 是否有修正本身引入的新問題。不要
+    重審修正未觸及的程式碼：若你注意到完全在修正 diff
+    以外的問題，把它回報在「範圍外觀察」之下——它不會阻擋
+    此任務，也不會延長迴圈。全面的整支分支審查會在所有任務
+    完成後進行。
+
+    ## 測試
+
+    實作子代理重跑了覆蓋被修改程式碼的測試，並把結果
+    附加到報告檔案。把報告視為未經驗證的主張：
+    確認修正報告指名了覆蓋測試並顯示其輸出，
+    並對照 diff 驗證這些主張。不要重跑整個套件來確認
+    他們的報告。只有在閱讀程式碼時產生具體疑慮、而既有的
+    執行結果無法回答時才跑測試——而且要跑聚焦測試，
+    絕不跑整個套件的測試。
+
+    ## 輸出格式
+
+    你的最後一條訊息就是報告本身：直接以第一個發現的判決
+    開始。每一行都是一個判決、一個帶 file:line 的發現、
+    或一項你執行的檢查——沒有前言，沒有流程敘述。
+
+    ### 發現判決
+
+    依序針對「待驗證的發現」中的每個發現：
+    - **[發現一行摘要]** — ADDRESSED | NOT ADDRESSED，附上 file:line
+      證據。「嘗試過」不算已處理：具體缺陷必須不再存在。
+
+    ### 修正 diff 中的新破壞
+
+    修正本身破壞或引入的任何事物，附上嚴重程度
+    （Critical/Important/Minor）與 file:line。若乾淨則寫「None」。
+
+    ### 範圍外觀察
+
+    你注意到完全在修正 diff 以外的問題。不具阻擋性；控制器
+    會把這些記入記錄簿供最終審查。若無則寫「None」。
+
+    ### 判決
+
+    **修正輪：** [所有發現已處理、無新的 Critical/Important
+    破壞 | 仍有發現未解決] — 列出未解決的發現。
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Placeholders:</strong>
+- <code>[MODEL]</code> — REQUIRED: reviewer model per SKILL.md Model Selection; scoped
+  re-reviews of small fix diffs take a cheap-to-mid tier
+- <code>[BRIEF_FILE]</code> — the task brief file (same file the implementer worked from)
+- <code>[FINDINGS]</code> — the Critical/Important findings and spec gaps from the
+  previous review, copied verbatim, one per bullet
+- <code>[REPORT_FILE]</code> — the implementer's report file (fix reports appended)
+- <code>[FIX_BASE_SHA]</code> — the head the previous review saw
+- <code>[HEAD_SHA]</code> — current commit
+- <code>[DIFF_FILE]</code> — the path <code>scripts/review-package PLAN_FILE FIX_BASE HEAD</code> printed</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Placeholders：</strong>
+- <code>[MODEL]</code> — 必填：依 SKILL.md 模型選擇挑選審查模型；小修正 diff 的
+  限定範圍重審採用便宜到中階的層級
+- <code>[BRIEF_FILE]</code> — 任務簡報檔案（實作子代理據以工作的同一個檔案）
+- <code>[FINDINGS]</code> — 先前審查的 Critical/Important 發現與規格缺口，
+  逐字複製，每項一則條列
+- <code>[REPORT_FILE]</code> — 實作子代理的報告檔案（修正報告附加其後）
+- <code>[FIX_BASE_SHA]</code> — 先前審查所見的 head
+- <code>[HEAD_SHA]</code> — 目前 commit
+- <code>[DIFF_FILE]</code> — <code>scripts/review-package PLAN_FILE FIX_BASE HEAD</code> 印出的路徑</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Re-reviewer returns:</strong> per-finding verdicts (ADDRESSED / NOT ADDRESSED),
+new breakage in the fix diff, out-of-scope observations, and a round verdict.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>重審者回傳：</strong> 逐發現判決（ADDRESSED / NOT ADDRESSED）、
+修正 diff 中的新破壞、範圍外觀察、以及輪次判決。</p></div></div>
+
+</div>
+</body>
+</html>

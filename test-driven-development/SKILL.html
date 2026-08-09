@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>test-driven-development · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>test-driven-development</code></td></tr>
+<tr><td>description (EN)</td><td>Use when implementing any feature or bugfix, before writing implementation code</td></tr>
+<tr><td>說明 (繁中)</td><td>使用時機：實作任何功能或修 bug 時，在寫實作程式碼之前</td></tr>
+</table>
+<h1>test-driven-development</h1>
+<div class="subtitle">先寫會失敗的測試，再看它紅、寫最小程式讓它綠、重構——回饋逼出好程式。</div>
+<div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="writing-good-tests.html">writing-good-tests</a></div>
+<div class="pair"><div class="col-en" lang="en"><h1>Test-Driven Development (TDD)</h1></div><div class="col-zh" lang="zh-Hant"><h1>測試驅動開發（TDD）</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Write the test first. Watch it fail. Write minimal code to pass.</p></div><div class="col-zh" lang="zh-Hant"><p>先寫測試。看著它失敗。寫最少的程式碼讓它通過。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> If you didn't watch the test fail, you don't know if it tests the right thing.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 如果你沒親眼看到測試失敗，你就不知道它測試的是不是對的東西。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Violating the letter of the rules is violating the spirit of the rules.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>違反規則的字面，就是違反規則的精神。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Always:</strong>
+- New features
+- Bug fixes
+- Refactoring
+- Behavior changes</p></div><div class="col-zh" lang="zh-Hant"><p><strong>一律使用：</strong>
+- 新功能
+- 修 bug
+- 重構
+- 行為變更</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Exceptions (ask your human partner):</strong>
+- Throwaway prototypes
+- Generated code
+- Configuration files</p></div><div class="col-zh" lang="zh-Hant"><p><strong>例外（問你的真人夥伴）：</strong>
+- 用完即丟的原型
+- 產生的程式碼
+- 設定檔</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Thinking "skip TDD just this once"? Stop. That's rationalization.</p></div><div class="col-zh" lang="zh-Hant"><p>心裡想「這次就跳過 TDD 吧」？停。那就是合理化藉口。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Iron Law</h2></div><div class="col-zh" lang="zh-Hant"><h2>鐵律</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>沒有先寫失敗的測試，就不准有正式程式碼
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Write code before the test? Delete it. Start over.</p></div><div class="col-zh" lang="zh-Hant"><p>在測試之前先寫了程式碼？刪掉。重新開始。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>No exceptions:</strong>
+- Don't keep it as "reference"
+- Don't "adapt" it while writing tests
+- Don't look at it
+- Delete means delete</p></div><div class="col-zh" lang="zh-Hant"><p><strong>沒有例外：</strong>
+- 不要把它留著當「參考」
+- 不要邊寫測試邊「改寫」它
+- 不要看它
+- 刪掉就是刪掉</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Implement fresh from tests. Period.</p></div><div class="col-zh" lang="zh-Hant"><p>從測試開始全新實作。就這樣。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Red-Green-Refactor</h2></div><div class="col-zh" lang="zh-Hant"><h2>紅-綠-重構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph tdd_cycle {
+    rankdir=LR;
+    red [label=&quot;RED\nWrite failing test&quot;, shape=box, style=filled, fillcolor=&quot;#ffcccc&quot;];
+    verify_red [label=&quot;Verify fails\ncorrectly&quot;, shape=diamond];
+    green [label=&quot;GREEN\nMinimal code&quot;, shape=box, style=filled, fillcolor=&quot;#ccffcc&quot;];
+    verify_green [label=&quot;Verify passes\nAll green&quot;, shape=diamond];
+    refactor [label=&quot;REFACTOR\nClean up&quot;, shape=box, style=filled, fillcolor=&quot;#ccccff&quot;];
+    next [label=&quot;Next&quot;, shape=ellipse];
+
+    red -&gt; verify_red;
+    verify_red -&gt; green [label=&quot;yes&quot;];
+    verify_red -&gt; red [label=&quot;wrong\nfailure&quot;];
+    green -&gt; verify_green;
+    verify_green -&gt; refactor [label=&quot;yes&quot;];
+    verify_green -&gt; green [label=&quot;no&quot;];
+    refactor -&gt; verify_green [label=&quot;stay\ngreen&quot;];
+    verify_green -&gt; next;
+    next -&gt; red;
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-dot">digraph tdd_cycle {
+    rankdir=LR;
+    red [label=&quot;RED\nWrite failing test&quot;, shape=box, style=filled, fillcolor=&quot;#ffcccc&quot;];
+    verify_red [label=&quot;Verify fails\ncorrectly&quot;, shape=diamond];
+    green [label=&quot;GREEN\nMinimal code&quot;, shape=box, style=filled, fillcolor=&quot;#ccffcc&quot;];
+    verify_green [label=&quot;Verify passes\nAll green&quot;, shape=diamond];
+    refactor [label=&quot;REFACTOR\nClean up&quot;, shape=box, style=filled, fillcolor=&quot;#ccccff&quot;];
+    next [label=&quot;Next&quot;, shape=ellipse];
+
+    red -&gt; verify_red;
+    verify_red -&gt; green [label=&quot;yes&quot;];
+    verify_red -&gt; red [label=&quot;wrong\nfailure&quot;];
+    green -&gt; verify_green;
+    verify_green -&gt; refactor [label=&quot;yes&quot;];
+    verify_green -&gt; green [label=&quot;no&quot;];
+    refactor -&gt; verify_green [label=&quot;stay\ngreen&quot;];
+    verify_green -&gt; next;
+    next -&gt; red;
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>RED - Write Failing Test</h3></div><div class="col-zh" lang="zh-Hant"><h3>紅 - 寫失敗的測試</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Write one minimal test showing what should happen.</p></div><div class="col-zh" lang="zh-Hant"><p>寫一支最小的測試，顯示應該發生什麼事。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><Good></p>
+<pre><code class="language-typescript">test('retries failed operations 3 times', async () =&gt; {
+  let attempts = 0;
+  const operation = () =&gt; {
+    attempts++;
+    if (attempts &lt; 3) throw new Error('fail');
+    return 'success';
+  };
+
+  const result = await retryOperation(operation);
+
+  expect(result).toBe('success');
+  expect(attempts).toBe(3);
+});
+</code></pre>
+<p>Clear name, tests real behavior, one thing
+</Good></p></div><div class="col-zh" lang="zh-Hant"><p><Good></p>
+<pre><code class="language-typescript">test('retries failed operations 3 times', async () =&gt; {
+  let attempts = 0;
+  const operation = () =&gt; {
+    attempts++;
+    if (attempts &lt; 3) throw new Error('fail');
+    return 'success';
+  };
+
+  const result = await retryOperation(operation);
+
+  expect(result).toBe('success');
+  expect(attempts).toBe(3);
+});
+</code></pre>
+<p>名稱清楚、測試真實行為、一次只測一件事
+</Good></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><Bad></p>
+<pre><code class="language-typescript">test('retry works', async () =&gt; {
+  const mock = jest.fn()
+    .mockRejectedValueOnce(new Error())
+    .mockRejectedValueOnce(new Error())
+    .mockResolvedValueOnce('success');
+  await retryOperation(mock);
+  expect(mock).toHaveBeenCalledTimes(3);
+});
+</code></pre>
+<p>Vague name, tests mock not code
+</Bad></p></div><div class="col-zh" lang="zh-Hant"><p><Bad></p>
+<pre><code class="language-typescript">test('retry works', async () =&gt; {
+  const mock = jest.fn()
+    .mockRejectedValueOnce(new Error())
+    .mockRejectedValueOnce(new Error())
+    .mockResolvedValueOnce('success');
+  await retryOperation(mock);
+  expect(mock).toHaveBeenCalledTimes(3);
+});
+</code></pre>
+<p>名稱含糊、測試的是 mock 而不是程式碼
+</Bad></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Requirements:</strong>
+- One behavior
+- Clear name
+- Real code (no mocks unless unavoidable)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>需求：</strong>
+- 一個行為
+- 名稱清楚
+- 真實程式碼（除非無可避免，否則不用 mock）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Verify RED - Watch It Fail</h3></div><div class="col-zh" lang="zh-Hant"><h3>驗證紅 - 看著它失敗</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>MANDATORY. Never skip.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>強制。絕不可跳過。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">npm test path/to/test.test.ts
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">npm test path/to/test.test.ts
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Confirm:
+- Test fails (not errors)
+- Failure message is expected
+- Fails because feature missing (not typos)</p></div><div class="col-zh" lang="zh-Hant"><p>確認：
+- 測試失敗（不是出錯）
+- 失敗訊息符合預期
+- 因為功能缺失而失敗（不是打錯字）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Test passes?</strong> You're testing existing behavior. Fix test.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>測試通過了？</strong> 你在測試既有的行為。修正測試。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Test errors?</strong> Fix error, re-run until it fails correctly.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>測試出錯了？</strong> 修正錯誤，重新執行直到它正確地失敗。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>GREEN - Minimal Code</h3></div><div class="col-zh" lang="zh-Hant"><h3>綠 - 最少程式碼</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Write simplest code to pass the test.</p></div><div class="col-zh" lang="zh-Hant"><p>寫最簡單的程式碼讓測試通過。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><Good></p>
+<pre><code class="language-typescript">async function retryOperation&lt;T&gt;(fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt; {
+  for (let i = 0; i &lt; 3; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (i === 2) throw e;
+    }
+  }
+  throw new Error('unreachable');
+}
+</code></pre>
+<p>Just enough to pass
+</Good></p></div><div class="col-zh" lang="zh-Hant"><p><Good></p>
+<pre><code class="language-typescript">async function retryOperation&lt;T&gt;(fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt; {
+  for (let i = 0; i &lt; 3; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (i === 2) throw e;
+    }
+  }
+  throw new Error('unreachable');
+}
+</code></pre>
+<p>剛好夠讓它通過
+</Good></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><Bad></p>
+<pre><code class="language-typescript">async function retryOperation&lt;T&gt;(
+  fn: () =&gt; Promise&lt;T&gt;,
+  options?: {
+    maxRetries?: number;
+    backoff?: 'linear' | 'exponential';
+    onRetry?: (attempt: number) =&gt; void;
+  }
+): Promise&lt;T&gt; {
+  // YAGNI
+}
+</code></pre>
+<p>Over-engineered
+</Bad></p></div><div class="col-zh" lang="zh-Hant"><p><Bad></p>
+<pre><code class="language-typescript">async function retryOperation&lt;T&gt;(
+  fn: () =&gt; Promise&lt;T&gt;,
+  options?: {
+    maxRetries?: number;
+    backoff?: 'linear' | 'exponential';
+    onRetry?: (attempt: number) =&gt; void;
+  }
+): Promise&lt;T&gt; {
+  // YAGNI
+}
+</code></pre>
+<p>過度設計
+</Bad></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Don't add features, refactor other code, or "improve" beyond the test.</p></div><div class="col-zh" lang="zh-Hant"><p>不要加功能、不要重構其他程式碼、不要「改良」到測試以外的範圍。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Verify GREEN - Watch It Pass</h3></div><div class="col-zh" lang="zh-Hant"><h3>驗證綠 - 看著它通過</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>MANDATORY.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>強制。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">npm test path/to/test.test.ts
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">npm test path/to/test.test.ts
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Confirm:
+- Test passes
+- Other tests still pass
+- Output pristine (no errors, warnings)</p></div><div class="col-zh" lang="zh-Hant"><p>確認：
+- 測試通過
+- 其他測試仍然通過
+- 輸出乾淨（沒有錯誤、警告）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Test fails?</strong> Fix code, not test.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>測試失敗了？</strong> 修程式碼，不是修測試。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Other tests fail?</strong> Fix now.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>其他測試失敗？</strong> 現在就修。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>REFACTOR - Clean Up</h3></div><div class="col-zh" lang="zh-Hant"><h3>重構 - 清理</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>After green only:
+- Remove duplication
+- Improve names
+- Extract helpers</p></div><div class="col-zh" lang="zh-Hant"><p>只在變綠之後：
+- 移除重複
+- 改善命名
+- 抽取輔助函式</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Keep tests green. Don't add behavior.</p></div><div class="col-zh" lang="zh-Hant"><p>保持測試變綠。不要加行為。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Repeat</h3></div><div class="col-zh" lang="zh-Hant"><h3>重複</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Next failing test for next feature.</p></div><div class="col-zh" lang="zh-Hant"><p>為下一個功能寫下一支失敗的測試。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Good Tests</h2></div><div class="col-zh" lang="zh-Hant"><h2>好測試</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Quality</th>
+<th>Good</th>
+<th>Bad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Minimal</strong></td>
+<td>One thing. "and" in name? Split it.</td>
+<td><code>test('validates email and domain and whitespace')</code></td>
+</tr>
+<tr>
+<td><strong>Clear</strong></td>
+<td>Name describes behavior</td>
+<td><code>test('test1')</code></td>
+</tr>
+<tr>
+<td><strong>Shows intent</strong></td>
+<td>Demonstrates desired API</td>
+<td>Obscures what code should do</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>品質</th>
+<th>好</th>
+<th>壞</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>最小</strong></td>
+<td>一件事。名稱裡有「and」？拆開它。</td>
+<td><code>test('validates email and domain and whitespace')</code></td>
+</tr>
+<tr>
+<td><strong>清楚</strong></td>
+<td>名稱描述行為</td>
+<td><code>test('test1')</code></td>
+</tr>
+<tr>
+<td><strong>顯示意圖</strong></td>
+<td>示範想要的 API</td>
+<td>模糊了程式碼該做什麼</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When writing or changing any test, read <a href="writing-good-tests.html">writing-good-tests.md</a> for the rules that keep tests honest:
+- Name the production change that would make the test fail — before writing it
+- Assert on real behavior, never on mock behavior
+- Keep test-only code in test utilities, out of production classes
+- Understand a dependency's side effects before mocking it</p></div><div class="col-zh" lang="zh-Hant"><p>寫或修改任何測試時，閱讀 <a href="writing-good-tests.html">writing-good-tests.md</a> 中讓測試保持誠實的規則：
+- 在寫之前，說出會讓測試失敗的正式程式碼變更——在寫它之前
+- 斷言真實行為，絕不斷言 mock 行為
+- 把僅供測試的程式碼放在測試工具中，別放進正式類別
+- 在模擬相依物件之前，先了解它的副作用</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Excuse</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Too simple to test"</td>
+<td>Simple code breaks. Test takes 30 seconds.</td>
+</tr>
+<tr>
+<td>"I'll test after"</td>
+<td>Tests written after pass immediately — which proves nothing. They may test the wrong thing, test the implementation instead of the behavior, or miss the edge case you forgot. You never watched it fail, so you never proved it can catch the bug. Test-first forces that failure.</td>
+</tr>
+<tr>
+<td>"Tests after achieve same goals (spirit not ritual)"</td>
+<td>Tests-after answer "what does this do?"; tests-first answer "what should this do?" Tests written after are biased by the code you already wrote — you verify the cases you remembered, not the ones you'd have discovered. Coverage without proof the tests work.</td>
+</tr>
+<tr>
+<td>"Already manually tested"</td>
+<td>Manual testing is ad-hoc: no record of what you covered, no way to re-run it when the code changes, easy to forget cases under pressure. "Worked when I tried it" ≠ comprehensive. Automated tests run the same way every time.</td>
+</tr>
+<tr>
+<td>"Deleting X hours is wasteful"</td>
+<td>Sunk cost fallacy — that time is already spent either way. The real choice: rewrite with TDD (high confidence) vs. keep it and bolt tests on after (low confidence, likely bugs). Keeping code you can't trust is the waste.</td>
+</tr>
+<tr>
+<td>"Keep as reference, write tests first"</td>
+<td>You'll adapt it. That's testing after. Delete means delete.</td>
+</tr>
+<tr>
+<td>"Need to explore first"</td>
+<td>Fine. Throw away exploration, start with TDD.</td>
+</tr>
+<tr>
+<td>"Test hard = design unclear"</td>
+<td>Listen to test. Hard to test = hard to use.</td>
+</tr>
+<tr>
+<td>"TDD will slow me down"</td>
+<td>TDD IS the pragmatic path: catches bugs before commit, prevents regressions, lets you refactor without fear. "Pragmatic" shortcuts mean debugging in production — slower, not faster.</td>
+</tr>
+<tr>
+<td>"Manual test faster"</td>
+<td>Manual doesn't prove edge cases. You'll re-test every change.</td>
+</tr>
+<tr>
+<td>"Existing code has no tests"</td>
+<td>You're improving it. Add tests for existing code.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>藉口</th>
+<th>事實</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「太簡單了，不用測」</td>
+<td>簡單的程式碼也會壞。測試只要 30 秒。</td>
+</tr>
+<tr>
+<td>「我之後再測」</td>
+<td>事後寫的測試會立刻通過——這證明不了任何事。它們可能測錯了東西、測了實作而不是行為，或漏掉了你忘記的邊緣案例。你從沒看過它失敗，所以從沒證明它抓得到 bug。測試優先強迫你面對那個失敗。</td>
+</tr>
+<tr>
+<td>「事後測試也達到同樣目標（精神而非儀式）」</td>
+<td>事後測試回答的是「這程式碼做什麼？」；測試優先回答的是「這程式碼應該做什麼？」。事後寫的測試被你已經寫的程式碼偏誤——你驗證的是你記得的案例，而不是你會發現的那些。覆蓋率卻沒有證明測試有效。</td>
+</tr>
+<tr>
+<td>「已經手動測過了」</td>
+<td>手動測試是 ad-hoc：沒有你覆蓋了什麼的紀錄、程式碼變更時無法重跑、壓力下容易忘記案例。「我試過可以用」≠ 全面。自動化測試每次都用相同方式跑。</td>
+</tr>
+<tr>
+<td>「刪掉 X 小時的心血太浪費」</td>
+<td>沉沒成本謬誤——無論如何那時間都花掉了。真正的選擇是：用 TDD 重寫（高信心）對上保留它然後事後硬補測試（低信心、很可能有 bug）。保留你無法信任的程式碼才是浪費。</td>
+</tr>
+<tr>
+<td>「留著當參考，然後測試優先」</td>
+<td>你會去改它的。那就是事後測試。刪掉就是刪掉。</td>
+</tr>
+<tr>
+<td>「需要先探索」</td>
+<td>可以。丟掉探索的產物，用 TDD 重新開始。</td>
+</tr>
+<tr>
+<td>「測試難寫＝設計不清楚」</td>
+<td>傾聽測試。難測＝難用。</td>
+</tr>
+<tr>
+<td>「TDD 會拖慢我」</td>
+<td>TDD 本身就是務實的路：在 commit 前抓出 bug、防止迴歸、讓你能無所畏懼地重構。「務實」的捷徑意味著在正式環境除錯——更慢，不是更快。</td>
+</tr>
+<tr>
+<td>「手動測試更快」</td>
+<td>手動測試無法證明邊緣案例。你每次變更都要重測。</td>
+</tr>
+<tr>
+<td>「既有程式碼沒有測試」</td>
+<td>你正在改善它。為既有程式碼補測試。</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Red Flags - STOP and Start Over</h2></div><div class="col-zh" lang="zh-Hant"><h2>紅旗 - 停，重新開始</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Code before test</li>
+<li>Test after implementation</li>
+<li>Test passes immediately</li>
+<li>Can't explain why test failed</li>
+<li>Tests added "later"</li>
+<li>Rationalizing "just this once"</li>
+<li>"I already manually tested it"</li>
+<li>"Tests after achieve the same purpose"</li>
+<li>"It's about spirit not ritual"</li>
+<li>"Keep as reference" or "adapt existing code"</li>
+<li>"Already spent X hours, deleting is wasteful"</li>
+<li>"TDD is dogmatic, I'm being pragmatic"</li>
+<li>"This is different because..."</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>測試之前先寫了程式碼</li>
+<li>實作之後才寫測試</li>
+<li>測試立刻通過</li>
+<li>說不出測試為何失敗</li>
+<li>測試「之後」才補</li>
+<li>合理化「就這次」</li>
+<li>「我已經手動測過了」</li>
+<li>「事後測試達到同樣目的」</li>
+<li>「這是精神不是儀式」</li>
+<li>「留著當參考」或「改寫既有程式碼」</li>
+<li>「已經花 X 小時了，刪掉太浪費」</li>
+<li>「TDD 太教條，我只是務實」</li>
+<li>「這次不一樣，因為……」</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>All of these mean: Delete code. Start over with TDD.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>所有這些都代表：刪掉程式碼。用 TDD 重新開始。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Example: Bug Fix</h2></div><div class="col-zh" lang="zh-Hant"><h2>範例：修 bug</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Bug:</strong> Empty email accepted</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Bug：</strong> 空 email 被接受</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>RED</strong></p>
+<pre><code class="language-typescript">test('rejects empty email', async () =&gt; {
+  const result = await submitForm({ email: '' });
+  expect(result.error).toBe('Email required');
+});
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>紅</strong></p>
+<pre><code class="language-typescript">test('rejects empty email', async () =&gt; {
+  const result = await submitForm({ email: '' });
+  expect(result.error).toBe('Email required');
+});
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Verify RED</strong></p>
+<pre><code class="language-bash">$ npm test
+FAIL: expected 'Email required', got undefined
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>驗證紅</strong></p>
+<pre><code class="language-bash">$ npm test
+FAIL: expected 'Email required', got undefined
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>GREEN</strong></p>
+<pre><code class="language-typescript">function submitForm(data: FormData) {
+  if (!data.email?.trim()) {
+    return { error: 'Email required' };
+  }
+  // ...
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>綠</strong></p>
+<pre><code class="language-typescript">function submitForm(data: FormData) {
+  if (!data.email?.trim()) {
+    return { error: 'Email required' };
+  }
+  // ...
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Verify GREEN</strong></p>
+<pre><code class="language-bash">$ npm test
+PASS
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>驗證綠</strong></p>
+<pre><code class="language-bash">$ npm test
+PASS
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>REFACTOR</strong>
+Extract validation for multiple fields if needed.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>重構</strong>
+如有需要，抽取多欄位的驗證邏輯。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Verification Checklist</h2></div><div class="col-zh" lang="zh-Hant"><h2>驗證檢查清單</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before marking work complete:</p></div><div class="col-zh" lang="zh-Hant"><p>在標記工作完成之前：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>[ ] Every new function/method has a test</li>
+<li>[ ] Watched each test fail before implementing</li>
+<li>[ ] Each test failed for expected reason (feature missing, not typo)</li>
+<li>[ ] Wrote minimal code to pass each test</li>
+<li>[ ] All tests pass</li>
+<li>[ ] Output pristine (no errors, warnings)</li>
+<li>[ ] Tests use real code (mocks only if unavoidable)</li>
+<li>[ ] Edge cases and errors covered</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>[ ] 每個新函式／方法都有測試</li>
+<li>[ ] 在實作之前看著每個測試失敗</li>
+<li>[ ] 每個測試都以預期的原因失敗（功能缺失，不是打錯字）</li>
+<li>[ ] 為每個測試寫了最少的程式碼讓它通過</li>
+<li>[ ] 所有測試都通過</li>
+<li>[ ] 輸出乾淨（沒有錯誤、警告）</li>
+<li>[ ] 測試使用真實程式碼（除非無可避免，否則不用 mock）</li>
+<li>[ ] 邊緣案例與錯誤都涵蓋</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Can't check all boxes? You skipped TDD. Start over.</p></div><div class="col-zh" lang="zh-Hant"><p>勾不完？你跳過了 TDD。重新開始。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When Stuck</h2></div><div class="col-zh" lang="zh-Hant"><h2>卡住時</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Don't know how to test</td>
+<td>Write wished-for API. Write assertion first. Ask your human partner.</td>
+</tr>
+<tr>
+<td>Test too complicated</td>
+<td>Design too complicated. Simplify interface.</td>
+</tr>
+<tr>
+<td>Must mock everything</td>
+<td>Code too coupled. Use dependency injection.</td>
+</tr>
+<tr>
+<td>Test setup huge</td>
+<td>Extract helpers. Still complex? Simplify design.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>問題</th>
+<th>解法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不知道怎麼測</td>
+<td>寫你想要的 API。先寫斷言。問你的真人夥伴。</td>
+</tr>
+<tr>
+<td>測試太複雜</td>
+<td>設計太複雜。簡化介面。</td>
+</tr>
+<tr>
+<td>什麼都要 mock</td>
+<td>程式碼太耦合。用依賴注入。</td>
+</tr>
+<tr>
+<td>測試設定很龐大</td>
+<td>抽取輔助函式。還是複雜？簡化設計。</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Debugging Integration</h2></div><div class="col-zh" lang="zh-Hant"><h2>除錯整合</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.</p></div><div class="col-zh" lang="zh-Hant"><p>發現 bug？寫一支重現它的失敗測試。遵循 TDD 循環。測試證明修復並防止迴歸。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Never fix bugs without a test.</p></div><div class="col-zh" lang="zh-Hant"><p>絕不沒有測試就修 bug。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Final Rule</h2></div><div class="col-zh" lang="zh-Hant"><h2>最終規則</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Production code → test exists and failed first
+Otherwise → not TDD
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>正式程式碼 → 測試存在且先失敗過
+否則 → 不是 TDD
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>No exceptions without your human partner's permission.</p></div><div class="col-zh" lang="zh-Hant"><p>未經你的真人夥伴允許，沒有例外。</p></div></div>
+
+</div>
+</body>
+</html>

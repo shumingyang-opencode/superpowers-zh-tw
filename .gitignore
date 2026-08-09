@@ -1,0 +1,6 @@
+# Upstream English originals cached by scripts/build-site.py (offline re-runs)
+.site-cache/
+
+# OS junk
+.DS_Store
+.venv/

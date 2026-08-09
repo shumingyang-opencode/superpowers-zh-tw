@@ -1,0 +1,20 @@
+{
+  "upstream": "obra/superpowers",
+  "branch": "main",
+  "aligned": {
+    "commit": "44c9b2d6e889982ac18c27d05a19fefe335194e1",
+    "short": "44c9b2d",
+    "version": "v6.2.0",
+    "date": "2026-07-27"
+  },
+  "current": {
+    "commit": "44c9b2d6e889982ac18c27d05a19fefe335194e1",
+    "short": "44c9b2d",
+    "version": "v6.2.0",
+    "date": "2026-07-24"
+  },
+  "status": "synced",
+  "pending": [],
+  "non_md_count": 0,
+  "checked_at": "2026-08-08T15:48:40Z"
+}

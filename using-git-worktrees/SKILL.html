@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>using-git-worktrees · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>using-git-worktrees</code></td></tr>
+<tr><td>description (EN)</td><td>Use when starting feature work that needs isolation from current workspace or before executing implementation plans - ensures an isolated workspace exists via native tools or git worktree fallback</td></tr>
+<tr><td>說明 (繁中)</td><td>當開始需要與目前工作區隔離的功能工作，或在執行實作計畫之前使用 —— 透過原生工具或 git worktree 備援方式確保有隔離的工作區</td></tr>
+</table>
+<h1>using-git-worktrees</h1>
+<div class="subtitle">開工先開一個隔離的 git worktree，主分支不被打擾。</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Using Git Worktrees</h1></div><div class="col-zh" lang="zh-Hant"><h1>使用 Git Worktrees</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Ensure work happens in an isolated workspace. Prefer your platform's native worktree tools. Fall back to manual git worktrees only when no native tool is available.</p></div><div class="col-zh" lang="zh-Hant"><p>確保工作在隔離的工作區中進行。優先使用你平台的原生 worktree 工具。只有在沒有原生工具可用時，才改用手動 git worktree。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Detect existing isolation first. Then use native tools. Then fall back to git. Never fight the harness.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 先偵測現有的隔離狀態。再用原生工具。最後才回到 git。永遠不要對抗 harness。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Announce at start:</strong> "I'm using the using-git-worktrees skill to set up an isolated workspace."</p></div><div class="col-zh" lang="zh-Hant"><p><strong>開始時宣告：</strong> 「我正使用 using-git-worktrees 技能來設定隔離的工作區。」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Step 0: Detect Existing Isolation</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 0 步：偵測現有的隔離狀態</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Before creating anything, check if you are already in an isolated workspace.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>在建立任何東西之前，檢查你是否已在隔離的工作區中。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+BRANCH=$(git branch --show-current)
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+BRANCH=$(git branch --show-current)
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Submodule guard:</strong> <code>GIT_DIR != GIT_COMMON</code> is also true inside git submodules. Before concluding "already in a worktree," verify you are not in a submodule:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>子模組防護：</strong> <code>GIT_DIR != GIT_COMMON</code> 在 git 子模組內部也成立。在得出「已在 worktree 中」的結論之前，先確認你不位於子模組中：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># If this returns a path, you're in a submodule, not a worktree — treat as normal repo
+git rev-parse --show-superproject-working-tree 2&gt;/dev/null
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash"># If this returns a path, you're in a submodule, not a worktree — treat as normal repo
+git rev-parse --show-superproject-working-tree 2&gt;/dev/null
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If <code>GIT_DIR != GIT_COMMON</code> (and not a submodule):</strong> You are already in a linked worktree. Skip to Step 2 (Project Setup). Do NOT create another worktree.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果 <code>GIT_DIR != GIT_COMMON</code>（且不是子模組）：</strong> 你已在一個連結的 worktree 中。跳到第 2 步（專案設定）。不要再建立 worktree。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Report with branch state:
+- On a branch: "Already in isolated workspace at <code>&lt;path&gt;</code> on branch <code>&lt;name&gt;</code>."
+- Detached HEAD: "Already in isolated workspace at <code>&lt;path&gt;</code> (detached HEAD, externally managed). Branch creation needed at finish time."</p></div><div class="col-zh" lang="zh-Hant"><p>回報分支狀態：
+- 在分支上：「已位於隔離工作區 <code>&lt;path&gt;</code>，分支 <code>&lt;name&gt;</code>。」
+- Detached HEAD：「已位於隔離工作區 <code>&lt;path&gt;</code>（detached HEAD，外部管理）。完成時需建立分支。」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If <code>GIT_DIR == GIT_COMMON</code> (or in a submodule):</strong> You are in a normal repo checkout.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果 <code>GIT_DIR == GIT_COMMON</code>（或在子模組中）：</strong> 你位於一般的 repo checkout 中。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Has the user already indicated their worktree preference in your instructions? If not, ask for consent before creating a worktree:</p></div><div class="col-zh" lang="zh-Hant"><p>使用者是否已在你的指令中表明其 worktree 偏好？如果沒有，在建立 worktree 前先徵求同意：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><blockquote>
+<p>"Would you like me to set up an isolated worktree? It protects your current branch from changes."</p>
+</blockquote></div><div class="col-zh" lang="zh-Hant"><blockquote>
+<p>「你要我設定一個隔離的 worktree 嗎？它會保護你目前的分支不受變更影響。」</p>
+</blockquote></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Honor any existing declared preference without asking. If the user declines consent, work in place and skip to Step 2.</p></div><div class="col-zh" lang="zh-Hant"><p>尊重任何已宣告的偏好，不再詢問。如果使用者婉拒同意，就原地工作並跳到第 2 步。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Step 1: Create Isolated Workspace</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 1 步：建立隔離工作區</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>You have two mechanisms. Try them in this order.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>你有兩種機制。依這個順序嘗試。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>1a. Native Worktree Tools (preferred)</h3></div><div class="col-zh" lang="zh-Hant"><h3>1a. 原生 Worktree 工具（首選）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The user has asked for an isolated workspace (Step 0 consent). Do you already have a way to create a worktree? It might be a tool with a name like <code>EnterWorktree</code>, <code>WorktreeCreate</code>, a <code>/worktree</code> command, or a <code>--worktree</code> flag. If you do, use it and skip to Step 2.</p></div><div class="col-zh" lang="zh-Hant"><p>使用者已要求隔離工作區（第 0 步的同意）。你已有建立 worktree 的方式嗎？可能是名為 <code>EnterWorktree</code>、<code>WorktreeCreate</code> 的工具、<code>/worktree</code> 指令，或 <code>--worktree</code> 旗標。如果有，就使用它並跳到第 2 步。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Native tools handle directory placement, branch creation, and cleanup automatically. Using <code>git worktree add</code> when you have a native tool creates phantom state your harness can't see or manage.</p></div><div class="col-zh" lang="zh-Hant"><p>原生工具會自動處理目錄位置、分支建立與清理。當你有原生工具卻用 <code>git worktree add</code>，會建立你的 harness 看不見也無法管理的幽靈狀態。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Only proceed to Step 1b if you have no native worktree tool available.</p></div><div class="col-zh" lang="zh-Hant"><p>只有在沒有原生 worktree 工具可用時，才繼續到第 1b 步。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>1b. Git Worktree Fallback</h3></div><div class="col-zh" lang="zh-Hant"><h3>1b. Git Worktree 備援</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Only use this if Step 1a does not apply</strong> — you have no native worktree tool available. Create a worktree manually using git.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>只有當第 1a 步不適用時才使用</strong> —— 你沒有可用的原生 worktree 工具。手動用 git 建立 worktree。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h4>Directory Selection</h4></div><div class="col-zh" lang="zh-Hant"><h4>目錄選擇</h4></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Follow this priority order. Explicit user preference always beats observed filesystem state.</p></div><div class="col-zh" lang="zh-Hant"><p>依這個優先序。使用者的明確偏好永遠勝過觀察到的檔案系統狀態。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Check your instructions for a declared worktree directory preference.</strong> If the user has already specified one, use it without asking.</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>檢查你的指令中是否有宣告的 worktree 目錄偏好。</strong> 如果使用者已指定，直接使用，不再詢問。</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="2">
+<li><strong>Check for an existing project-local worktree directory:</strong>
+   <code>bash
+   ls -d .worktrees 2&gt;/dev/null     # Preferred (hidden)
+   ls -d worktrees 2&gt;/dev/null      # Alternative</code>
+   If found, use it. If both exist, <code>.worktrees</code> wins.</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="2">
+<li><strong>檢查既有的專案內 worktree 目錄：</strong>
+   <code>bash
+   ls -d .worktrees 2&gt;/dev/null     # Preferred (hidden)
+   ls -d worktrees 2&gt;/dev/null      # Alternative</code>
+   如果有就使用。如果兩者都存在，<code>.worktrees</code> 優先。</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="3">
+<li><strong>If there is no other guidance available</strong>, default to <code>.worktrees/</code> at the project root.</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="3">
+<li><strong>如果沒有其他指引可用</strong>，預設使用專案根目錄的 <code>.worktrees/</code>。</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h4>Safety Verification (project-local directories only)</h4></div><div class="col-zh" lang="zh-Hant"><h4>安全性驗證（僅限專案內目錄）</h4></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>MUST verify directory is ignored before creating worktree:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>建立 worktree 前必須驗證目錄已被忽略：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">git check-ignore -q .worktrees 2&gt;/dev/null || git check-ignore -q worktrees 2&gt;/dev/null
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">git check-ignore -q .worktrees 2&gt;/dev/null || git check-ignore -q worktrees 2&gt;/dev/null
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If NOT ignored:</strong> Add to .gitignore, commit the change, then proceed.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果未被忽略：</strong> 加入 .gitignore、commit 這個變更，然後繼續。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Why critical:</strong> Prevents accidentally committing worktree contents to repository.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>為什麼關鍵：</strong> 防止不小心把 worktree 內容 commit 進 repo。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h4>Create the Worktree</h4></div><div class="col-zh" lang="zh-Hant"><h4>建立 Worktree</h4></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Determine path based on chosen location
+path=&quot;$LOCATION/$BRANCH_NAME&quot;
+
+git worktree add &quot;$path&quot; -b &quot;$BRANCH_NAME&quot;
+cd &quot;$path&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash"># Determine path based on chosen location
+path=&quot;$LOCATION/$BRANCH_NAME&quot;
+
+git worktree add &quot;$path&quot; -b &quot;$BRANCH_NAME&quot;
+cd &quot;$path&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Sandbox fallback:</strong> If <code>git worktree add</code> fails with a permission error (sandbox denial), tell the user the sandbox blocked worktree creation and you're working in the current directory instead. Then run setup and baseline tests in place.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Sandbox 備援：</strong> 如果 <code>git worktree add</code> 因權限錯誤（sandbox 拒絕）而失敗，告訴使用者 sandbox 封鎖了 worktree 建立，你改在目前目錄工作。然後原地執行設定與基線測試。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Step 2: Project Setup</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 2 步：專案設定</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Auto-detect and run appropriate setup:</p></div><div class="col-zh" lang="zh-Hant"><p>自動偵測並執行適當的設定：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Node.js
+if [ -f package.json ]; then npm install; fi
+
+# Rust
+if [ -f Cargo.toml ]; then cargo build; fi
+
+# Python
+if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+if [ -f pyproject.toml ]; then poetry install; fi
+
+# Go
+if [ -f go.mod ]; then go mod download; fi
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash"># Node.js
+if [ -f package.json ]; then npm install; fi
+
+# Rust
+if [ -f Cargo.toml ]; then cargo build; fi
+
+# Python
+if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+if [ -f pyproject.toml ]; then poetry install; fi
+
+# Go
+if [ -f go.mod ]; then go mod download; fi
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Step 3: Verify Clean Baseline</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 3 步：驗證乾淨的基線</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Run tests to ensure workspace starts clean:</p></div><div class="col-zh" lang="zh-Hant"><p>執行測試以確保工作區以乾淨狀態開始：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Use project-appropriate command
+npm test / cargo test / pytest / go test ./...
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash"># Use project-appropriate command
+npm test / cargo test / pytest / go test ./...
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If tests fail:</strong> Report failures, ask whether to proceed or investigate.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果測試失敗：</strong> 回報失敗，詢問要繼續還是調查。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If tests pass:</strong> Report ready.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果測試通過：</strong> 回報就緒。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Report</h3></div><div class="col-zh" lang="zh-Hant"><h3>回報</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Worktree ready at &lt;full-path&gt;
+Tests passing (&lt;N&gt; tests, 0 failures)
+Ready to implement &lt;feature-name&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Worktree ready at &lt;full-path&gt;
+Tests passing (&lt;N&gt; tests, 0 failures)
+Ready to implement &lt;feature-name&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速參考</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Already in linked worktree</td>
+<td>Skip creation (Step 0)</td>
+</tr>
+<tr>
+<td>In a submodule</td>
+<td>Treat as normal repo (Step 0 guard)</td>
+</tr>
+<tr>
+<td>Native worktree tool available</td>
+<td>Use it (Step 1a)</td>
+</tr>
+<tr>
+<td>No native tool</td>
+<td>Git worktree fallback (Step 1b)</td>
+</tr>
+<tr>
+<td><code>.worktrees/</code> exists</td>
+<td>Use it (verify ignored)</td>
+</tr>
+<tr>
+<td><code>worktrees/</code> exists</td>
+<td>Use it (verify ignored)</td>
+</tr>
+<tr>
+<td>Both exist</td>
+<td>Use <code>.worktrees/</code></td>
+</tr>
+<tr>
+<td>Neither exists</td>
+<td>Check instruction file, then default <code>.worktrees/</code></td>
+</tr>
+<tr>
+<td>Directory not ignored</td>
+<td>Add to .gitignore + commit</td>
+</tr>
+<tr>
+<td>Permission error on create</td>
+<td>Sandbox fallback, work in place</td>
+</tr>
+<tr>
+<td>Tests fail during baseline</td>
+<td>Report failures + ask</td>
+</tr>
+<tr>
+<td>No package.json/Cargo.toml</td>
+<td>Skip dependency install</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>情境</th>
+<th>動作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>已在連結的 worktree 中</td>
+<td>跳過建立（第 0 步）</td>
+</tr>
+<tr>
+<td>在子模組中</td>
+<td>視為一般 repo（第 0 步防護）</td>
+</tr>
+<tr>
+<td>有原生 worktree 工具</td>
+<td>使用它（第 1a 步）</td>
+</tr>
+<tr>
+<td>沒有原生工具</td>
+<td>Git worktree 備援（第 1b 步）</td>
+</tr>
+<tr>
+<td><code>.worktrees/</code> 存在</td>
+<td>使用它（驗證已忽略）</td>
+</tr>
+<tr>
+<td><code>worktrees/</code> 存在</td>
+<td>使用它（驗證已忽略）</td>
+</tr>
+<tr>
+<td>兩者都存在</td>
+<td>使用 <code>.worktrees/</code></td>
+</tr>
+<tr>
+<td>都不存在</td>
+<td>檢查指令檔，然後預設 <code>.worktrees/</code></td>
+</tr>
+<tr>
+<td>目錄未被忽略</td>
+<td>加入 .gitignore + commit</td>
+</tr>
+<tr>
+<td>建立時權限錯誤</td>
+<td>Sandbox 備援，原地工作</td>
+</tr>
+<tr>
+<td>基線測試失敗</td>
+<td>回報失敗 + 詢問</td>
+</tr>
+<tr>
+<td>沒有 package.json/Cargo.toml</td>
+<td>跳過依賴安裝</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Excuse</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"I'm obviously not in a worktree — no need to check"</td>
+<td>Run Step 0. Harness-created isolation and submodules both fool eyeballing; the detection commands settle it.</td>
+</tr>
+<tr>
+<td>"<code>git worktree add</code> is quicker than hunting for a native tool"</td>
+<td>A native tool (e.g. <code>EnterWorktree</code>) owns placement, branching, and cleanup. Bypassing it is the #1 mistake — it creates phantom state your harness can't see or manage.</td>
+</tr>
+<tr>
+<td>"The worktree directory is surely ignored already"</td>
+<td>Run <code>git check-ignore</code>. An unignored worktree directory commits the whole tree into the repo.</td>
+</tr>
+<tr>
+<td>"Any directory name works"</td>
+<td>Explicit instructions beat an existing project-local directory, which beats the <code>.worktrees/</code> default.</td>
+</tr>
+<tr>
+<td>"The workspace is fresh — baseline tests can wait"</td>
+<td>A dirty baseline makes every later failure ambiguous. Run the tests now; proceeding past failures is your human partner's call.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>藉口</th>
+<th>事實</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「我顯然不在 worktree 裡——不必檢查」</td>
+<td>執行第 0 步。harness 建立的隔離狀態與子模組都會騙過肉眼；偵測指令才能定案。</td>
+</tr>
+<tr>
+<td>「<code>git worktree add</code> 比找原生工具快」</td>
+<td>原生工具（例如 <code>EnterWorktree</code>）負責放置、分支與清理。繞過它是最常見的錯誤 #1 —— 它會建立你的 harness 看不見也無法管理的幽靈狀態。</td>
+</tr>
+<tr>
+<td>「worktree 目錄肯定已經被忽略了」</td>
+<td>執行 <code>git check-ignore</code>。未被忽略的 worktree 目錄會把整棵樹 commit 進 repo。</td>
+</tr>
+<tr>
+<td>「任何目錄名都行」</td>
+<td>明確的指令勝過既有的專案內目錄，既有的專案內目錄勝過 <code>.worktrees/</code> 預設。</td>
+</tr>
+<tr>
+<td>「工作區是全新的——基線測試可以晚點跑」</td>
+<td>骯髒的基線會讓之後每個失敗都變得不明確。現在就跑測試；要不要在失敗中繼續前進是你的人工夥伴的決定。</td>
+</tr>
+</tbody>
+</table></div></div>
+
+</div>
+</body>
+</html>

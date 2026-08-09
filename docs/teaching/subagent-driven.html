@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDD 深度探討 · Subagent-Driven Development · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">← 首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="index.html">教學中心</a>
+</div>
+<header>
+  <h1>SDD 深度探討</h1>
+  <div class="subtitle">為什麼「每個任務派全新的子代理」是這套系統最快也最可靠的執行模式</div>
+</header>
+<div class="guide">
+
+<h2>核心主張</h2>
+<p>子代理驅動開發（Subagent-Driven Development，SDD）是 Superpowers 推薦的執行模式：<strong>每個任務派一個全新的子代理實作，一次只做一件事，做完立刻兩階段審查。</strong></p>
+<p>對比：多數 coding agent 是「單一代理在對話裡一步一步做」。SDD 徹底不同——主代理只負責派任務、收結果、審查，真正寫程式的是那些「用完即丟」的子代理。</p>
+
+<h2>為什麼「全新子代理」反而是優點</h2>
+<p>乍看之下，沒有你的對話上下文的子代理，好像比較笨。但這正是重點：</p>
+<div class="work-block">
+  <div class="work-head"><span class="work-name">1. 強迫照計畫行事</span></div>
+  <p>子代理不知道你「剛才想過什麼」。它只能讀任務簡報（task brief）——裡面寫死檔案路徑、要做什麼、怎麼驗證。沒有上下文可以「參考」，就沒有機會偏離計畫。</p>
+</div>
+<div class="work-block">
+  <div class="work-head"><span class="work-name">2. 上下文乾淨，不會累積污染</span></div>
+  <p>單一代理的對話越長，上下文越亂：舊的錯誤假設、過時的決定、一次次的試誤都留在裡面，最後代理被自己以前的錯誤帶偏。新子代理每次都是乾淨的起點。</p>
+</div>
+<div class="work-block">
+  <div class="work-head"><span class="work-name">3. 可並行</span></div>
+  <p>互不依賴的任務可以派多個子代理同時做（見 <code>dispatching-parallel-agents</code>），不受單一對話的線性限制。</p>
+</div>
+
+<h2>任務迴圈</h2>
+<ol>
+  <li><strong>派實作子代理</strong>：依任務簡報（<code>implementer-prompt.md</code>）執行，只做這一個任務。</li>
+  <li><strong>任務審查</strong>：審查子代理（<code>task-reviewer-prompt.md</code>）對實作做<strong>兩階段審查</strong>——先查規格符合度（有沒有照 spec 做？），再查程式碼品質（好不好維護？）。</li>
+  <li><strong>修復迴圈</strong>：審查不過就派<strong>同一個實作子代理</strong>帶審查意見回去修（<code>re-review-prompt.md</code>），修到過為止。</li>
+  <li><strong>通過 → 下一個任務</strong>：審查通過後才進下一個任務。</li>
+</ol>
+
+<h2>兩階段審查，不是一次</h2>
+<p>為什麼要分「規格符合度」再「程式碼品質」兩次？因為混在一起審，代理容易只看一邊。先確認「有沒有做出該做的東西」（不然後面全白費），再檢查「做得乾不乾淨」（不然以後改不動）。</p>
+
+<h2>最終審查（whole-branch review）</h2>
+<p>所有任務都過關後，還有一層「整支分支的全面審查」，把整支 diff 當作整體檢視：任務之間的接縫對不對、整體架構有沒有跑掉。這補上「逐任務審查」看不到的整體視角。</p>
+
+<h2>跟 executing-plans 的差別</h2>
+<table>
+<tr><th></th><th>subagent-driven-development</th><th>executing-plans</th></tr>
+<tr><td>在哪跑</td><td>目前 session</td><td>另開的 session</td></tr>
+<tr><td>節奏</td><td>逐任務，自動審查</td><td>分批，批次間人類檢查點</td></tr>
+<tr><td>適合</td><td>任務彼此獨立、想放手讓它跑</td><td>需要人類逐步把關的場景</td></tr>
+</table>
+<p>兩者共用同一套計畫檔與 TDD 紀律。詳見 <a href="../../subagent-driven-development/SKILL.html">subagent-driven-development 技能頁</a>。</p>
+
+<h2>什麼時候不該用 SDD</h2>
+<ul>
+  <li>任務之間有強烈的共享狀態或順序相依——此時適合循序執行，別硬拆。</li>
+  <li>你隨時想介入調整——那就用 executing-plans 的檢查點模式。</li>
+</ul>
+
+</div>
+<footer>
+  <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
+  <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>
+</footer>
+</div>
+</body>
+</html>

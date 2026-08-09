@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>writing-skills / persuasion-principles · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 writing-skills</a> 
+</div>
+<h1>persuasion-principles</h1>
+<div class="subtitle">writing-skills · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Persuasion Principles for Skill Design</h1></div><div class="col-zh" lang="zh-Hant"><h1>技能設計的說服原則</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>LLMs respond to the same persuasion principles as humans. Understanding this psychology helps you design more effective skills - not to manipulate, but to ensure critical practices are followed even under pressure.</p></div><div class="col-zh" lang="zh-Hant"><p>LLM 對說服原則的反應與人類相同。了解這層心理學有助於你設計更有效的技能——不是為了操控，而是確保關鍵做法即使在壓力下也被遵循。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Research foundation:</strong> Meincke et al. (2025) tested 7 persuasion principles with N=28,000 AI conversations. Persuasion techniques more than doubled compliance rates (33% → 72%, p &lt; .001).</p></div><div class="col-zh" lang="zh-Hant"><p><strong>研究基礎：</strong>Meincke 等人（2025）以 N=28,000 次 AI 對話測試了 7 條說服原則。說服技巧讓遵從率翻倍以上（33% → 72%，p &lt; .001）。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Seven Principles</h2></div><div class="col-zh" lang="zh-Hant"><h2>七大原則</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>1. Authority</h3>
+<p><strong>What it is:</strong> Deference to expertise, credentials, or official sources.</p></div><div class="col-zh" lang="zh-Hant"><h3>1. 權威</h3>
+<p><strong>它是什麼：</strong>對專業、資歷或官方來源的服從。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works in skills:</strong>
+- Imperative language: "YOU MUST", "Never", "Always"
+- Non-negotiable framing: "No exceptions"
+- Eliminates decision fatigue and rationalization</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在技能中的運作方式：</strong>
+- 命令式語氣：「YOU MUST」、「Never」、「Always」
+- 不可協商的框架：「No exceptions」
+- 消除決策疲勞與合理化藉口</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to use:</strong>
+- Discipline-enforcing skills (TDD, verification requirements)
+- Safety-critical practices
+- Established best practices</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用時機：</strong>
+- 紀律執行類技能（TDD、驗證需求）
+- 安全關鍵的做法
+- 已確立的最佳實務</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example:</strong></p>
+<pre><code class="language-markdown">✅ Write code before test? Delete it. Start over. No exceptions.
+❌ Consider writing tests first when feasible.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong></p>
+<pre><code class="language-markdown">✅ Write code before test? Delete it. Start over. No exceptions.
+❌ Consider writing tests first when feasible.
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>2. Commitment</h3>
+<p><strong>What it is:</strong> Consistency with prior actions, statements, or public declarations.</p></div><div class="col-zh" lang="zh-Hant"><h3>2. 承諾</h3>
+<p><strong>它是什麼：</strong>與先前行動、陳述或公開宣言保持一致。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works in skills:</strong>
+- Require announcements: "Announce skill usage"
+- Force explicit choices: "Choose A, B, or C"
+- Use tracking: todos for checklists</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在技能中的運作方式：</strong>
+- 要求宣告：「Announce skill usage」
+- 強制明確選擇：「Choose A, B, or C」
+- 使用追蹤：檢查清單的待辦事項</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to use:</strong>
+- Ensuring skills are actually followed
+- Multi-step processes
+- Accountability mechanisms</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用時機：</strong>
+- 確保技能真的被遵循
+- 多步驟流程
+- 問責機制</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example:</strong></p>
+<pre><code class="language-markdown">✅ When you find a skill, you MUST announce: &quot;I'm using [Skill Name]&quot;
+❌ Consider letting your partner know which skill you're using.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong></p>
+<pre><code class="language-markdown">✅ When you find a skill, you MUST announce: &quot;I'm using [Skill Name]&quot;
+❌ Consider letting your partner know which skill you're using.
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>3. Scarcity</h3>
+<p><strong>What it is:</strong> Urgency from time limits or limited availability.</p></div><div class="col-zh" lang="zh-Hant"><h3>3. 稀缺</h3>
+<p><strong>它是什麼：</strong>來自時間限制或有限可用性的急迫感。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works in skills:</strong>
+- Time-bound requirements: "Before proceeding"
+- Sequential dependencies: "Immediately after X"
+- Prevents procrastination</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在技能中的運作方式：</strong>
+- 有時限的需求：「Before proceeding」
+- 順序相依：「Immediately after X」
+- 防止拖延</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to use:</strong>
+- Immediate verification requirements
+- Time-sensitive workflows
+- Preventing "I'll do it later"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用時機：</strong>
+- 需要立即驗證的需求
+- 對時間敏感的工作流
+- 防止「我晚點再做」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example:</strong></p>
+<pre><code class="language-markdown">✅ After completing a task, IMMEDIATELY request code review before proceeding.
+❌ You can review code when convenient.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong></p>
+<pre><code class="language-markdown">✅ After completing a task, IMMEDIATELY request code review before proceeding.
+❌ You can review code when convenient.
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>4. Social Proof</h3>
+<p><strong>What it is:</strong> Conformity to what others do or what's considered normal.</p></div><div class="col-zh" lang="zh-Hant"><h3>4. 社會認同</h3>
+<p><strong>它是什麼：</strong>順從他人的行為或被視為常態的做法。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works in skills:</strong>
+- Universal patterns: "Every time", "Always"
+- Failure modes: "X without Y = failure"
+- Establishes norms</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在技能中的運作方式：</strong>
+- 普遍模式：「Every time」、「Always」
+- 失敗模式：「X without Y = failure」
+- 建立規範</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to use:</strong>
+- Documenting universal practices
+- Warning about common failures
+- Reinforcing standards</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用時機：</strong>
+- 記錄普遍做法
+- 提醒常見失敗
+- 強化標準</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example:</strong></p>
+<pre><code class="language-markdown">✅ Checklists without todo tracking = steps get skipped. Every time.
+❌ Some people find a todo list helpful for checklists.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong></p>
+<pre><code class="language-markdown">✅ Checklists without todo tracking = steps get skipped. Every time.
+❌ Some people find a todo list helpful for checklists.
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>5. Unity</h3>
+<p><strong>What it is:</strong> Shared identity, "we-ness", in-group belonging.</p></div><div class="col-zh" lang="zh-Hant"><h3>5. 團結</h3>
+<p><strong>它是什麼：</strong>共享的身分認同、「我們感」、內團體歸屬感。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works in skills:</strong>
+- Collaborative language: "our codebase", "we're colleagues"
+- Shared goals: "we both want quality"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在技能中的運作方式：</strong>
+- 協作式語言：「our codebase」、「we're colleagues」
+- 共享目標：「we both want quality」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to use:</strong>
+- Collaborative workflows
+- Establishing team culture
+- Non-hierarchical practices</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用時機：</strong>
+- 協作工作流
+- 建立團隊文化
+- 非階層式做法</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example:</strong></p>
+<pre><code class="language-markdown">✅ We're colleagues working together. I need your honest technical judgment.
+❌ You should probably tell me if I'm wrong.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong></p>
+<pre><code class="language-markdown">✅ We're colleagues working together. I need your honest technical judgment.
+❌ You should probably tell me if I'm wrong.
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>6. Reciprocity</h3>
+<p><strong>What it is:</strong> Obligation to return benefits received.</p></div><div class="col-zh" lang="zh-Hant"><h3>6. 互惠</h3>
+<p><strong>它是什麼：</strong>回報所受好處的義務。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works:</strong>
+- Use sparingly - can feel manipulative
+- Rarely needed in skills</p></div><div class="col-zh" lang="zh-Hant"><p><strong>運作方式：</strong>
+- 謹慎使用——可能感覺像操控
+- 在技能中很少需要</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to avoid:</strong>
+- Almost always (other principles more effective)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>避免時機：</strong>
+- 幾乎永遠（其他原則更有效）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>7. Liking</h3>
+<p><strong>What it is:</strong> Preference for cooperating with those we like.</p></div><div class="col-zh" lang="zh-Hant"><h3>7. 喜好</h3>
+<p><strong>它是什麼：</strong>偏好與我們喜歡的人合作。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How it works:</strong>
+- <strong>DON'T USE for compliance</strong>
+- Conflicts with honest feedback culture
+- Creates sycophancy</p></div><div class="col-zh" lang="zh-Hant"><p><strong>運作方式：</strong>
+- <strong>不要用於要求遵從</strong>
+- 與誠實回饋的文化衝突
+- 產生奉承討好</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When to avoid:</strong>
+- Always for discipline enforcement</p></div><div class="col-zh" lang="zh-Hant"><p><strong>避免時機：</strong>
+- 在紀律執行上永遠避免</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Principle Combinations by Skill Type</h2></div><div class="col-zh" lang="zh-Hant"><h2>依技能類型的原則組合</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Skill Type</th>
+<th>Use</th>
+<th>Avoid</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Discipline-enforcing</td>
+<td>Authority + Commitment + Social Proof</td>
+<td>Liking, Reciprocity</td>
+</tr>
+<tr>
+<td>Guidance/technique</td>
+<td>Moderate Authority + Unity</td>
+<td>Heavy authority</td>
+</tr>
+<tr>
+<td>Collaborative</td>
+<td>Unity + Commitment</td>
+<td>Authority, Liking</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td>Clarity only</td>
+<td>All persuasion</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>技能類型</th>
+<th>使用</th>
+<th>避免</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>紀律執行類</td>
+<td>權威 + 承諾 + 社會認同</td>
+<td>喜好、互惠</td>
+</tr>
+<tr>
+<td>指引／技術類</td>
+<td>適度權威 + 團結</td>
+<td>重度權威</td>
+</tr>
+<tr>
+<td>協作類</td>
+<td>團結 + 承諾</td>
+<td>權威、喜好</td>
+</tr>
+<tr>
+<td>參考文件類</td>
+<td>僅需清楚明確</td>
+<td>所有說服技巧</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Why This Works: The Psychology</h2></div><div class="col-zh" lang="zh-Hant"><h2>為何有效：心理學原理</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Bright-line rules reduce rationalization:</strong>
+- "YOU MUST" removes decision fatigue
+- Absolute language eliminates "is this an exception?" questions
+- Explicit anti-rationalization counters close specific loopholes</p></div><div class="col-zh" lang="zh-Hant"><p><strong>明確紅線規則減少合理化藉口：</strong>
+- 「YOU MUST」消除決策疲勞
+- 絕對性語言消除「這是不是例外？」的疑問
+- 明確的反合理化反制封閉特定漏洞</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Implementation intentions create automatic behavior:</strong>
+- Clear triggers + required actions = automatic execution
+- "When X, do Y" more effective than "generally do Y"
+- Reduces cognitive load on compliance</p></div><div class="col-zh" lang="zh-Hant"><p><strong>執行意圖創造自動化行為：</strong>
+- 清楚的觸發條件 + 必須採取的動作 = 自動執行
+- 「When X, do Y」比「generally do Y」更有效
+- 降低遵從的認知負荷</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>LLMs are parahuman:</strong>
+- Trained on human text containing these patterns
+- Authority language precedes compliance in training data
+- Commitment sequences (statement → action) frequently modeled
+- Social proof patterns (everyone does X) establish norms</p></div><div class="col-zh" lang="zh-Hant"><p><strong>LLM 是類人的：</strong>
+- 以包含這些模式的人類文字訓練
+- 訓練資料中，權威式語言先於遵從出現
+- 承諾序列（陳述 → 行動）經常被建模
+- 社會認同模式（everyone does X）建立規範</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Ethical Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>倫理使用</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Legitimate:</strong>
+- Ensuring critical practices are followed
+- Creating effective documentation
+- Preventing predictable failures</p></div><div class="col-zh" lang="zh-Hant"><p><strong>正當用途：</strong>
+- 確保關鍵做法被遵循
+- 建立有效的文件
+- 防止可預期的失敗</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Illegitimate:</strong>
+- Manipulating for personal gain
+- Creating false urgency
+- Guilt-based compliance</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不正當用途：</strong>
+- 為個人利益操控
+- 製造虛假的急迫感
+- 以罪惡感脅迫遵從</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>The test:</strong> Would this technique serve the user's genuine interests if they fully understood it?</p></div><div class="col-zh" lang="zh-Hant"><p><strong>判準：</strong>如果使用者完全理解這項技巧，它是否仍服務於使用者的真實利益？</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Research Citations</h2></div><div class="col-zh" lang="zh-Hant"><h2>研究引用</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Cialdini, R. B. (2021).</strong> <em>Influence: The Psychology of Persuasion (New and Expanded).</em> Harper Business.
+- Seven principles of persuasion
+- Empirical foundation for influence research</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Cialdini, R. B. (2021).</strong> <em>Influence: The Psychology of Persuasion (New and Expanded).</em> Harper Business.
+- 說服的七大原則
+- 影響力研究的實證基礎</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Meincke, L., Shapiro, D., Duckworth, A. L., Mollick, E., Mollick, L., &amp; Cialdini, R. (2025).</strong> Call Me A Jerk: Persuading AI to Comply with Objectionable Requests. University of Pennsylvania.
+- Tested 7 principles with N=28,000 LLM conversations
+- Compliance increased 33% → 72% with persuasion techniques
+- Authority, commitment, scarcity most effective
+- Validates parahuman model of LLM behavior</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Meincke, L., Shapiro, D., Duckworth, A. L., Mollick, E., Mollick, L., &amp; Cialdini, R. (2025).</strong> Call Me A Jerk: Persuading AI to Comply with Objectionable Requests. University of Pennsylvania.
+- 以 N=28,000 次 LLM 對話測試了 7 條原則
+- 使用說服技巧後遵從率從 33% 提升至 72%
+- 權威、承諾、稀缺最有效
+- 驗證 LLM 行為的類人模型</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速參考</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When designing a skill, ask:</p></div><div class="col-zh" lang="zh-Hant"><p>設計技能時，問自己：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>What type is it?</strong> (Discipline vs. guidance vs. reference)</li>
+<li><strong>What behavior am I trying to change?</strong></li>
+<li><strong>Which principle(s) apply?</strong> (Usually authority + commitment for discipline)</li>
+<li><strong>Am I combining too many?</strong> (Don't use all seven)</li>
+<li><strong>Is this ethical?</strong> (Serves user's genuine interests?)</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>它是哪種類型？</strong>（紀律 vs. 指引 vs. 參考文件）</li>
+<li><strong>我想改變什麼行為？</strong></li>
+<li><strong>適用哪些原則？</strong>（紀律類通常用權威 + 承諾）</li>
+<li><strong>我是否混用了太多？</strong>（不要用全部七個）</li>
+<li><strong>這是否符合倫理？</strong>（是否服務於使用者的真實利益？）</li>
+</ol></div></div>
+
+</div>
+</body>
+</html>

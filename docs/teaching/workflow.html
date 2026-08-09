@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>基本工作流拆解 · The Basic Workflow · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">← 首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="index.html">教學中心</a>
+</div>
+<header>
+  <h1>基本工作流拆解</h1>
+  <div class="subtitle">從「冒一個想法」到「合併上線」，七個階段每一步實際發生什麼</div>
+</header>
+<div class="guide">
+
+<h2>第 0 步：開場（using-superpowers）</h2>
+<p>每個 session 一啟動就注入。它強制 agent 在<strong>任何回應之前</strong>檢查有沒有技能適用——包括你只是想問個問題、想先探索程式碼，通通先檢查。它的紅旗表列出了 12 種常見的「合理化藉口」並一一反駁，例如「這只是簡單問題」→「問題也是任務。先檢查技能。」</p>
+<p class="hint">這一步是整套系統「自己會動」的關鍵：不是你在觸發技能，是技能在確保你走到對的流程。</p>
+
+<h2>第 1 步：腦力激盪（brainstorming）</h2>
+<p>你只要說「我們來做 X」，agent 就自動進入 brainstorming。它<strong>不會</strong>馬上寫程式——它會反問你：你要解決什麼問題？有哪些需求？邊界在哪？然後把設計分區塊呈現給你確認。最後會存一份設計文件。</p>
+<p class="hint">內建「視覺夥伴」（visual companion）：可選的本機網頁工具，把討論的設計可視化，方便你邊看邊改。不想用就關掉，完全不影響流程。</p>
+
+<h2>第 2 步：開 worktree（using-git-worktrees）</h2>
+<p>設計定稿後，agent 在<strong>新的隔離 worktree</strong>上開始工作。這樣主分支永遠乾淨，多個功能可以並行開發互不干擾。它會先偵測你是否已在隔離環境（例如子模組或既有的 worktree），避免重複建立。</p>
+
+<h2>第 3 步：寫計畫（writing-plans）</h2>
+<p>把設計拆成<strong> 2–5 分鐘就能完成的小任務</strong>。每個任務必須標清楚：確切的檔案路徑、完整的程式碼、驗證步驟。計畫寫得像「給一個熱情但沒品味、沒判斷力、又討厭測試的菜鳥工程師」照著做就能完成——這確保子代理照做不會跑偏。</p>
+
+<h2>第 4 步：執行（subagent-driven-development 或 executing-plans）</h2>
+<p>拿到批准的計畫後，二選一：</p>
+<ul>
+  <li><strong>subagent-driven-development</strong>：目前 session 用。每個任務派<strong>全新的子代理</strong>實作，做完立刻兩階段審查（先查規格符合度、再查程式碼品質）。出問題就派同一個子代理修，修到過為止。</li>
+  <li><strong>executing-plans</strong>：另開 session 用。批次執行，每個批次之間有人類檢查點。</li>
+</ul>
+<p class="hint">可以自動跑一兩個小時不偏離計畫。子代理沒有你的對話上下文，這反而是優點——它只能照計畫行事。</p>
+
+<h2>第 5 步：測試（test-driven-development）</h2>
+<p>執行過程每一步都被 TDD 把關：先寫失敗的測試 → 親眼看它紅 → 寫最少程式 → 親眼看它綠 → 重構。寫在測試之前的程式碼一律刪除重來，沒有任何例外。這保證交付的每一行都有測試證明它該存在。</p>
+
+<h2>第 6 步：審查（requesting / receiving-code-review）</h2>
+<p>任務之間與收尾前，agent 會<code>requesting-code-review</code>：把 diff 送去審查，按嚴重度（critical / warning / nice-to-have）回報。收到意見後用 <code>receiving-code-review</code>：先自己驗證、判斷技術正確性，<strong>不是照單全收也不是硬撐</strong>——有道理就改，沒道理就提出反證。</p>
+
+<h2>第 7 步：收尾（finishing-a-development-branch）</h2>
+<p>所有任務完成、測試全綠後，agent 驗證、然後呈現選項：<strong>合併、發 PR、保留、丟棄</strong>。你選哪個它就做哪個，並清理 worktree。</p>
+
+<h2>支線：出 bug 與宣告完成</h2>
+<ul>
+  <li><strong>systematic-debugging</strong>：遇到 bug 先別急著修。四階段根因流程：建立會紅的回饋迴圈 → 最小化 → 追根因 → 修。絕不「只治症狀」。</li>
+  <li><strong>verification-before-completion</strong>：宣告「完成了／修好了」之前，先真的跑驗證指令、貼出輸出。證據優先於宣稱。</li>
+</ul>
+
+<h2>一張圖記住</h2>
+<p>完整工作流就是 <a href="../../map.html">全景圖</a> 那條主線。想深入某一環，回<a href="index.html">教學中心</a>選。</p>
+
+</div>
+<footer>
+  <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
+  <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>
+</footer>
+</div>
+</body>
+</html>

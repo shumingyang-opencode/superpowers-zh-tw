@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>方法論總覽 · Methodology · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">← 首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="index.html">教學中心</a>
+</div>
+<header>
+  <h1>Superpowers 方法論總覽</h1>
+  <div class="subtitle">它跟一般的「技能包」差在哪？為什麼整套會「自己跑起來」？</div>
+</header>
+<div class="guide">
+
+<h2>一、它不是 14 個孤立的技能，而是一套流程</h2>
+<p>很多技能包只是「一袋工具」——需要時才拿出來用，平時擺著。Superpowers 不是。它的核心主張是：<strong>這 14 個技能接成一條完整的開發工作流</strong>，從「你冒出一個想法」一路到「程式碼合併上線」。</p>
+<p>而且關鍵在於：<strong>流程是自動觸發的</strong>。開場指令（<code>using-superpowers</code>）讓 agent 在「任何回應之前」先檢查有沒有技能適用——這不是建議，是強制。所以你不必記得去呼叫技能，agent 會在你動手之前先把你推到正確的流程上。</p>
+
+<h2>二、流程的七個階段</h2>
+<table>
+<tr><th>階段</th><th>技能</th><th>做什麼</th></tr>
+<tr><td>0. 開場</td><td>using-superpowers</td><td>每個 session 啟動時注入：先檢查技能，再行動</td></tr>
+<tr><td>1. 腦力激盪</td><td>brainstorming</td><td>動工前把點子敲成設計——agent 反問你，直到設計明確</td></tr>
+<tr><td>2. 開 worktree</td><td>using-git-worktrees</td><td>建立隔離工作區，主分支不受干擾</td></tr>
+<tr><td>3. 寫計畫</td><td>writing-plans</td><td>把設計拆成 2–5 分鐘的小任務，每個都標檔案與驗證方式</td></tr>
+<tr><td>4. 執行</td><td>subagent-driven-development / executing-plans</td><td>逐任務派子代理實作，兩階段審查（規格 → 品質）</td></tr>
+<tr><td>5. 測試</td><td>test-driven-development</td><td>實作過程強制 RED-GREEN-REFACTOR</td></tr>
+<tr><td>6. 審查</td><td>requesting / receiving-code-review</td><td>任務之間與收尾前送審，按嚴重度回報</td></tr>
+<tr><td>7. 收尾</td><td>finishing-a-development-branch</td><td>全綠之後，決定合併／發 PR／保留／丟棄</td></tr>
+</table>
+<p>另有兩個「遇到問題隨時進來」的支線：<code>systematic-debugging</code>（出 bug 時）與 <code>verification-before-completion</code>（宣告完成前），以及一個 meta 技能 <code>writing-skills</code>（怎麼寫新技能）。</p>
+
+<h2>三、三個設計選擇，讓它跟別人不一樣</h2>
+<div class="work-block">
+  <div class="work-head"><span class="work-name">1. 技能自己會觸發</span><span class="work-en">auto-triggering</span></div>
+  <p>不用你記指令。開場指令強制 agent 在回應前檢查技能適用性。這解決了「技能裝了但永遠沒被用」的通病。</p>
+</div>
+<div class="work-block">
+  <div class="work-head"><span class="work-name">2. 子代理驅動</span><span class="work-en">subagent-driven development</span></div>
+  <p>每個任務派「全新的子代理」實作，一次只做一件事，做完立刻兩階段審查。子代理沒有你對話的上下文，反而迫使它照計畫行事、產出可驗證的結果。</p>
+</div>
+<div class="work-block">
+  <div class="work-head"><span class="work-name">3. 證據優先</span><span class="work-en">evidence over claims</span></div>
+  <p>「測過了」「應該可以」都不算數。TDD 要求親眼看測試紅、再親眼看它綠；verification-before-completion 要求真的跑指令、貼出輸出。用證據取代宣稱。</p>
+</div>
+
+<h2>四、為什麼「先寫失敗的測試」這麼重要</h2>
+<p>Superpowers 把 TDD 當成鐵律：<strong>沒有先寫失敗的測試，就不准有正式程式碼</strong>。原因很務實——你沒看過測試失敗，你就不知道它測的是不是對的東西。事後補的測試永遠會通過，卻證明不了任何事。這條鐵律貫穿整個流程，寫技能、修 bug、做功能都一樣。</p>
+
+<h2>五、跟其他方法論的差別</h2>
+<p>GSD、BMAD、Spec-Kit 這類做法「接管流程」——它們拿走你的控制權，讓流程本身的 bug 難以解決。Superpowers 反過來：技能小、容易改、可組合，agent 只是照著技能指示行動，你隨時保有控制權。這跟 mattpocock/skills 的設計哲學一致：給真人工程師掌控，而不是讓流程凌駕於你之上。</p>
+
+<h2>六、從哪裡開始</h2>
+<ol>
+  <li>裝好之後，直接說「我們來做 X」——它會自動帶你走完流程。</li>
+  <li>想先看懂全貌：看 <a href="../../map.html">全景圖</a>。</li>
+  <li>想照順序學：走 <a href="../../learning-path.html">學習路線</a>。</li>
+  <li>想深入某個環節：<a href="workflow.html">工作流拆解</a> 或 <a href="subagent-driven.html">SDD 深入</a>。</li>
+</ol>
+
+</div>
+<footer>
+  <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
+  <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>
+</footer>
+</div>
+</body>
+</html>

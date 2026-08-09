@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>verification-before-completion · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>verification-before-completion</code></td></tr>
+<tr><td>description (EN)</td><td>Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always</td></tr>
+<tr><td>說明 (繁中)</td><td>當你正要宣稱工作已完成、已修正或通過，在 commit 或建立 PR 之前使用 —— 要求執行驗證指令並確認輸出，之後才能作出任何成功的宣稱；永遠先有證據再有斷言</td></tr>
+</table>
+<h1>verification-before-completion</h1>
+<div class="subtitle">宣告完成之前，先真的跑驗證指令、親眼看到輸出——證據優先於斷言。</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Verification Before Completion</h1></div><div class="col-zh" lang="zh-Hant"><h1>完成前的驗證</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Evidence before claims, always.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 先有證據，再有宣稱，永遠如此。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Violating the letter of this rule is violating the spirit of this rule.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>違反這條規則的字面意義，就是違反它的精神。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Iron Law</h2></div><div class="col-zh" lang="zh-Hant"><h2>鐵律</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If you haven't run the verification command in this message, you cannot claim it passes.</p></div><div class="col-zh" lang="zh-Hant"><p>如果你沒有在這一則訊息中執行驗證指令，你就不能宣稱它通過。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Gate Function</h2></div><div class="col-zh" lang="zh-Hant"><h2>守門函式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>BEFORE claiming any status or expressing satisfaction:
+
+1. IDENTIFY: What command proves this claim?
+2. RUN: Execute the FULL command (fresh, complete)
+3. READ: Full output, check exit code, count failures
+4. VERIFY: Does output confirm the claim?
+   - If NO: State actual status with evidence
+   - If YES: State claim WITH evidence
+5. ONLY THEN: Make the claim
+
+Skip any step = lying, not verifying
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>BEFORE claiming any status or expressing satisfaction:
+
+1. IDENTIFY: What command proves this claim?
+2. RUN: Execute the FULL command (fresh, complete)
+3. READ: Full output, check exit code, count failures
+4. VERIFY: Does output confirm the claim?
+   - If NO: State actual status with evidence
+   - If YES: State claim WITH evidence
+5. ONLY THEN: Make the claim
+
+Skip any step = lying, not verifying
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Failures</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見失敗</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Requires</th>
+<th>Not Sufficient</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tests pass</td>
+<td>Test command output: 0 failures</td>
+<td>Previous run, "should pass"</td>
+</tr>
+<tr>
+<td>Linter clean</td>
+<td>Linter output: 0 errors</td>
+<td>Partial check, extrapolation</td>
+</tr>
+<tr>
+<td>Build succeeds</td>
+<td>Build command: exit 0</td>
+<td>Linter passing, logs look good</td>
+</tr>
+<tr>
+<td>Bug fixed</td>
+<td>Test original symptom: passes</td>
+<td>Code changed, assumed fixed</td>
+</tr>
+<tr>
+<td>Regression test works</td>
+<td>Red-green cycle verified</td>
+<td>Test passes once</td>
+</tr>
+<tr>
+<td>Agent completed</td>
+<td>VCS diff shows changes</td>
+<td>Agent reports "success"</td>
+</tr>
+<tr>
+<td>Requirements met</td>
+<td>Line-by-line checklist</td>
+<td>Tests passing</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>宣稱</th>
+<th>需要</th>
+<th>不足夠</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>測試通過</td>
+<td>測試指令輸出：0 失敗</td>
+<td>之前跑過、「應該會過」</td>
+</tr>
+<tr>
+<td>Linter 乾淨</td>
+<td>Linter 輸出：0 錯誤</td>
+<td>部分檢查、推論</td>
+</tr>
+<tr>
+<td>建置成功</td>
+<td>建置指令：exit 0</td>
+<td>Linter 通過、日誌看起來正常</td>
+</tr>
+<tr>
+<td>Bug 已修正</td>
+<td>測試原始症狀：通過</td>
+<td>改了程式碼、假定已修好</td>
+</tr>
+<tr>
+<td>回歸測試有效</td>
+<td>驗證過紅 → 綠循環</td>
+<td>測試通過一次</td>
+</tr>
+<tr>
+<td>代理已完成</td>
+<td>VCS diff 顯示變更</td>
+<td>代理回報「成功」</td>
+</tr>
+<tr>
+<td>需求已滿足</td>
+<td>逐行檢查清單</td>
+<td>測試通過</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Red Flags - STOP</h2></div><div class="col-zh" lang="zh-Hant"><h2>紅旗 - 停下</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Using "should", "probably", "seems to"</li>
+<li>Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)</li>
+<li>About to commit/push/PR without verification</li>
+<li>Trusting agent success reports</li>
+<li>Relying on partial verification</li>
+<li>Thinking "just this once"</li>
+<li>Tired and wanting work over</li>
+<li><strong>ANY wording implying success without having run verification</strong></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>使用「應該」「大概」「似乎」</li>
+<li>在驗證之前表達滿意（「太棒了！」「完美！」「完成了！」等）</li>
+<li>在未驗證的情況下即將 commit/push/PR</li>
+<li>相信代理的成功回報</li>
+<li>依賴部分驗證</li>
+<li>心想「就這麼一次」</li>
+<li>累了，想讓工作結束</li>
+<li><strong>任何暗示成功、但其實沒執行驗證的措辭</strong></li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Rationalization Prevention</h2></div><div class="col-zh" lang="zh-Hant"><h2>防止合理化</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Excuse</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Should work now"</td>
+<td>RUN the verification</td>
+</tr>
+<tr>
+<td>"I'm confident"</td>
+<td>Confidence ≠ evidence</td>
+</tr>
+<tr>
+<td>"Just this once"</td>
+<td>No exceptions</td>
+</tr>
+<tr>
+<td>"Linter passed"</td>
+<td>Linter ≠ compiler</td>
+</tr>
+<tr>
+<td>"Agent said success"</td>
+<td>Verify independently</td>
+</tr>
+<tr>
+<td>"I'm tired"</td>
+<td>Exhaustion ≠ excuse</td>
+</tr>
+<tr>
+<td>"Partial check is enough"</td>
+<td>Partial proves nothing</td>
+</tr>
+<tr>
+<td>"Different words so rule doesn't apply"</td>
+<td>Spirit over letter</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>藉口</th>
+<th>事實</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「現在應該能用了」</td>
+<td>執行驗證</td>
+</tr>
+<tr>
+<td>「我有信心」</td>
+<td>信心 ≠ 證據</td>
+</tr>
+<tr>
+<td>「就這麼一次」</td>
+<td>沒有例外</td>
+</tr>
+<tr>
+<td>「Linter 過了」</td>
+<td>Linter ≠ 編譯器</td>
+</tr>
+<tr>
+<td>「代理說成功了」</td>
+<td>獨立驗證</td>
+</tr>
+<tr>
+<td>「我累了」</td>
+<td>疲憊 ≠ 藉口</td>
+</tr>
+<tr>
+<td>「部分檢查就夠了」</td>
+<td>部分什麼都證明不了</td>
+</tr>
+<tr>
+<td>「換句話說所以規則不適用」</td>
+<td>精神優先於字面</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Key Patterns</h2></div><div class="col-zh" lang="zh-Hant"><h2>關鍵模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Tests:</strong></p>
+<pre><code>✅ [Run test command] [See: 34/34 pass] &quot;All tests pass&quot;
+❌ &quot;Should pass now&quot; / &quot;Looks correct&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>測試：</strong></p>
+<pre><code>✅ [Run test command] [See: 34/34 pass] &quot;All tests pass&quot;
+❌ &quot;Should pass now&quot; / &quot;Looks correct&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Regression tests (TDD Red-Green):</strong></p>
+<pre><code>✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
+❌ &quot;I've written a regression test&quot; (without red-green verification)
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>回歸測試（TDD 紅-綠）：</strong></p>
+<pre><code>✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
+❌ &quot;I've written a regression test&quot; (without red-green verification)
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Build:</strong></p>
+<pre><code>✅ [Run build] [See: exit 0] &quot;Build passes&quot;
+❌ &quot;Linter passed&quot; (linter doesn't check compilation)
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>建置：</strong></p>
+<pre><code>✅ [Run build] [See: exit 0] &quot;Build passes&quot;
+❌ &quot;Linter passed&quot; (linter doesn't check compilation)
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Requirements:</strong></p>
+<pre><code>✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
+❌ &quot;Tests pass, phase complete&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>需求：</strong></p>
+<pre><code>✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
+❌ &quot;Tests pass, phase complete&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Agent delegation:</strong></p>
+<pre><code>✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
+❌ Trust agent report
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>代理委派：</strong></p>
+<pre><code>✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
+❌ Trust agent report
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When To Apply</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時套用</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>ALWAYS before:</strong>
+- ANY variation of success/completion claims
+- ANY expression of satisfaction
+- ANY positive statement about work state
+- Committing, PR creation, task completion
+- Moving to next task
+- Delegating to agents</p></div><div class="col-zh" lang="zh-Hant"><p><strong>一律在以下之前：</strong>
+- 任何形式的成功/完成宣稱
+- 任何滿意的表達
+- 任何關於工作狀態的正面陳述
+- Commit、建立 PR、任務完成
+- 進行到下一個任務
+- 委派給代理</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Rule applies to:</strong>
+- Exact phrases
+- Paraphrases and synonyms
+- Implications of success
+- ANY communication suggesting completion/correctness</p></div><div class="col-zh" lang="zh-Hant"><p><strong>規則適用的範圍：</strong>
+- 確切的措辭
+- 改寫與同義詞
+- 成功的暗示
+- 任何暗示完成/正確的溝通</p></div></div>
+
+</div>
+</body>
+</html>

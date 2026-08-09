@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>subagent-driven-development / task-reviewer-prompt · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 subagent-driven-development</a> 
+</div>
+<h1>task-reviewer-prompt</h1>
+<div class="subtitle">subagent-driven-development · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Task Reviewer Prompt Template</h1></div><div class="col-zh" lang="zh-Hant"><h1>任務審查者 Prompt 範本</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use this template when dispatching a task reviewer subagent. The reviewer
+reads the task's diff once and returns two verdicts: spec compliance and
+code quality.</p></div><div class="col-zh" lang="zh-Hant"><p>派發任務審查者子代理時使用此範本。審查者把任務的 diff 讀一遍，回傳兩個判決：規格符合度與程式碼品質。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Purpose:</strong> Verify one task's implementation matches its requirements (nothing
+more, nothing less) and is well-built (clean, tested, maintainable)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>目的：</strong> 驗證單一任務的實作符合其需求（不多不少）且建構良好（乾淨、有測試、可維護）。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Subagent (general-purpose):
+  description: &quot;Review Task N (spec + quality)&quot;
+  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
+         model silently inherits the session's most expensive one]
+  prompt: |
+    You are reviewing one task's implementation: first whether it matches its
+    requirements, then whether it is well-built. This is a task-scoped gate,
+    not a merge review — a broad whole-branch review happens separately after
+    all tasks are complete.
+
+    ## What Was Requested
+
+    Read the task brief: [BRIEF_FILE]
+
+    Global constraints from the spec/design that bind this task:
+    [GLOBAL_CONSTRAINTS]
+
+    ## What the Implementer Claims They Built
+
+    Read the implementer's report: [REPORT_FILE]
+
+    ## Diff Under Review
+
+    **Base:** [BASE_SHA]
+    **Head:** [HEAD_SHA]
+    **Diff file:** [DIFF_FILE]
+
+    Read the diff file once — it contains the commit list, a stat summary,
+    and the full diff with surrounding context, and it is your view of the
+    change. The diff's context lines ARE the changed files: do not Read a
+    changed file separately unless a hunk you must judge is cut off
+    mid-function — and say so in your report. Do not re-run git commands.
+    If the diff file is missing, fetch the diff yourself:
+    `git diff --stat [BASE_SHA]..[HEAD_SHA]` and `git diff [BASE_SHA]..[HEAD_SHA]`.
+    Do not crawl the broader codebase. Inspect code outside the diff only
+    to evaluate a concrete risk you can name — one focused check per named
+    risk, and name both the risk and what you checked in your report.
+    Cross-cutting changes are legitimate named risks: if the diff changes
+    lock ordering, a function or API contract, or shared mutable state,
+    checking the call sites is the right method.
+
+    Your review is read-only on this checkout. Do not mutate the working
+    tree, the index, HEAD, or branch state in any way.
+
+    ## Do Not Trust the Report
+
+    Treat the implementer's report as unverified claims about the code. It
+    may be incomplete, inaccurate, or optimistic. Verify the claims against
+    the diff. Design rationales in the report are claims too: &quot;left it per
+    YAGNI,&quot; &quot;kept it simple deliberately,&quot; or any other justification is the
+    implementer grading their own work. Judge the code on its merits — a
+    stated rationale never downgrades a finding's severity.
+
+    ## Tests
+
+    The implementer already ran the tests and reported results with TDD
+    evidence for exactly this code. Do not re-run the suite to confirm their
+    report. Run a test only when reading the code raises a specific doubt
+    that no existing run answers — and then a focused test, never a
+    package-wide suite, race detector run, or repeated/high-count loop. If
+    heavy validation seems warranted, recommend it in your report instead of
+    running it. If you cannot run commands in this environment, name the
+    test you would run.
+
+    Warnings or other noise in the implementer's reported test output are
+    findings — test output should be pristine.
+
+    ## Part 1: Spec Compliance
+
+    Compare the diff against What Was Requested:
+
+    - **Missing:** requirements they skipped, missed, or claimed without
+      implementing
+    - **Extra:** features that weren't requested, over-engineering, unneeded
+      &quot;nice to haves&quot;
+    - **Misunderstood:** right feature built the wrong way, wrong problem
+      solved
+
+    If a requirement cannot be verified from this diff alone (it lives in
+    unchanged code or spans tasks), report it as a ⚠️ item instead of
+    broadening your search.
+
+    ## Part 2: Code Quality
+
+    **Code quality:**
+    - Clean separation of concerns?
+    - Proper error handling?
+    - DRY without premature abstraction?
+    - Edge cases handled?
+
+    **Tests:**
+    - Do the new and changed tests verify real behavior, not mocks?
+    - Are the task's edge cases covered?
+
+    **Structure:**
+    - Does each file have one clear responsibility with a well-defined interface?
+    - Are units decomposed so they can be understood and tested independently?
+    - Is the implementation following the file structure from the plan?
+    - Did this change create new files that are already large, or
+      significantly grow existing files? (Don't flag pre-existing file
+      sizes — focus on what this change contributed.)
+
+    Your report should point at evidence: file:line references for every
+    finding and for any check you would otherwise answer with a bare
+    &quot;yes.&quot; A tight report that cites lines gives the controller everything
+    it needs.
+
+    Your final message is the report itself: begin directly with the
+    spec-compliance verdict. Every line is a verdict, a finding with
+    file:line, or a check you ran — no preamble, no process narration,
+    no closing summary.
+
+    ## Calibration
+
+    Categorize issues by actual severity. Not everything is Critical.
+    Important means this task cannot be trusted until it is fixed: incorrect
+    or fragile behavior, a missed requirement, or maintainability damage you
+    would block a merge over — verbatim duplication of a logic block,
+    swallowed errors, tests that assert nothing. &quot;Coverage could be broader&quot;
+    and polish suggestions are Minor.
+    If the plan or brief explicitly mandates something this rubric calls a
+    defect (a test that asserts nothing, verbatim duplication of a logic
+    block), that IS a finding — report it as Important, labeled
+    plan-mandated. The plan's authorship does not grade its own work; the
+    human decides.
+    Acknowledge what was done well before listing issues — accurate praise
+    helps the implementer trust the rest of the feedback.
+
+    ## Output Format
+
+    ### Spec Compliance
+
+    - ✅ Spec compliant | ❌ Issues found: [what's missing/extra/misunderstood,
+      with file:line references]
+    - ⚠️ Cannot verify from diff: [requirements you could not verify from the
+      diff alone, and what the controller should check — report alongside the
+      ✅/❌ verdict for everything you could verify]
+
+    ### Strengths
+    [What's well done? Be specific.]
+
+    ### Issues
+
+    #### Critical (Must Fix)
+    #### Important (Should Fix)
+    #### Minor (Nice to Have)
+
+    For each issue: file:line, what's wrong, why it matters, how to fix
+    (if not obvious).
+
+    ### Assessment
+
+    **Task quality:** [Approved | Needs fixes]
+
+    **Reasoning:** [1-2 sentence technical assessment]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Subagent (general-purpose):
+  description: &quot;Review Task N (spec + quality)&quot;
+  model: [MODEL — REQUIRED: choose per SKILL.md Model Selection; an omitted
+         model silently inherits the session's most expensive one]
+  prompt: |
+    你正在審查一個任務的實作：首先檢查它是否符合需求，
+    然後檢查它是否建構良好。這是任務範圍的關卡，
+    不是合併審查——全面的整支分支審查會在所有任務
+    完成後另行進行。
+
+    ## 被要求的事物
+
+    讀任務簡報：[BRIEF_FILE]
+
+    規格／設計中約束此任務的全域約束：
+    [GLOBAL_CONSTRAINTS]
+
+    ## 實作子代理聲稱已建構的事物
+
+    讀實作子代理的報告：[REPORT_FILE]
+
+    ## 審查中的 diff
+
+    **基線：** [BASE_SHA]
+    **Head：** [HEAD_SHA]
+    **Diff 檔案：** [DIFF_FILE]
+
+    把 diff 檔案讀一遍——它包含 commit 清單、統計摘要、
+    以及含周邊上下文的完整 diff，它是你對此次變更的視角。
+    diff 的上下文行就是變更的檔案：不要另行 Read 變更的檔案，
+    除非你必須判斷的 hunk 在函式中途被截斷——並在報告中說明。
+    不要重跑 git 指令。
+    若 diff 檔案缺失，自行取得 diff：
+    `git diff --stat [BASE_SHA]..[HEAD_SHA]` 與 `git diff [BASE_SHA]..[HEAD_SHA]`。
+    不要漫遊更廣的程式庫。只有在評估你能指名的一項具體風險時，
+    才檢查 diff 以外的程式碼——每項指名的風險一次聚焦檢查，
+    並在報告中同時說明該風險與你檢查了什麼。
+    橫切變更是正當的可指名風險：若 diff 改變了鎖定順序、
+    某個函式或 API 合約、或共享的可變狀態，檢查呼叫點是正確的方法。
+
+    你的審查在此 checkout 上是唯讀的。絕不要以任何方式更動工作
+    樹、索引、HEAD 或分支狀態。
+
+    ## 不要信任報告
+
+    把實作子代理的報告視為關於程式碼的未經驗證主張。它可能不完整、
+    不準確或過度樂觀。對照 diff 驗證這些主張。
+    報告中的設計理由也是主張：「依 YAGNI 保留」、「刻意保持簡單」、
+    或其他任何辯解，都是實作子代理在為自己的工作打分。
+    依程式碼本身的優劣判斷——陳述的理由永遠不會降低發現的嚴重程度。
+
+    ## 測試
+
+    實作子代理已經跑過測試，並針對這份確切的程式碼回報了含 TDD
+    證據的結果。不要重跑整個套件來確認他們的報告。
+    只有在閱讀程式碼時產生具體疑慮、而既有的執行結果無法回答時
+    才跑測試——而且要跑聚焦測試，絕不跑整個套件的測試、
+    競態偵測器、或重複／高次數迴圈。若重度驗證似乎合理，
+    在報告中建議它，而不是實際執行。若你在此環境中無法執行指令，
+    說出你原本會跑的測試。
+
+    實作子代理回報的測試輸出中的警告或其他雜訊都是
+    發現——測試輸出應該是乾淨的。
+
+    ## 第 1 部分：規格符合度
+
+    對照「被要求的事物」比較 diff：
+
+    - **缺失：** 他們跳過、遺漏、或聲稱實作卻沒有實作的需求
+    - **多餘：** 未被要求的功能、過度工程化、不必要的「錦上添花」
+    - **誤解：** 對的功能用錯的方式建構、解錯了問題
+
+    若某項需求無法僅從此 diff 驗證（它位於未變更的程式碼中或橫跨
+    多個任務），把它回報為 ⚠️ 項目，而不是擴大搜尋範圍。
+
+    ## 第 2 部分：程式碼品質
+
+    **程式碼品質：**
+    - 關注點分離乾淨嗎？
+    - 錯誤處理正確嗎？
+    - DRY 而不過早抽象嗎？
+    - 邊緣案例有處理嗎？
+
+    **測試：**
+    - 新增與變更的測試驗證真實行為，而不只是模擬嗎？
+    - 任務的邊緣案例有被覆蓋嗎？
+
+    **結構：**
+    - 每個檔案有單一清楚的職責與定義良好的介面嗎？
+    - 單元是否已拆解到能被獨立理解與測試？
+    - 實作遵循了計畫中的檔案結構嗎？
+    - 此次變更是否建立了已經很大的新檔案，或明顯撐大既有檔案？
+      （不要標記既有的檔案大小——專注在此次變更貢獻的部分。）
+
+    你的報告應指向證據：每個發現、以及任何你否則只會以一個
+    光禿禿「是」回答的檢查，都要有 file:line 參考。
+    引用了行號的緊湊報告，能給控制器所需的一切。
+
+    你的最後一條訊息就是報告本身：直接以規格符合度判決開始。
+    每一行都是一個判決、一個帶 file:line 的發現、或一項你執行的
+    檢查——沒有前言，沒有流程敘述，沒有結尾摘要。
+
+    ## 校正
+
+    依實際嚴重程度分類問題。不是所有東西都是 Critical。
+    Important 表示此任務在修正前無法被信任：不正確或脆弱的行為、
+    遺漏的需求、或你會因此阻擋合併的可維護性傷害——邏輯區塊的
+    逐字重複、被吞掉的錯誤、不主張任何斷言的測試。「覆蓋範圍可以
+    更廣」與潤飾建議是 Minor。
+    若計畫或簡報明確要求此評分標準視為缺陷的事物（不主張任何斷言的
+    測試、邏輯區塊的逐字重複），那就是一個發現——回報為 Important，
+    標示為 plan-mandated。計畫的作者不會為自己的作品打分；由人來決定。
+    在列出問題前，先肯定做得好的地方——準確的讚美能幫助
+    實作子代理信任其餘的回饋。
+
+    ## 輸出格式
+
+    ### 規格符合度
+
+    - ✅ 符合規格 | ❌ 發現問題：[缺失／多餘／誤解的內容，
+      附上 file:line 參考]
+    - ⚠️ 無法僅從 diff 驗證：[你無法僅從 diff 驗證的需求，
+      以及控制器應檢查的內容——與你所能驗證的一切的
+      ✅/❌ 判決一併回報]
+
+    ### 優點
+    [哪些做得很好？具體說明。]
+
+    ### 問題
+
+    #### Critical（必須修正）
+    #### Important（應該修正）
+    #### Minor（可有可無）
+
+    每個問題都要：file:line、哪裡有錯、為何重要、如何修正
+    （若不明顯）。
+
+    ### 評估
+
+    **任務品質：** [Approved | Needs fixes]
+
+    **理由：** [1-2 句技術性評估]
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Placeholders:</strong>
+- <code>[MODEL]</code> — REQUIRED: reviewer model per SKILL.md Model Selection
+- <code>[BRIEF_FILE]</code> — REQUIRED: the task brief file (<code>scripts/task-brief PLAN N</code>
+  prints the path; same file the implementer worked from)
+- <code>[GLOBAL_CONSTRAINTS]</code> — the binding requirements copied verbatim from
+  the plan's Global Constraints section or the spec: exact values, formats,
+  and stated relationships between components (not process rules — those
+  are already in this template)
+- <code>[REPORT_FILE]</code> — REQUIRED: the file the implementer wrote its detailed
+  report to
+- <code>[BASE_SHA]</code> — commit before this task
+- <code>[HEAD_SHA]</code> — current commit
+- <code>[DIFF_FILE]</code> — REQUIRED: the path the controller wrote the review
+  package to (<code>scripts/review-package PLAN_FILE BASE HEAD</code> prints the unique
+  path it wrote; the package never enters the controller's context)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Placeholders：</strong>
+- <code>[MODEL]</code> — 必填：依 SKILL.md 模型選擇挑選審查模型
+- <code>[BRIEF_FILE]</code> — 必填：任務簡報檔案（<code>scripts/task-brief PLAN N</code>
+  會印出路徑；實作子代理據以工作的同一個檔案）
+- <code>[GLOBAL_CONSTRAINTS]</code> — 從計畫的全域約束區段或規格逐字複製的
+  具約束力需求：確切值、格式、以及元件之間陳述的關係
+  （不是程序規則——那些已在此範本中）
+- <code>[REPORT_FILE]</code> — 必填：實作子代理寫入其詳細報告的檔案
+- <code>[BASE_SHA]</code> — 此任務之前的 commit
+- <code>[HEAD_SHA]</code> — 目前 commit
+- <code>[DIFF_FILE]</code> — 必填：控制器寫入審查套件的路徑
+  （<code>scripts/review-package PLAN_FILE BASE HEAD</code> 會印出它所寫的
+  唯一路徑；套件永遠不會進入控制器的上下文）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Reviewer returns:</strong> Spec Compliance verdict (✅/❌/⚠️), Strengths, Issues
+(Critical/Important/Minor), Task quality verdict</p></div><div class="col-zh" lang="zh-Hant"><p><strong>審查者回傳：</strong> 規格符合度判決（✅/❌/⚠️）、優點、問題
+（Critical/Important/Minor）、任務品質判決</p></div></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# NOTICE
+
+## 本 repo 為非官方繁體中文教學站
+
+本 repo（`superpowers-zh-tw`）是 [obra/superpowers](https://github.com/obra/superpowers)
+（以下簡稱「上游」）的**非官方**繁體中文翻譯與教學站，由社群第三方維護，
+**與 Jesse Vincent 或 Prime Radiant 無關**，不代表上游官方立場。
+
+## 授權與引用範圍
+
+- 上游 repo 以 **MIT License** 釋出（Copyright © 2025 Jesse Vincent）。
+  本 repo 的翻譯內容（衍生作品）亦以 **MIT License** 釋出，並照抄上游的授權檔案：
+  - [`LICENSE`](LICENSE) — MIT 全文（Copyright (c) 2025 Jesse Vincent）
+- 本 repo 只翻譯自然語言說明；技能名稱、指令、路徑、程式碼區塊與工具識別符
+  一律保留上游原樣，以維持安裝與運行行為。
+- 商標：Superpowers 與 Prime Radiant 為其各自權利人所有。MIT 授權不含商標授權；
+  本站僅在「描述性／教學」語境使用該名稱。
+
+## 原創內容授權
+
+本站額外撰寫的教學解說、網站設計與翻譯（含 `docs/teaching/`、各 HTML 頁面）
+以 **MIT License** 釋出，版權屬於本 repo 維護者。
+
+## 對齊版本
+
+- 上游分支：`main`
+- 釘選 commit：`44c9b2d6e889982ac18c27d05a19fefe335194e1`（v6.2.0）

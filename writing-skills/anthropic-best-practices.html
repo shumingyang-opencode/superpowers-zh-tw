@@ -1,0 +1,1802 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>writing-skills / anthropic-best-practices · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 writing-skills</a> 
+</div>
+<h1>anthropic-best-practices</h1>
+<div class="subtitle">writing-skills · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Skill authoring best practices</h1></div><div class="col-zh" lang="zh-Hant"><h1>技能撰寫最佳實務</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><blockquote>
+<p>Learn how to write effective Skills that agents can discover and use successfully.</p>
+</blockquote></div><div class="col-zh" lang="zh-Hant"><blockquote>
+<p>了解如何撰寫能讓代理發現並成功使用的有效技能。</p>
+</blockquote></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Good Skills are concise, well-structured, and tested with real usage. This guide provides practical authoring decisions to help you write Skills that agents can discover and use effectively.</p></div><div class="col-zh" lang="zh-Hant"><p>好的技能簡潔、結構良好，並以真實使用情境測試過。本指南提供實務的撰寫決策，幫助你寫出代理能發現並有效使用的技能。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>For conceptual background on how Skills work, see the <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">Skills overview</a>.</p></div><div class="col-zh" lang="zh-Hant"><p>關於技能運作方式的背景概念，請見 <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview">技能總覽</a>。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Core principles</h2></div><div class="col-zh" lang="zh-Hant"><h2>核心原則</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Concise is key</h3></div><div class="col-zh" lang="zh-Hant"><h3>簡潔是關鍵</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The <a href="https://platform.claude.com/docs/en/build-with-claude/context-windows">context window</a> is a public good. Your Skill shares the context window with everything else your agent needs to know, including:</p></div><div class="col-zh" lang="zh-Hant"><p><a href="https://platform.claude.com/docs/en/build-with-claude/context-windows">上下文視窗</a>是公共財。你的技能與代理需要知道的所有其他事物共享上下文視窗，包括：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>The system prompt</li>
+<li>Conversation history</li>
+<li>Other Skills' metadata</li>
+<li>Your actual request</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>System prompt</li>
+<li>對話歷史</li>
+<li>其他技能的 metadata</li>
+<li>你實際的請求</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Not every token in your Skill has an immediate cost. At startup, only the metadata (name and description) from all Skills is pre-loaded. Agents read SKILL.md only when the Skill becomes relevant, and read additional files only as needed. However, being concise in SKILL.md still matters: once an agent loads it, every token competes with conversation history and other context.</p></div><div class="col-zh" lang="zh-Hant"><p>並非技能中的每個 token 都有立即成本。啟動時，只會預先載入所有技能的 metadata（name 與 description）。代理只在技能變得相關時才會讀取 SKILL.md，而且只在需要時讀取其他檔案。不過，讓 SKILL.md 保持簡潔仍然重要：一旦代理載入它，每個 token 都會與對話歷史及其他上下文競爭。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Default assumption</strong>: Agents are already very smart</p></div><div class="col-zh" lang="zh-Hant"><p><strong>預設假設</strong>：代理已經非常聰明</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Only add context agents don't already have. Challenge each piece of information:</p></div><div class="col-zh" lang="zh-Hant"><p>只加入代理尚未擁有的上下文。質疑每一則資訊：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>"Does the agent really need this explanation?"</li>
+<li>"Can I assume the agent knows this?"</li>
+<li>"Does this paragraph justify its token cost?"</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>「代理真的需要這個解釋嗎？」</li>
+<li>「我能假設代理已經知道這個嗎？」</li>
+<li>「這段文字值得它的 token 成本嗎？」</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Good example: Concise</strong> (approximately 50 tokens):</p></div><div class="col-zh" lang="zh-Hant"><p><strong>好範例：簡潔</strong>（約 50 tokens）：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>````markdown  theme={null}</p>
+<h2>Extract PDF text</h2>
+<p>Use pdfplumber for text extraction:</p>
+<p>```python</p></div><div class="col-zh" lang="zh-Hant"><p>````markdown  theme={null}</p>
+<h2>Extract PDF text</h2>
+<p>Use pdfplumber for text extraction:</p>
+<p>```python</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>import pdfplumber</p></div><div class="col-zh" lang="zh-Hant"><p>import pdfplumber</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>with pdfplumber.open("file.pdf") as pdf:
+    text = pdf.pages[0].extract_text()
+```
+````</p></div><div class="col-zh" lang="zh-Hant"><p>with pdfplumber.open("file.pdf") as pdf:
+    text = pdf.pages[0].extract_text()
+```
+````</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Bad example: Too verbose</strong> (approximately 150 tokens):</p></div><div class="col-zh" lang="zh-Hant"><p><strong>壞範例：過於冗長</strong>（約 150 tokens）：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>```markdown  theme={null}</p>
+<h2>Extract PDF text</h2>
+<p>PDF (Portable Document Format) files are a common file format that contains
+text, images, and other content. To extract text from a PDF, you'll need to
+use a library. There are many libraries available for PDF processing, but we
+recommend pdfplumber because it's easy to use and handles most cases well.
+First, you'll need to install it using pip. Then you can use the code below...
+```</p></div><div class="col-zh" lang="zh-Hant"><p>```markdown  theme={null}</p>
+<h2>Extract PDF text</h2>
+<p>PDF (Portable Document Format) files are a common file format that contains
+text, images, and other content. To extract text from a PDF, you'll need to
+use a library. There are many libraries available for PDF processing, but we
+recommend pdfplumber because it's easy to use and handles most cases well.
+First, you'll need to install it using pip. Then you can use the code below...
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The concise version assumes the agent knows what PDFs are and how libraries work.</p></div><div class="col-zh" lang="zh-Hant"><p>簡潔版本假設代理知道什麼是 PDF，以及函式庫如何運作。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Set appropriate degrees of freedom</h3></div><div class="col-zh" lang="zh-Hant"><h3>設定適當的自由度</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Match the level of specificity to the task's fragility and variability.</p></div><div class="col-zh" lang="zh-Hant"><p>讓具體程度對應任務的脆弱性與變異性。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>High freedom</strong> (text-based instructions):</p></div><div class="col-zh" lang="zh-Hant"><p><strong>高自由度</strong>（文字式指令）：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use when:</p></div><div class="col-zh" lang="zh-Hant"><p>使用時機：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Multiple approaches are valid</li>
+<li>Decisions depend on context</li>
+<li>Heuristics guide the approach</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>多種做法都成立</li>
+<li>決策取決於上下文</li>
+<li>以啟發式方法引導做法</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Example:</p></div><div class="col-zh" lang="zh-Hant"><p>範例：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>```markdown  theme={null}</p>
+<h2>Code review process</h2>
+<ol>
+<li>Analyze the code structure and organization</li>
+<li>Check for potential bugs or edge cases</li>
+<li>Suggest improvements for readability and maintainability</li>
+<li>Verify adherence to project conventions
+```</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><p>```markdown  theme={null}</p>
+<h2>Code review process</h2>
+<ol>
+<li>Analyze the code structure and organization</li>
+<li>Check for potential bugs or edge cases</li>
+<li>Suggest improvements for readability and maintainability</li>
+<li>Verify adherence to project conventions
+```</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Medium freedom</strong> (pseudocode or scripts with parameters):</p></div><div class="col-zh" lang="zh-Hant"><p><strong>中自由度</strong>（帶參數的虛擬碼或腳本）：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use when:</p></div><div class="col-zh" lang="zh-Hant"><p>使用時機：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>A preferred pattern exists</li>
+<li>Some variation is acceptable</li>
+<li>Configuration affects behavior</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>存在偏好的模式</li>
+<li>允許一定程度的變異</li>
+<li>設定會影響行為</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Example:</p></div><div class="col-zh" lang="zh-Hant"><p>範例：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>````markdown  theme={null}</p>
+<h2>Generate report</h2>
+<p>Use this template and customize as needed:</p>
+<p>```python</p></div><div class="col-zh" lang="zh-Hant"><p>````markdown  theme={null}</p>
+<h2>Generate report</h2>
+<p>Use this template and customize as needed:</p>
+<p>```python</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>def generate_report(data, format="markdown", include_charts=True):
+    # Process data
+    # Generate output in specified format
+    # Optionally include visualizations
+```
+````</p></div><div class="col-zh" lang="zh-Hant"><p>def generate_report(data, format="markdown", include_charts=True):
+    # Process data
+    # Generate output in specified format
+    # Optionally include visualizations
+```
+````</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Low freedom</strong> (specific scripts, few or no parameters):</p></div><div class="col-zh" lang="zh-Hant"><p><strong>低自由度</strong>（特定腳本，極少或沒有參數）：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use when:</p></div><div class="col-zh" lang="zh-Hant"><p>使用時機：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Operations are fragile and error-prone</li>
+<li>Consistency is critical</li>
+<li>A specific sequence must be followed</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>操作脆弱且容易出錯</li>
+<li>一致性至關重要</li>
+<li>必須遵循特定順序</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Example:</p></div><div class="col-zh" lang="zh-Hant"><p>範例：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>````markdown  theme={null}</p>
+<h2>Database migration</h2>
+<p>Run exactly this script:</p>
+<p>```bash</p></div><div class="col-zh" lang="zh-Hant"><p>````markdown  theme={null}</p>
+<h2>Database migration</h2>
+<p>Run exactly this script:</p>
+<p>```bash</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>python scripts/migrate.py --verify --backup
+```</p></div><div class="col-zh" lang="zh-Hant"><p>python scripts/migrate.py --verify --backup
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Do not modify the command or add additional flags.
+````</p></div><div class="col-zh" lang="zh-Hant"><p>Do not modify the command or add additional flags.
+````</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Analogy</strong>: Think of the agent as a robot exploring a path:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>類比</strong>：把代理想像成在探索路徑的機器人：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Narrow bridge with cliffs on both sides</strong>: There's only one safe way forward. Provide specific guardrails and exact instructions (low freedom). Example: database migrations that must run in exact sequence.</li>
+<li><strong>Open field with no hazards</strong>: Many paths lead to success. Give general direction and trust the agent to find the best route (high freedom). Example: code reviews where context determines the best approach.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>兩側都是懸崖的窄橋</strong>：只有一條安全的前進路線。提供具體的護欄與精確指令（低自由度）。範例：必須以精確順序執行的資料庫遷移。</li>
+<li><strong>沒有危險的開闊平原</strong>：很多路徑都能通往成功。給一般方向，並信任代理找出最佳路線（高自由度）。範例：由上下文決定最佳做法的程式碼審查。</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Test with all models you plan to use</h3></div><div class="col-zh" lang="zh-Hant"><h3>用你打算使用的所有模型測試</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills act as additions to models, so effectiveness depends on the underlying model. Test your Skill with all the models you plan to use it with.</p></div><div class="col-zh" lang="zh-Hant"><p>技能是模型的附加物，因此有效性取決於底層模型。用你打算與技能一起使用的所有模型來測試你的技能。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Testing considerations by model</strong>:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>各模型的測試考量</strong>：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Claude Haiku</strong> (fast, economical): Does the Skill provide enough guidance?</li>
+<li><strong>Claude Sonnet</strong> (balanced): Is the Skill clear and efficient?</li>
+<li><strong>Claude Opus</strong> (powerful reasoning): Does the Skill avoid over-explaining?</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>Claude Haiku</strong>（快速、經濟）：技能提供了足夠的指引嗎？</li>
+<li><strong>Claude Sonnet</strong>（均衡）：技能清楚且有效率嗎？</li>
+<li><strong>Claude Opus</strong>（強大推理）：技能有沒有過度解釋？</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>What works perfectly for Opus might need more detail for Haiku. If you plan to use your Skill across multiple models, aim for instructions that work well with all of them.</p></div><div class="col-zh" lang="zh-Hant"><p>對 Opus 完美的內容，對 Haiku 可能需要更多細節。若你打算在多個模型上使用技能，目標是寫出對它們全部都適用的指令。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Skill structure</h2></div><div class="col-zh" lang="zh-Hant"><h2>技能結構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><Note>
+  <strong>YAML Frontmatter</strong>: The SKILL.md frontmatter requires two fields:</p>
+<ul>
+<li><code>name</code> - Human-readable name of the Skill (64 characters maximum)</li>
+<li><code>description</code> - One-line description of what the Skill does and when to use it (1024 characters maximum)</li>
+</ul>
+<p>For complete Skill structure details, see the <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure">Skills overview</a>.
+</Note></p></div><div class="col-zh" lang="zh-Hant"><p><Note>
+  <strong>YAML Frontmatter</strong>：SKILL.md 的 frontmatter 需要兩個欄位：</p>
+<ul>
+<li><code>name</code> - 技能的人類可讀名稱（最多 64 字元）</li>
+<li><code>description</code> - 一行描述技能做什麼以及何時使用（最多 1024 字元）</li>
+</ul>
+<p>完整的技能結構細節，請見<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure">技能總覽</a>。
+</Note></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Naming conventions</h3></div><div class="col-zh" lang="zh-Hant"><h3>命名慣例</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use consistent naming patterns to make Skills easier to reference and discuss. We recommend using <strong>gerund form</strong> (verb + -ing) for Skill names, as this clearly describes the activity or capability the Skill provides.</p></div><div class="col-zh" lang="zh-Hant"><p>使用一致的命名模式，讓技能更容易被引用與討論。我們建議技能名稱採用<strong>動名詞形式</strong>（動詞 + -ing），因為這能清楚描述技能所提供的活動或能力。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Good naming examples (gerund form)</strong>:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>好的命名範例（動名詞形式）</strong>：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>"Processing PDFs"</li>
+<li>"Analyzing spreadsheets"</li>
+<li>"Managing databases"</li>
+<li>"Testing code"</li>
+<li>"Writing documentation"</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>"Processing PDFs"</li>
+<li>"Analyzing spreadsheets"</li>
+<li>"Managing databases"</li>
+<li>"Testing code"</li>
+<li>"Writing documentation"</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Acceptable alternatives</strong>:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>可接受的替代方案</strong>：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Noun phrases: "PDF Processing", "Spreadsheet Analysis"</li>
+<li>Action-oriented: "Process PDFs", "Analyze Spreadsheets"</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>名詞片語："PDF Processing"、"Spreadsheet Analysis"</li>
+<li>行動導向："Process PDFs"、"Analyze Spreadsheets"</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Avoid</strong>:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>避免</strong>：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Vague names: "Helper", "Utils", "Tools"</li>
+<li>Overly generic: "Documents", "Data", "Files"</li>
+<li>Inconsistent patterns within your skill collection</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>含糊的名稱："Helper"、"Utils"、"Tools"</li>
+<li>過於泛用："Documents"、"Data"、"Files"</li>
+<li>技能收藏中不一致的模式</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Consistent naming makes it easier to:</p></div><div class="col-zh" lang="zh-Hant"><p>一致的命名能讓你更容易：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Reference Skills in documentation and conversations</li>
+<li>Understand what a Skill does at a glance</li>
+<li>Organize and search through multiple Skills</li>
+<li>Maintain a professional, cohesive skill library</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>在文件與對話中引用技能</li>
+<li>一眼看出技能在做什麼</li>
+<li>組織並搜尋多個技能</li>
+<li>維護專業、一致的技能庫</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Writing effective descriptions</h3></div><div class="col-zh" lang="zh-Hant"><h3>撰寫有效的 description</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The <code>description</code> field enables Skill discovery and should include both what the Skill does and when to use it.</p></div><div class="col-zh" lang="zh-Hant"><p><code>description</code> 欄位促成技能的探索，應同時包含技能做什麼與何時使用。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><Warning>
+  <strong>Always write in third person</strong>. The description is injected into the system prompt, and inconsistent point-of-view can cause discovery problems.</p>
+<ul>
+<li><strong>Good:</strong> "Processes Excel files and generates reports"</li>
+<li><strong>Avoid:</strong> "I can help you process Excel files"</li>
+<li><strong>Avoid:</strong> "You can use this to process Excel files"
+</Warning></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p><Warning>
+  <strong>永遠以第三人稱撰寫</strong>。description 會被注入 system prompt，不一致的人稱可能導致探索問題。</p>
+<ul>
+<li><strong>好：</strong>"Processes Excel files and generates reports"</li>
+<li><strong>避免：</strong>"I can help you process Excel files"</li>
+<li><strong>避免：</strong>"You can use this to process Excel files"
+</Warning></li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Be specific and include key terms</strong>. Include both what the Skill does and specific triggers/contexts for when to use it.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>要具體並包含關鍵詞</strong>。同時包含技能做什麼，以及具體的觸發條件／上下文來說明何時使用。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Each Skill has exactly one description field. The description is critical for skill selection: agents use it to choose the right Skill from potentially 100+ available Skills. Your description must provide enough detail for an agent to know when to select this Skill, while the rest of SKILL.md provides the implementation details.</p></div><div class="col-zh" lang="zh-Hant"><p>每個技能恰好只有一個 description 欄位。description 對技能選擇至關重要：代理會用它從可能有 100+ 個可用技能中選出正確的那個。你的 description 必須提供足夠的細節，讓代理知道何時該選擇這個技能，而 SKILL.md 的其餘部分則提供實作細節。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Effective examples:</p></div><div class="col-zh" lang="zh-Hant"><p>有效的範例：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>PDF Processing skill:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>PDF 處理技能：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>yaml  theme={null}
+description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.</code></p></div><div class="col-zh" lang="zh-Hant"><p><code>yaml  theme={null}
+description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Excel Analysis skill:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>Excel 分析技能：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>yaml  theme={null}
+description: Analyze Excel spreadsheets, create pivot tables, generate charts. Use when analyzing Excel files, spreadsheets, tabular data, or .xlsx files.</code></p></div><div class="col-zh" lang="zh-Hant"><p><code>yaml  theme={null}
+description: Analyze Excel spreadsheets, create pivot tables, generate charts. Use when analyzing Excel files, spreadsheets, tabular data, or .xlsx files.</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Git Commit Helper skill:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>Git Commit Helper 技能：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>yaml  theme={null}
+description: Generate descriptive commit messages by analyzing git diffs. Use when the user asks for help writing commit messages or reviewing staged changes.</code></p></div><div class="col-zh" lang="zh-Hant"><p><code>yaml  theme={null}
+description: Generate descriptive commit messages by analyzing git diffs. Use when the user asks for help writing commit messages or reviewing staged changes.</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Avoid vague descriptions like these:</p></div><div class="col-zh" lang="zh-Hant"><p>避免像這樣的含糊 description：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>yaml  theme={null}
+description: Helps with documents</code></p></div><div class="col-zh" lang="zh-Hant"><p><code>yaml  theme={null}
+description: Helps with documents</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>yaml  theme={null}
+description: Processes data</code></p></div><div class="col-zh" lang="zh-Hant"><p><code>yaml  theme={null}
+description: Processes data</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>yaml  theme={null}
+description: Does stuff with files</code></p></div><div class="col-zh" lang="zh-Hant"><p><code>yaml  theme={null}
+description: Does stuff with files</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Progressive disclosure patterns</h3></div><div class="col-zh" lang="zh-Hant"><h3>漸進揭露模式</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>SKILL.md serves as an overview that points agents to detailed materials as needed, like a table of contents in an onboarding guide. For an explanation of how progressive disclosure works, see <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#how-skills-work">How Skills work</a> in the overview.</p></div><div class="col-zh" lang="zh-Hant"><p>SKILL.md 作為一個總覽，在需要時把代理引導到詳細資料，就像入門指南中的目錄。關於漸進揭露如何運作的說明，請見總覽中的<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#how-skills-work">技能如何運作</a>。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Practical guidance:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>實務指引：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Keep SKILL.md body under 500 lines for optimal performance</li>
+<li>Split content into separate files when approaching this limit</li>
+<li>Use the patterns below to organize instructions, code, and resources effectively</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>讓 SKILL.md 本體保持在 500 行以內以獲得最佳效能</li>
+<li>接近這個上限時，把內容拆到獨立檔案</li>
+<li>使用下方的模式來有效地組織指令、程式碼與資源</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h4>Visual overview: From simple to complex</h4></div><div class="col-zh" lang="zh-Hant"><h4>視覺總覽：從簡單到複雜</h4></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A basic Skill starts with just a SKILL.md file containing metadata and instructions:</p></div><div class="col-zh" lang="zh-Hant"><p>基礎技能只從一個包含 metadata 與指令的 SKILL.md 檔案開始：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><img src="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=87782ff239b297d9a9e8e1b72ed72db9" alt="Simple SKILL.md file showing YAML frontmatter and markdown body" data-og-width="2048" width="2048" data-og-height="1153" height="1153" data-path="images/agent-skills-simple-file.png" data-optimize="true" data-opv="3" srcset="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=280&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=c61cc33b6f5855809907f7fda94cd80e 280w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=560&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=90d2c0c1c76b36e8d485f49e0810dbfd 560w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=840&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=ad17d231ac7b0bea7e5b4d58fb4aeabb 840w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=1100&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=f5d0a7a3c668435bb0aee9a3a8f8c329 1100w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=1650&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=0e927c1af9de5799cfe557d12249f6e6 1650w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=2500&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=46bbb1a51dd4c8202a470ac8c80a893d 2500w" /></p>
+<p>As your Skill grows, you can bundle additional content that agents load only when needed:</p>
+<p><img src="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=a5e0aa41e3d53985a7e3e43668a33ea3" alt="Bundling additional reference files like reference.md and forms.md." data-og-width="2048" width="2048" data-og-height="1327" height="1327" data-path="images/agent-skills-bundling-content.png" data-optimize="true" data-opv="3" srcset="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=280&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=f8a0e73783e99b4a643d79eac86b70a2 280w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=560&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=dc510a2a9d3f14359416b706f067904a 560w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=840&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=82cd6286c966303f7dd914c28170e385 840w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=1100&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=56f3be36c77e4fe4b523df209a6824c6 1100w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=1650&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=d22b5161b2075656417d56f41a74f3dd 1650w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=2500&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=3dd4bdd6850ffcc96c6c45fcb0acd6eb 2500w" /></p>
+<p>The complete Skill directory structure might look like this:</p>
+<pre><code>pdf/
+├── SKILL.md              # Main instructions (loaded when triggered)
+├── FORMS.md              # Form-filling guide (loaded as needed)
+├── reference.md          # API reference (loaded as needed)
+├── examples.md           # Usage examples (loaded as needed)
+└── scripts/
+    ├── analyze_form.py   # Utility script (executed, not loaded)
+    ├── fill_form.py      # Form filling script
+    └── validate.py       # Validation script
+</code></pre>
+<h4>Pattern 1: High-level guide with references</h4>
+<h2>````markdown  theme={null}</h2>
+<p>name: PDF Processing
+description: Extracts text and tables from PDF files, fills forms, and merges documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.</p>
+<hr />
+<h1>PDF Processing</h1>
+<h2>Quick start</h2>
+<p>Extract text with pdfplumber:</p>
+<pre><code class="language-python">import pdfplumber
+with pdfplumber.open(&quot;file.pdf&quot;) as pdf:
+    text = pdf.pages[0].extract_text()
+</code></pre>
+<h2>Advanced features</h2>
+<p><strong>Form filling</strong>: See <a href="FORMS.html">FORMS.md</a> for complete guide
+<strong>API reference</strong>: See <a href="REFERENCE.html">REFERENCE.md</a> for all methods
+<strong>Examples</strong>: See <a href="EXAMPLES.html">EXAMPLES.md</a> for common patterns</p>
+<pre><code>
+Agents load FORMS.md, REFERENCE.md, or EXAMPLES.md only when needed.
+
+#### Pattern 2: Domain-specific organization
+
+For Skills with multiple domains, organize content by domain to avoid loading irrelevant context. When a user asks about sales metrics, the agent only needs to read sales-related schemas, not finance or marketing data. This keeps token usage low and context focused.
+
+```
+bigquery-skill/
+├── SKILL.md (overview and navigation)
+└── reference/
+    ├── finance.md (revenue, billing metrics)
+    ├── sales.md (opportunities, pipeline)
+    ├── product.md (API usage, features)
+    └── marketing.md (campaigns, attribution)
+```
+
+````markdown SKILL.md theme={null}
+# BigQuery Data Analysis
+
+## Available datasets
+
+**Finance**: Revenue, ARR, billing → See [reference/finance.md](reference/finance.md)
+**Sales**: Opportunities, pipeline, accounts → See [reference/sales.md](reference/sales.md)
+**Product**: API usage, features, adoption → See [reference/product.md](reference/product.md)
+**Marketing**: Campaigns, attribution, email → See [reference/marketing.md](reference/marketing.md)
+
+## Quick search
+
+Find specific metrics using grep:
+
+```bash
+grep -i &quot;revenue&quot; reference/finance.md
+grep -i &quot;pipeline&quot; reference/sales.md
+grep -i &quot;api usage&quot; reference/product.md
+```
+</code></pre>
+<h4>Pattern 3: Conditional details</h4>
+<p>Show basic content, link to advanced content:</p>
+<p>```markdown  theme={null}</p>
+<h1>DOCX Processing</h1>
+<h2>Creating documents</h2>
+<p>Use docx-js for new documents. See <a href="DOCX-JS.html">DOCX-JS.md</a>.</p>
+<h2>Editing documents</h2>
+<p>For simple edits, modify the XML directly.</p>
+<p><strong>For tracked changes</strong>: See <a href="REDLINING.html">REDLINING.md</a>
+<strong>For OOXML details</strong>: See <a href="OOXML.html">OOXML.md</a></p>
+<pre><code>
+Agents read REDLINING.md or OOXML.md only when the user needs those features.
+
+### Avoid deeply nested references
+
+Agents may partially read files when they're referenced from other referenced files. When encountering nested references, an agent might use commands like `head -100` to preview content rather than reading entire files, resulting in incomplete information.
+
+**Keep references one level deep from SKILL.md**. All reference files should link directly from SKILL.md to ensure agents read complete files when needed.
+
+**Bad example: Too deep**:
+
+```markdown  theme={null}
+# SKILL.md
+See [advanced.md](advanced.md)...
+
+# advanced.md
+See [details.md](details.md)...
+
+# details.md
+Here's the actual information...
+</code></pre>
+<p><strong>Good example: One level deep</strong>:</p>
+<p>```markdown  theme={null}</p>
+<h1>SKILL.md</h1>
+<p><strong>Basic usage</strong>: [instructions in SKILL.md]
+<strong>Advanced features</strong>: See <a href="advanced.html">advanced.md</a>
+<strong>API reference</strong>: See <a href="reference.html">reference.md</a>
+<strong>Examples</strong>: See <a href="examples.html">examples.md</a></p>
+<pre><code>
+### Structure longer reference files with table of contents
+
+For reference files longer than 100 lines, include a table of contents at the top. This ensures agents can see the full scope of available information even when previewing with partial reads.
+
+**Example**:
+
+```markdown  theme={null}
+# API Reference
+
+## Contents
+- Authentication and setup
+- Core methods (create, read, update, delete)
+- Advanced features (batch operations, webhooks)
+- Error handling patterns
+- Code examples
+
+## Authentication and setup
+...
+
+## Core methods
+...
+</code></pre>
+<p>Agents can then read the complete file or jump to specific sections as needed.</p>
+<p>For details on how this filesystem-based architecture enables progressive disclosure, see the <a href="#runtime-environment">Runtime environment</a> section in the Advanced section below.</p>
+<h2>Workflows and feedback loops</h2>
+<h3>Use workflows for complex tasks</h3>
+<p>Break complex operations into clear, sequential steps. For particularly complex workflows, provide a checklist that the agent can copy into its response and check off as it progresses.</p>
+<p><strong>Example 1: Research synthesis workflow</strong> (for Skills without code):</p>
+<p>````markdown  theme={null}</p>
+<h2>Research synthesis workflow</h2>
+<p>Copy this checklist and track your progress:</p>
+<pre><code>Research Progress:
+- [ ] Step 1: Read all source documents
+- [ ] Step 2: Identify key themes
+- [ ] Step 3: Cross-reference claims
+- [ ] Step 4: Create structured summary
+- [ ] Step 5: Verify citations
+</code></pre>
+<p><strong>Step 1: Read all source documents</strong></p>
+<p>Review each document in the <code>sources/</code> directory. Note the main arguments and supporting evidence.</p>
+<p><strong>Step 2: Identify key themes</strong></p>
+<p>Look for patterns across sources. What themes appear repeatedly? Where do sources agree or disagree?</p>
+<p><strong>Step 3: Cross-reference claims</strong></p>
+<p>For each major claim, verify it appears in the source material. Note which source supports each point.</p>
+<p><strong>Step 4: Create structured summary</strong></p>
+<p>Organize findings by theme. Include:
+- Main claim
+- Supporting evidence from sources
+- Conflicting viewpoints (if any)</p>
+<p><strong>Step 5: Verify citations</strong></p>
+<p>Check that every claim references the correct source document. If citations are incomplete, return to Step 3.</p>
+<pre><code>
+This example shows how workflows apply to analysis tasks that don't require code. The checklist pattern works for any complex, multi-step process.
+
+**Example 2: PDF form filling workflow** (for Skills with code):
+
+````markdown  theme={null}
+## PDF form filling workflow
+
+Copy this checklist and check off items as you complete them:
+
+```
+Task Progress:
+- [ ] Step 1: Analyze the form (run analyze_form.py)
+- [ ] Step 2: Create field mapping (edit fields.json)
+- [ ] Step 3: Validate mapping (run validate_fields.py)
+- [ ] Step 4: Fill the form (run fill_form.py)
+- [ ] Step 5: Verify output (run verify_output.py)
+```
+
+**Step 1: Analyze the form**
+
+Run: `python scripts/analyze_form.py input.pdf`
+
+This extracts form fields and their locations, saving to `fields.json`.
+
+**Step 2: Create field mapping**
+
+Edit `fields.json` to add values for each field.
+
+**Step 3: Validate mapping**
+
+Run: `python scripts/validate_fields.py fields.json`
+
+Fix any validation errors before continuing.
+
+**Step 4: Fill the form**
+
+Run: `python scripts/fill_form.py input.pdf fields.json output.pdf`
+
+**Step 5: Verify output**
+
+Run: `python scripts/verify_output.py output.pdf`
+
+If verification fails, return to Step 2.
+</code></pre>
+<p>Clear steps prevent agents from skipping critical validation. The checklist helps both you and the agent track progress through multi-step workflows.</p>
+<h3>Implement feedback loops</h3>
+<p><strong>Common pattern</strong>: Run validator → fix errors → repeat</p>
+<p>This pattern greatly improves output quality.</p>
+<p><strong>Example 1: Style guide compliance</strong> (for Skills without code):</p>
+<p>```markdown  theme={null}</p>
+<h2>Content review process</h2>
+<ol>
+<li>Draft your content following the guidelines in STYLE_GUIDE.md</li>
+<li>Review against the checklist:
+   - Check terminology consistency
+   - Verify examples follow the standard format
+   - Confirm all required sections are present</li>
+<li>If issues found:
+   - Note each issue with specific section reference
+   - Revise the content
+   - Review the checklist again</li>
+<li>Only proceed when all requirements are met</li>
+<li>Finalize and save the document</li>
+</ol>
+<pre><code>
+This shows the validation loop pattern using reference documents instead of scripts. The &quot;validator&quot; is STYLE\_GUIDE.md, and the agent performs the check by reading and comparing.
+
+**Example 2: Document editing process** (for Skills with code):
+
+```markdown  theme={null}
+## Document editing process
+
+1. Make your edits to `word/document.xml`
+2. **Validate immediately**: `python ooxml/scripts/validate.py unpacked_dir/`
+3. If validation fails:
+   - Review the error message carefully
+   - Fix the issues in the XML
+   - Run validation again
+4. **Only proceed when validation passes**
+5. Rebuild: `python ooxml/scripts/pack.py unpacked_dir/ output.docx`
+6. Test the output document
+</code></pre>
+<p>The validation loop catches errors early.</p>
+<h2>Content guidelines</h2>
+<h3>Avoid time-sensitive information</h3>
+<p>Don't include information that will become outdated:</p>
+<p><strong>Bad example: Time-sensitive</strong> (will become wrong):</p>
+<p>```markdown  theme={null}
+If you're doing this before August 2025, use the old API.
+After August 2025, use the new API.</p>
+<pre><code>
+**Good example** (use &quot;old patterns&quot; section):
+
+```markdown  theme={null}
+## Current method
+
+Use the v2 API endpoint: `api.example.com/v2/messages`
+
+## Old patterns
+
+&lt;details&gt;
+&lt;summary&gt;Legacy v1 API (deprecated 2025-08)&lt;/summary&gt;
+
+The v1 API used: `api.example.com/v1/messages`
+
+This endpoint is no longer supported.
+&lt;/details&gt;
+</code></pre>
+<p>The old patterns section provides historical context without cluttering the main content.</p>
+<h3>Use consistent terminology</h3>
+<p>Choose one term and use it throughout the Skill:</p>
+<p><strong>Good - Consistent</strong>:</p>
+<ul>
+<li>Always "API endpoint"</li>
+<li>Always "field"</li>
+<li>Always "extract"</li>
+</ul>
+<p><strong>Bad - Inconsistent</strong>:</p>
+<ul>
+<li>Mix "API endpoint", "URL", "API route", "path"</li>
+<li>Mix "field", "box", "element", "control"</li>
+<li>Mix "extract", "pull", "get", "retrieve"</li>
+</ul>
+<p>Consistency helps agents understand and follow instructions.</p>
+<h2>Common patterns</h2>
+<h3>Template pattern</h3>
+<p>Provide templates for output format. Match the level of strictness to your needs.</p>
+<p><strong>For strict requirements</strong> (like API responses or data formats):</p>
+<p>````markdown  theme={null}</p>
+<h2>Report structure</h2>
+<p>ALWAYS use this exact template structure:</p>
+<pre><code class="language-markdown"># [Analysis Title]
+
+## Executive summary
+[One-paragraph overview of key findings]
+
+## Key findings
+- Finding 1 with supporting data
+- Finding 2 with supporting data
+- Finding 3 with supporting data
+
+## Recommendations
+1. Specific actionable recommendation
+2. Specific actionable recommendation
+</code></pre>
+<pre><code>
+**For flexible guidance** (when adaptation is useful):
+
+````markdown  theme={null}
+## Report structure
+
+Here is a sensible default format, but use your best judgment based on the analysis:
+
+```markdown
+# [Analysis Title]
+
+## Executive summary
+[Overview]
+
+## Key findings
+[Adapt sections based on what you discover]
+
+## Recommendations
+[Tailor to the specific context]
+```
+
+Adjust sections as needed for the specific analysis type.
+</code></pre>
+<h3>Examples pattern</h3>
+<p>For Skills where output quality depends on seeing examples, provide input/output pairs just like in regular prompting:</p>
+<p>````markdown  theme={null}</p>
+<h2>Commit message format</h2>
+<p>Generate commit messages following these examples:</p>
+<p><strong>Example 1:</strong>
+Input: Added user authentication with JWT tokens
+Output:</p>
+<pre><code>feat(auth): implement JWT-based authentication
+
+Add login endpoint and token validation middleware
+</code></pre>
+<p><strong>Example 2:</strong>
+Input: Fixed bug where dates displayed incorrectly in reports
+Output:</p>
+<pre><code>fix(reports): correct date formatting in timezone conversion
+
+Use UTC timestamps consistently across report generation
+</code></pre>
+<p><strong>Example 3:</strong>
+Input: Updated dependencies and refactored error handling
+Output:</p>
+<pre><code>chore: update dependencies and refactor error handling
+
+- Upgrade lodash to 4.17.21
+- Standardize error response format across endpoints
+</code></pre>
+<p>Follow this style: type(scope): brief description, then detailed explanation.</p>
+<pre><code>
+Examples help agents understand the desired style and level of detail more clearly than descriptions alone.
+
+### Conditional workflow pattern
+
+Guide agents through decision points:
+
+```markdown  theme={null}
+## Document modification workflow
+
+1. Determine the modification type:
+
+   **Creating new content?** → Follow &quot;Creation workflow&quot; below
+   **Editing existing content?** → Follow &quot;Editing workflow&quot; below
+
+2. Creation workflow:
+   - Use docx-js library
+   - Build document from scratch
+   - Export to .docx format
+
+3. Editing workflow:
+   - Unpack existing document
+   - Modify XML directly
+   - Validate after each change
+   - Repack when complete
+```
+
+&lt;Tip&gt;
+  If workflows become large or complicated with many steps, consider pushing them into separate files and tell the agent to read the appropriate file based on the task at hand.
+&lt;/Tip&gt;
+
+## Evaluation and iteration
+
+### Build evaluations first
+
+**Create evaluations BEFORE writing extensive documentation.** This ensures your Skill solves real problems rather than documenting imagined ones.
+
+**Evaluation-driven development:**
+
+1. **Identify gaps**: Run your agent on representative tasks without a Skill. Document specific failures or missing context
+2. **Create evaluations**: Build three scenarios that test these gaps
+3. **Establish baseline**: Measure the agent's performance without the Skill
+4. **Write minimal instructions**: Create just enough content to address the gaps and pass evaluations
+5. **Iterate**: Execute evaluations, compare against baseline, and refine
+
+This approach ensures you're solving actual problems rather than anticipating requirements that may never materialize.
+
+**Evaluation structure**:
+
+```json  theme={null}
+{
+  &quot;skills&quot;: [&quot;pdf-processing&quot;],
+  &quot;query&quot;: &quot;Extract all text from this PDF file and save it to output.txt&quot;,
+  &quot;files&quot;: [&quot;test-files/document.pdf&quot;],
+  &quot;expected_behavior&quot;: [
+    &quot;Successfully reads the PDF file using an appropriate PDF processing library or command-line tool&quot;,
+    &quot;Extracts text content from all pages in the document without missing any pages&quot;,
+    &quot;Saves the extracted text to a file named output.txt in a clear, readable format&quot;
+  ]
+}
+```
+
+&lt;Note&gt;
+  This example demonstrates a data-driven evaluation with a simple testing rubric. We do not currently provide a built-in way to run these evaluations. Users can create their own evaluation system. Evaluations are your source of truth for measuring Skill effectiveness.
+&lt;/Note&gt;
+
+### Develop Skills iteratively with the agent
+
+The most effective Skill development process involves the agent itself. Work with one instance (&quot;Agent A&quot;) to create a Skill that will be used by other instances (&quot;Agent B&quot;). Agent A helps you design and refine instructions, while Agent B tests them in real tasks. This works because the underlying models understand both how to write effective agent instructions and what information agents need.
+
+**Creating a new Skill:**
+
+1. **Complete a task without a Skill**: Work through a problem with Agent A using normal prompting. As you work, you'll naturally provide context, explain preferences, and share procedural knowledge. Notice what information you repeatedly provide.
+
+2. **Identify the reusable pattern**: After completing the task, identify what context you provided that would be useful for similar future tasks.
+
+   **Example**: If you worked through a BigQuery analysis, you might have provided table names, field definitions, filtering rules (like &quot;always exclude test accounts&quot;), and common query patterns.
+
+3. **Ask Agent A to create a Skill**: &quot;Create a Skill that captures this BigQuery analysis pattern we just used. Include the table schemas, naming conventions, and the rule about filtering test accounts.&quot;
+
+   &lt;Tip&gt;
+     Modern agents understand the Skill format and structure natively. You don't need special system prompts or a &quot;writing skills&quot; skill to get help creating Skills. Simply ask the agent to create a Skill and it will generate properly structured SKILL.md content with appropriate frontmatter and body content.
+   &lt;/Tip&gt;
+
+4. **Review for conciseness**: Check that Agent A hasn't added unnecessary explanations. Ask: &quot;Remove the explanation about what win rate means - the agent already knows that.&quot;
+
+5. **Improve information architecture**: Ask Agent A to organize the content more effectively. For example: &quot;Organize this so the table schema is in a separate reference file. We might add more tables later.&quot;
+
+6. **Test on similar tasks**: Use the Skill with Agent B (a fresh instance with the Skill loaded) on related use cases. Observe whether Agent B finds the right information, applies rules correctly, and handles the task successfully.
+
+7. **Iterate based on observation**: If Agent B struggles or misses something, return to Agent A with specifics: &quot;When the agent used this Skill, it forgot to filter by date for Q4. Should we add a section about date filtering patterns?&quot;
+
+**Iterating on existing Skills:**
+
+The same hierarchical pattern continues when improving Skills. You alternate between:
+
+* **Working with Agent A** (the expert who helps refine the Skill)
+* **Testing with Agent B** (the agent using the Skill to perform real work)
+* **Observing Agent B's behavior** and bringing insights back to Agent A
+
+1. **Use the Skill in real workflows**: Give Agent B (with the Skill loaded) actual tasks, not test scenarios
+
+2. **Observe Agent B's behavior**: Note where it struggles, succeeds, or makes unexpected choices
+
+   **Example observation**: &quot;When I asked Agent B for a regional sales report, it wrote the query but forgot to filter out test accounts, even though the Skill mentions this rule.&quot;
+
+3. **Return to Agent A for improvements**: Share the current SKILL.md and describe what you observed. Ask: &quot;I noticed Agent B forgot to filter test accounts when I asked for a regional report. The Skill mentions filtering, but maybe it's not prominent enough?&quot;
+
+4. **Review Agent A's suggestions**: Agent A might suggest reorganizing to make rules more prominent, using stronger language like &quot;MUST filter&quot; instead of &quot;always filter&quot;, or restructuring the workflow section.
+
+5. **Apply and test changes**: Update the Skill with Agent A's refinements, then test again with Agent B on similar requests
+
+6. **Repeat based on usage**: Continue this observe-refine-test cycle as you encounter new scenarios. Each iteration improves the Skill based on real agent behavior, not assumptions.
+
+**Gathering team feedback:**
+
+1. Share Skills with teammates and observe their usage
+2. Ask: Does the Skill activate when expected? Are instructions clear? What's missing?
+3. Incorporate feedback to address blind spots in your own usage patterns
+
+**Why this approach works**: Agent A understands agent needs, you provide domain expertise, Agent B reveals gaps through real usage, and iterative refinement improves Skills based on observed behavior rather than assumptions.
+
+### Observe how agents navigate Skills
+
+As you iterate on Skills, pay attention to how agents actually use them in practice. Watch for:
+
+* **Unexpected exploration paths**: Does the agent read files in an order you didn't anticipate? This might indicate your structure isn't as intuitive as you thought
+* **Missed connections**: Does the agent fail to follow references to important files? Your links might need to be more explicit or prominent
+* **Overreliance on certain sections**: If the agent repeatedly reads the same file, consider whether that content should be in the main SKILL.md instead
+* **Ignored content**: If the agent never accesses a bundled file, it might be unnecessary or poorly signaled in the main instructions
+
+Iterate based on these observations rather than assumptions. The 'name' and 'description' in your Skill's metadata are particularly critical. Agents use these when deciding whether to trigger the Skill in response to the current task. Make sure they clearly describe what the Skill does and when it should be used.
+
+## Anti-patterns to avoid
+
+### Avoid Windows-style paths
+
+Always use forward slashes in file paths, even on Windows:
+
+* ✓ **Good**: `scripts/helper.py`, `reference/guide.md`
+* ✗ **Avoid**: `scripts\helper.py`, `reference\guide.md`
+
+Unix-style paths work across all platforms, while Windows-style paths cause errors on Unix systems.
+
+### Avoid offering too many options
+
+Don't present multiple approaches unless necessary:
+
+````markdown  theme={null}
+**Bad example: Too many choices** (confusing):
+&quot;You can use pypdf, or pdfplumber, or PyMuPDF, or pdf2image, or...&quot;
+
+**Good example: Provide a default** (with escape hatch):
+&quot;Use pdfplumber for text extraction:
+```python
+import pdfplumber
+```
+
+For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.&quot;
+</code></pre>
+<h2>Advanced: Skills with executable code</h2>
+<p>The sections below focus on Skills that include executable scripts. If your Skill uses only markdown instructions, skip to <a href="#checklist-for-effective-skills">Checklist for effective Skills</a>.</p>
+<h3>Solve, don't punt</h3>
+<p>When writing scripts for Skills, handle error conditions rather than punting to the agent.</p>
+<p><strong>Good example: Handle errors explicitly</strong>:</p>
+<p>```python  theme={null}
+def process_file(path):
+    """Process a file, creating it if it doesn't exist."""
+    try:
+        with open(path) as f:
+            return f.read()
+    except FileNotFoundError:
+        # Create file with default content instead of failing
+        print(f"File {path} not found, creating default")
+        with open(path, 'w') as f:
+            f.write('')
+        return ''
+    except PermissionError:
+        # Provide alternative instead of failing
+        print(f"Cannot access {path}, using default")
+        return ''</p>
+<pre><code>
+**Bad example: Punt to the agent**:
+
+```python  theme={null}
+def process_file(path):
+    # Just fail and let the agent figure it out
+    return open(path).read()
+</code></pre>
+<p>Configuration parameters should also be justified and documented to avoid "voodoo constants" (Ousterhout's law). If you don't know the right value, how will the agent determine it?</p>
+<p><strong>Good example: Self-documenting</strong>:</p>
+<p>```python  theme={null}</p>
+<h1>HTTP requests typically complete within 30 seconds</h1>
+<h1>Longer timeout accounts for slow connections</h1>
+<p>REQUEST_TIMEOUT = 30</p>
+<h1>Three retries balances reliability vs speed</h1>
+<h1>Most intermittent failures resolve by the second retry</h1>
+<p>MAX_RETRIES = 3</p>
+<pre><code>
+**Bad example: Magic numbers**:
+
+```python  theme={null}
+TIMEOUT = 47  # Why 47?
+RETRIES = 5   # Why 5?
+</code></pre>
+<h3>Provide utility scripts</h3>
+<p>Even if your agent could write a script, pre-made scripts offer advantages:</p>
+<p><strong>Benefits of utility scripts</strong>:</p>
+<ul>
+<li>More reliable than generated code</li>
+<li>Save tokens (no need to include code in context)</li>
+<li>Save time (no code generation required)</li>
+<li>Ensure consistency across uses</li>
+</ul>
+<p><img src="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=4bbc45f2c2e0bee9f2f0d5da669bad00" alt="Bundling executable scripts alongside instruction files" data-og-width="2048" width="2048" data-og-height="1154" height="1154" data-path="images/agent-skills-executable-scripts.png" data-optimize="true" data-opv="3" srcset="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=280&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=9a04e6535a8467bfeea492e517de389f 280w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=560&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=e49333ad90141af17c0d7651cca7216b 560w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=840&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=954265a5df52223d6572b6214168c428 840w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=1100&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=2ff7a2d8f2a83ee8af132b29f10150fd 1100w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=1650&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=48ab96245e04077f4d15e9170e081cfb 1650w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=2500&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=0301a6c8b3ee879497cc5b5483177c90 2500w" /></p>
+<p>The diagram above shows how executable scripts work alongside instruction files. The instruction file (forms.md) references the script, and the agent can execute it without loading its contents into context.</p>
+<p><strong>Important distinction</strong>: Make clear in your instructions whether the agent should:</p>
+<ul>
+<li><strong>Execute the script</strong> (most common): "Run <code>analyze_form.py</code> to extract fields"</li>
+<li><strong>Read it as reference</strong> (for complex logic): "See <code>analyze_form.py</code> for the field extraction algorithm"</li>
+</ul>
+<p>For most utility scripts, execution is preferred because it's more reliable and efficient. See the <a href="#runtime-environment">Runtime environment</a> section below for details on how script execution works.</p>
+<p><strong>Example</strong>:</p>
+<p>````markdown  theme={null}</p>
+<h2>Utility scripts</h2>
+<p><strong>analyze_form.py</strong>: Extract all form fields from PDF</p>
+<pre><code class="language-bash">python scripts/analyze_form.py input.pdf &gt; fields.json
+</code></pre>
+<p>Output format:</p>
+<pre><code class="language-json">{
+  &quot;field_name&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;x&quot;: 100, &quot;y&quot;: 200},
+  &quot;signature&quot;: {&quot;type&quot;: &quot;sig&quot;, &quot;x&quot;: 150, &quot;y&quot;: 500}
+}
+</code></pre>
+<p><strong>validate_boxes.py</strong>: Check for overlapping bounding boxes</p>
+<pre><code class="language-bash">python scripts/validate_boxes.py fields.json
+# Returns: &quot;OK&quot; or lists conflicts
+</code></pre>
+<p><strong>fill_form.py</strong>: Apply field values to PDF</p>
+<pre><code class="language-bash">python scripts/fill_form.py input.pdf fields.json output.pdf
+</code></pre>
+<pre><code>
+### Use visual analysis
+
+When inputs can be rendered as images, have the agent analyze them:
+
+````markdown  theme={null}
+## Form layout analysis
+
+1. Convert PDF to images:
+   ```bash
+   python scripts/pdf_to_images.py form.pdf
+   ```
+
+2. Analyze each page image to identify form fields
+3. The agent can see field locations and types visually
+</code></pre>
+<p><Note>
+  In this example, you'd need to write the <code>pdf_to_images.py</code> script.
+</Note></p>
+<p>Agent vision capabilities help understand layouts and structures.</p>
+<h3>Create verifiable intermediate outputs</h3>
+<p>When agents perform complex, open-ended tasks, they can make mistakes. The "plan-validate-execute" pattern catches errors early by having the agent first create a plan in a structured format, then validate that plan with a script before executing it.</p>
+<p><strong>Example</strong>: Imagine asking the agent to update 50 form fields in a PDF based on a spreadsheet. Without validation, it might reference non-existent fields, create conflicting values, miss required fields, or apply updates incorrectly.</p>
+<p><strong>Solution</strong>: Use the workflow pattern shown above (PDF form filling), but add an intermediate <code>changes.json</code> file that gets validated before applying changes. The workflow becomes: analyze → <strong>create plan file</strong> → <strong>validate plan</strong> → execute → verify.</p>
+<p><strong>Why this pattern works:</strong></p>
+<ul>
+<li><strong>Catches errors early</strong>: Validation finds problems before changes are applied</li>
+<li><strong>Machine-verifiable</strong>: Scripts provide objective verification</li>
+<li><strong>Reversible planning</strong>: The agent can iterate on the plan without touching originals</li>
+<li><strong>Clear debugging</strong>: Error messages point to specific problems</li>
+</ul>
+<p><strong>When to use</strong>: Batch operations, destructive changes, complex validation rules, high-stakes operations.</p>
+<p><strong>Implementation tip</strong>: Make validation scripts verbose with specific error messages like "Field 'signature_date' not found. Available fields: customer_name, order_total, signature_date_signed" to help the agent fix issues.</p>
+<h3>Package dependencies</h3>
+<p>Skills run in the code execution environment with platform-specific limitations:</p>
+<ul>
+<li><strong>claude.ai</strong>: Can install packages from npm and PyPI and pull from GitHub repositories</li>
+<li><strong>Anthropic API</strong>: Has no network access and no runtime package installation</li>
+</ul>
+<p>List required packages in your SKILL.md and verify they're available in the <a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">code execution tool documentation</a>.</p>
+<h3>Runtime environment</h3>
+<p>Skills run in a code execution environment with filesystem access, bash commands, and code execution capabilities. For the conceptual explanation of this architecture, see <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#the-skills-architecture">The Skills architecture</a> in the overview.</p>
+<p><strong>How this affects your authoring:</strong></p>
+<p><strong>How agents access Skills:</strong></p>
+<ol>
+<li><strong>Metadata pre-loaded</strong>: At startup, the name and description from all Skills' YAML frontmatter are loaded into the system prompt</li>
+<li><strong>Files read on-demand</strong>: Agents use their file-reading tools to access SKILL.md and other files from the filesystem when needed</li>
+<li><strong>Scripts executed efficiently</strong>: Utility scripts can be executed via bash without loading their full contents into context. Only the script's output consumes tokens</li>
+<li><strong>No context penalty for large files</strong>: Reference files, data, or documentation don't consume context tokens until actually read</li>
+</ol>
+<ul>
+<li><strong>File paths matter</strong>: Agents navigate your skill directory like a filesystem. Use forward slashes (<code>reference/guide.md</code>), not backslashes</li>
+<li><strong>Name files descriptively</strong>: Use names that indicate content: <code>form_validation_rules.md</code>, not <code>doc2.md</code></li>
+<li><strong>Organize for discovery</strong>: Structure directories by domain or feature</li>
+<li>Good: <code>reference/finance.md</code>, <code>reference/sales.md</code></li>
+<li>Bad: <code>docs/file1.md</code>, <code>docs/file2.md</code></li>
+<li><strong>Bundle comprehensive resources</strong>: Include complete API docs, extensive examples, large datasets; no context penalty until accessed</li>
+<li><strong>Prefer scripts for deterministic operations</strong>: Write <code>validate_form.py</code> rather than asking the agent to generate validation code</li>
+<li><strong>Make execution intent clear</strong>:</li>
+<li>"Run <code>analyze_form.py</code> to extract fields" (execute)</li>
+<li>"See <code>analyze_form.py</code> for the extraction algorithm" (read as reference)</li>
+<li><strong>Test file access patterns</strong>: Verify the agent can navigate your directory structure by testing with real requests</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code>bigquery-skill/
+├── SKILL.md (overview, points to reference files)
+└── reference/
+    ├── finance.md (revenue metrics)
+    ├── sales.md (pipeline data)
+    └── product.md (usage analytics)
+</code></pre>
+<p>When the user asks about revenue, the agent reads SKILL.md, sees the reference to <code>reference/finance.md</code>, and invokes bash to read just that file. The sales.md and product.md files remain on the filesystem, consuming zero context tokens until needed. This filesystem-based model is what enables progressive disclosure. Agents can navigate and selectively load exactly what each task requires.</p>
+<p>For complete details on the technical architecture, see <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#how-skills-work">How Skills work</a> in the Skills overview.</p>
+<h3>MCP tool references</h3>
+<p>If your Skill uses MCP (Model Context Protocol) tools, always use fully qualified tool names to avoid "tool not found" errors.</p>
+<p><strong>Format</strong>: <code>ServerName:tool_name</code></p>
+<p><strong>Example</strong>:</p>
+<p><code>markdown  theme={null}
+Use the BigQuery:bigquery_schema tool to retrieve table schemas.
+Use the GitHub:create_issue tool to create issues.</code></p>
+<p>Where:</p>
+<ul>
+<li><code>BigQuery</code> and <code>GitHub</code> are MCP server names</li>
+<li><code>bigquery_schema</code> and <code>create_issue</code> are the tool names within those servers</li>
+</ul>
+<p>Without the server prefix, agents may fail to locate the tool, especially when multiple MCP servers are available.</p>
+<h3>Avoid assuming tools are installed</h3>
+<p>Don't assume packages are available:</p>
+<p>````markdown  theme={null}
+<strong>Bad example: Assumes installation</strong>:
+"Use the pdf library to process the file."</p>
+<p><strong>Good example: Explicit about dependencies</strong>:
+"Install required package: <code>pip install pypdf</code></p>
+<p>Then use it:
+<code>python
+from pypdf import PdfReader
+reader = PdfReader("file.pdf")</code>"
+````</p>
+<h2>Technical notes</h2>
+<h3>YAML frontmatter requirements</h3>
+<p>The SKILL.md frontmatter requires <code>name</code> (64 characters max) and <code>description</code> (1024 characters max) fields. See the <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure">Skills overview</a> for complete structure details.</p>
+<h3>Token budgets</h3>
+<p>Keep SKILL.md body under 500 lines for optimal performance. If your content exceeds this, split it into separate files using the progressive disclosure patterns described earlier. For architectural details, see the <a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#how-skills-work">Skills overview</a>.</p>
+<h2>Checklist for effective Skills</h2>
+<p>Before sharing a Skill, verify:</p>
+<h3>Core quality</h3>
+<ul>
+<li>[ ] Description is specific and includes key terms</li>
+<li>[ ] Description includes both what the Skill does and when to use it</li>
+<li>[ ] SKILL.md body is under 500 lines</li>
+<li>[ ] Additional details are in separate files (if needed)</li>
+<li>[ ] No time-sensitive information (or in "old patterns" section)</li>
+<li>[ ] Consistent terminology throughout</li>
+<li>[ ] Examples are concrete, not abstract</li>
+<li>[ ] File references are one level deep</li>
+<li>[ ] Progressive disclosure used appropriately</li>
+<li>[ ] Workflows have clear steps</li>
+</ul>
+<h3>Code and scripts</h3>
+<ul>
+<li>[ ] Scripts solve problems rather than punt to the agent</li>
+<li>[ ] Error handling is explicit and helpful</li>
+<li>[ ] No "voodoo constants" (all values justified)</li>
+<li>[ ] Required packages listed in instructions and verified as available</li>
+<li>[ ] Scripts have clear documentation</li>
+<li>[ ] No Windows-style paths (all forward slashes)</li>
+<li>[ ] Validation/verification steps for critical operations</li>
+<li>[ ] Feedback loops included for quality-critical tasks</li>
+</ul>
+<h3>Testing</h3>
+<ul>
+<li>[ ] At least three evaluations created</li>
+<li>[ ] Tested with Haiku, Sonnet, and Opus</li>
+<li>[ ] Tested with real usage scenarios</li>
+<li>[ ] Team feedback incorporated (if applicable)</li>
+</ul>
+<h2>Next steps</h2>
+<p><CardGroup cols={2}>
+  <Card title="Get started with Agent Skills" icon="rocket" href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart">
+    Create your first Skill
+  </Card></p>
+<p><Card title="Use Skills in Claude Code" icon="terminal" href="https://code.claude.com/docs/en/skills">
+    Create and manage Skills in Claude Code
+  </Card></p>
+<p><Card title="Use Skills with the API" icon="code" href="https://platform.claude.com/docs/en/build-with-claude/skills-guide">
+    Upload and use Skills programmatically
+  </Card>
+</CardGroup></p></div><div class="col-zh" lang="zh-Hant"><p><img src="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=87782ff239b297d9a9e8e1b72ed72db9" alt="Simple SKILL.md file showing YAML frontmatter and markdown body" data-og-width="2048" width="2048" data-og-height="1153" height="1153" data-path="images/agent-skills-simple-file.png" data-optimize="true" data-opv="3" srcset="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=280&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=c61cc33b6f5855809907f7fda94cd80e 280w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=560&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=90d2c0c1c76b36e8d485f49e0810dbfd 560w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=840&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=ad17d231ac7b0bea7e5b4d58fb4aeabb 840w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=1100&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=f5d0a7a3c668435bb0aee9a3a8f8c329 1100w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=1650&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=0e927c1af9de5799cfe557d12249f6e6 1650w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-simple-file.png?w=2500&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=46bbb1a51dd4c8202a470ac8c80a893d 2500w" /></p>
+<p>隨著技能成長，你可以打包額外內容，讓代理只在需要時載入：</p>
+<p><img src="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=a5e0aa41e3d53985a7e3e43668a33ea3" alt="Bundling additional reference files like reference.md and forms.md." data-og-width="2048" width="2048" data-og-height="1327" height="1327" data-path="images/agent-skills-bundling-content.png" data-optimize="true" data-opv="3" srcset="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=280&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=f8a0e73783e99b4a643d79eac86b70a2 280w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=560&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=dc510a2a9d3f14359416b706f067904a 560w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=840&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=82cd6286c966303f7dd914c28170e385 840w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=1100&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=56f3be36c77e4fe4b523df209a6824c6 1100w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=1650&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=d22b5161b2075656417d56f41a74f3dd 1650w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-bundling-content.png?w=2500&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=3dd4bdd6850ffcc96c6c45fcb0acd6eb 2500w" /></p>
+<p>完整的技能目錄結構可能看起來像這樣：</p>
+<pre><code>pdf/
+├── SKILL.md              # Main instructions (loaded when triggered)
+├── FORMS.md              # Form-filling guide (loaded as needed)
+├── reference.md          # API reference (loaded as needed)
+├── examples.md           # Usage examples (loaded as needed)
+└── scripts/
+    ├── analyze_form.py   # Utility script (executed, not loaded)
+    ├── fill_form.py      # Form filling script
+    └── validate.py       # Validation script
+</code></pre>
+<h4>模式 1：帶參考文件的高階指南</h4>
+<h2>````markdown  theme={null}</h2>
+<p>name: PDF Processing
+description: Extracts text and tables from PDF files, fills forms, and merges documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.</p>
+<hr />
+<h1>PDF Processing</h1>
+<h2>Quick start</h2>
+<p>Extract text with pdfplumber:</p>
+<pre><code class="language-python">import pdfplumber
+with pdfplumber.open(&quot;file.pdf&quot;) as pdf:
+    text = pdf.pages[0].extract_text()
+</code></pre>
+<h2>Advanced features</h2>
+<p><strong>Form filling</strong>: See <a href="FORMS.html">FORMS.md</a> for complete guide
+<strong>API reference</strong>: See <a href="REFERENCE.html">REFERENCE.md</a> for all methods
+<strong>Examples</strong>: See <a href="EXAMPLES.html">EXAMPLES.md</a> for common patterns</p>
+<pre><code>
+代理只在需要時才載入 FORMS.md、REFERENCE.md 或 EXAMPLES.md。
+
+#### 模式 2：依領域組織
+
+對涵蓋多個領域的技能，依領域組織內容，避免載入不相關的上下文。當使用者問到銷售指標時，代理只需要讀取銷售相關的 schema，而不需要財務或行銷資料。這能讓 token 使用量維持在低點，並讓上下文保持聚焦。
+
+```
+bigquery-skill/
+├── SKILL.md (overview and navigation)
+└── reference/
+    ├── finance.md (revenue, billing metrics)
+    ├── sales.md (opportunities, pipeline)
+    ├── product.md (API usage, features)
+    └── marketing.md (campaigns, attribution)
+```
+
+````markdown SKILL.md theme={null}
+# BigQuery Data Analysis
+
+## Available datasets
+
+**Finance**: Revenue, ARR, billing → See [reference/finance.md](reference/finance.md)
+**Sales**: Opportunities, pipeline, accounts → See [reference/sales.md](reference/sales.md)
+**Product**: API usage, features, adoption → See [reference/product.md](reference/product.md)
+**Marketing**: Campaigns, attribution, email → See [reference/marketing.md](reference/marketing.md)
+
+## Quick search
+
+Find specific metrics using grep:
+
+```bash
+grep -i &quot;revenue&quot; reference/finance.md
+grep -i &quot;pipeline&quot; reference/sales.md
+grep -i &quot;api usage&quot; reference/product.md
+```
+</code></pre>
+<h4>模式 3：條件式細節</h4>
+<p>顯示基礎內容，連結到進階內容：</p>
+<p>```markdown  theme={null}</p>
+<h1>DOCX Processing</h1>
+<h2>Creating documents</h2>
+<p>Use docx-js for new documents. See <a href="DOCX-JS.html">DOCX-JS.md</a>.</p>
+<h2>Editing documents</h2>
+<p>For simple edits, modify the XML directly.</p>
+<p><strong>For tracked changes</strong>: See <a href="REDLINING.html">REDLINING.md</a>
+<strong>For OOXML details</strong>: See <a href="OOXML.html">OOXML.md</a></p>
+<pre><code>
+代理只在使用者需要那些功能時，才讀取 REDLINING.md 或 OOXML.md。
+
+### 避免深層巢狀參考
+
+當檔案從其他被參考的檔案被引用時，代理可能會部分讀取檔案。遇到巢狀參考時，代理可能會用 `head -100` 之類的指令預覽內容，而不是讀取整個檔案，導致資訊不完整。
+
+**讓參考與 SKILL.md 保持一層深度**。所有參考檔案都應直接從 SKILL.md 連結，確保代理在需要時能讀到完整檔案。
+
+**壞範例：太深**：
+
+```markdown  theme={null}
+# SKILL.md
+See [advanced.md](advanced.md)...
+
+# advanced.md
+See [details.md](details.md)...
+
+# details.md
+Here's the actual information...
+</code></pre>
+<p><strong>好範例：一層深度</strong>：</p>
+<p>```markdown  theme={null}</p>
+<h1>SKILL.md</h1>
+<p><strong>Basic usage</strong>: [instructions in SKILL.md]
+<strong>Advanced features</strong>: See <a href="advanced.html">advanced.md</a>
+<strong>API reference</strong>: See <a href="reference.html">reference.md</a>
+<strong>Examples</strong>: See <a href="examples.html">examples.md</a></p>
+<pre><code>
+### 用目錄結構化較長的參考檔案
+
+對超過 100 行的參考檔案，在頂端加入目錄。這能確保代理即使透過部分讀取預覽，也能看到可用資訊的完整範圍。
+
+**範例**：
+
+```markdown  theme={null}
+# API Reference
+
+## Contents
+- Authentication and setup
+- Core methods (create, read, update, delete)
+- Advanced features (batch operations, webhooks)
+- Error handling patterns
+- Code examples
+
+## Authentication and setup
+...
+
+## Core methods
+...
+</code></pre>
+<p>代理接著可以讀取完整檔案，或視需要跳到特定章節。</p>
+<p>關於這種以檔案系統為基礎的架構如何促成漸進揭露，請見下方進階小節中的<a href="#執行環境">執行環境</a>一節。</p>
+<h2>工作流與回饋迴圈</h2>
+<h3>對複雜任務使用工作流</h3>
+<p>把複雜操作拆成清楚、依序的步驟。對特別複雜的工作流，提供代理可以複製到回應中並隨進度勾選的檢查清單。</p>
+<p><strong>範例 1：研究綜整工作流</strong>（適用於沒有程式碼的技能）：</p>
+<p>````markdown  theme={null}</p>
+<h2>Research synthesis workflow</h2>
+<p>Copy this checklist and track your progress:</p>
+<pre><code>Research Progress:
+- [ ] Step 1: Read all source documents
+- [ ] Step 2: Identify key themes
+- [ ] Step 3: Cross-reference claims
+- [ ] Step 4: Create structured summary
+- [ ] Step 5: Verify citations
+</code></pre>
+<p><strong>Step 1: Read all source documents</strong></p>
+<p>Review each document in the <code>sources/</code> directory. Note the main arguments and supporting evidence.</p>
+<p><strong>Step 2: Identify key themes</strong></p>
+<p>Look for patterns across sources. What themes appear repeatedly? Where do sources agree or disagree?</p>
+<p><strong>Step 3: Cross-reference claims</strong></p>
+<p>For each major claim, verify it appears in the source material. Note which source supports each point.</p>
+<p><strong>Step 4: Create structured summary</strong></p>
+<p>Organize findings by theme. Include:
+- Main claim
+- Supporting evidence from sources
+- Conflicting viewpoints (if any)</p>
+<p><strong>Step 5: Verify citations</strong></p>
+<p>Check that every claim references the correct source document. If citations are incomplete, return to Step 3.</p>
+<pre><code>
+這個範例展示了工作流如何套用於不需要程式碼的分析任務。檢查清單模式適用於任何複雜、多步驟的流程。
+
+**範例 2：PDF 表單填寫工作流**（適用於有程式碼的技能）：
+
+````markdown  theme={null}
+## PDF form filling workflow
+
+Copy this checklist and check off items as you complete them:
+
+```
+Task Progress:
+- [ ] Step 1: Analyze the form (run analyze_form.py)
+- [ ] Step 2: Create field mapping (edit fields.json)
+- [ ] Step 3: Validate mapping (run validate_fields.py)
+- [ ] Step 4: Fill the form (run fill_form.py)
+- [ ] Step 5: Verify output (run verify_output.py)
+```
+
+**Step 1: Analyze the form**
+
+Run: `python scripts/analyze_form.py input.pdf`
+
+This extracts form fields and their locations, saving to `fields.json`.
+
+**Step 2: Create field mapping**
+
+Edit `fields.json` to add values for each field.
+
+**Step 3: Validate mapping**
+
+Run: `python scripts/validate_fields.py fields.json`
+
+Fix any validation errors before continuing.
+
+**Step 4: Fill the form**
+
+Run: `python scripts/fill_form.py input.pdf fields.json output.pdf`
+
+**Step 5: Verify output**
+
+Run: `python scripts/verify_output.py output.pdf`
+
+If verification fails, return to Step 2.
+</code></pre>
+<p>清楚的步驟能防止代理跳過關鍵驗證。檢查清單幫助你與代理在多步驟工作流中追蹤進度。</p>
+<h3>實作回饋迴圈</h3>
+<p><strong>常見模式</strong>：執行驗證器 → 修復錯誤 → 重複</p>
+<p>這個模式能大幅提升輸出品質。</p>
+<p><strong>範例 1：風格指南符合度</strong>（適用於沒有程式碼的技能）：</p>
+<p>```markdown  theme={null}</p>
+<h2>Content review process</h2>
+<ol>
+<li>Draft your content following the guidelines in STYLE_GUIDE.md</li>
+<li>Review against the checklist:
+   - Check terminology consistency
+   - Verify examples follow the standard format
+   - Confirm all required sections are present</li>
+<li>If issues found:
+   - Note each issue with specific section reference
+   - Revise the content
+   - Review the checklist again</li>
+<li>Only proceed when all requirements are met</li>
+<li>Finalize and save the document</li>
+</ol>
+<pre><code>
+這展示了使用參考文件而非腳本的驗證迴圈模式。這裡的「validator」是 STYLE\_GUIDE.md，代理透過閱讀與比對來執行檢查。
+
+**範例 2：文件編輯流程**（適用於有程式碼的技能）：
+
+```markdown  theme={null}
+## Document editing process
+
+1. Make your edits to `word/document.xml`
+2. **Validate immediately**: `python ooxml/scripts/validate.py unpacked_dir/`
+3. If validation fails:
+   - Review the error message carefully
+   - Fix the issues in the XML
+   - Run validation again
+4. **Only proceed when validation passes**
+5. Rebuild: `python ooxml/scripts/pack.py unpacked_dir/ output.docx`
+6. Test the output document
+</code></pre>
+<p>驗證迴圈能及早捕捉錯誤。</p>
+<h2>內容準則</h2>
+<h3>避免對時間敏感的資訊</h3>
+<p>不要包含會過時的資訊：</p>
+<p><strong>壞範例：對時間敏感</strong>（會變成錯的）：</p>
+<p>```markdown  theme={null}
+If you're doing this before August 2025, use the old API.
+After August 2025, use the new API.</p>
+<pre><code>
+**好範例**（使用「舊模式」小節）：
+
+```markdown  theme={null}
+## Current method
+
+Use the v2 API endpoint: `api.example.com/v2/messages`
+
+## Old patterns
+
+&lt;details&gt;
+&lt;summary&gt;Legacy v1 API (deprecated 2025-08)&lt;/summary&gt;
+
+The v1 API used: `api.example.com/v1/messages`
+
+This endpoint is no longer supported.
+&lt;/details&gt;
+</code></pre>
+<p>舊模式小節提供歷史脈絡，而不讓主要內容變得雜亂。</p>
+<h3>使用一致的術語</h3>
+<p>選擇一個詞，並在整個技能中一致使用：</p>
+<p><strong>好——一致</strong>：</p>
+<ul>
+<li>永遠用 "API endpoint"</li>
+<li>永遠用 "field"</li>
+<li>永遠用 "extract"</li>
+</ul>
+<p><strong>壞——不一致</strong>：</p>
+<ul>
+<li>混用 "API endpoint"、"URL"、"API route"、"path"</li>
+<li>混用 "field"、"box"、"element"、"control"</li>
+<li>混用 "extract"、"pull"、"get"、"retrieve"</li>
+</ul>
+<p>一致性幫助代理理解並遵循指令。</p>
+<h2>常見模式</h2>
+<h3>範本模式</h3>
+<p>為輸出格式提供範本。讓嚴格程度對應你的需求。</p>
+<p><strong>對嚴格的需求</strong>（像是 API 回應或資料格式）：</p>
+<p>````markdown  theme={null}</p>
+<h2>Report structure</h2>
+<p>ALWAYS use this exact template structure:</p>
+<pre><code class="language-markdown"># [Analysis Title]
+
+## Executive summary
+[One-paragraph overview of key findings]
+
+## Key findings
+- Finding 1 with supporting data
+- Finding 2 with supporting data
+- Finding 3 with supporting data
+
+## Recommendations
+1. Specific actionable recommendation
+2. Specific actionable recommendation
+</code></pre>
+<pre><code>
+**對彈性的指引**（當調整有用時）：
+
+````markdown  theme={null}
+## Report structure
+
+Here is a sensible default format, but use your best judgment based on the analysis:
+
+```markdown
+# [Analysis Title]
+
+## Executive summary
+[Overview]
+
+## Key findings
+[Adapt sections based on what you discover]
+
+## Recommendations
+[Tailor to the specific context]
+```
+
+Adjust sections as needed for the specific analysis type.
+</code></pre>
+<h3>範例模式</h3>
+<p>對輸出品質取決於看到範例的技能，提供輸入／輸出配對，就像一般的 prompt 一樣：</p>
+<p>````markdown  theme={null}</p>
+<h2>Commit message format</h2>
+<p>Generate commit messages following these examples:</p>
+<p><strong>Example 1:</strong>
+Input: Added user authentication with JWT tokens
+Output:</p>
+<pre><code>feat(auth): implement JWT-based authentication
+
+Add login endpoint and token validation middleware
+</code></pre>
+<p><strong>Example 2:</strong>
+Input: Fixed bug where dates displayed incorrectly in reports
+Output:</p>
+<pre><code>fix(reports): correct date formatting in timezone conversion
+
+Use UTC timestamps consistently across report generation
+</code></pre>
+<p><strong>Example 3:</strong>
+Input: Updated dependencies and refactored error handling
+Output:</p>
+<pre><code>chore: update dependencies and refactor error handling
+
+- Upgrade lodash to 4.17.21
+- Standardize error response format across endpoints
+</code></pre>
+<p>Follow this style: type(scope): brief description, then detailed explanation.</p>
+<pre><code>
+範例比單獨的描述更能幫助代理理解期望的風格與細節程度。
+
+### 條件式工作流模式
+
+引導代理走過決策點：
+
+```markdown  theme={null}
+## Document modification workflow
+
+1. Determine the modification type:
+
+   **Creating new content?** → Follow &quot;Creation workflow&quot; below
+   **Editing existing content?** → Follow &quot;Editing workflow&quot; below
+
+2. Creation workflow:
+   - Use docx-js library
+   - Build document from scratch
+   - Export to .docx format
+
+3. Editing workflow:
+   - Unpack existing document
+   - Modify XML directly
+   - Validate after each change
+   - Repack when complete
+```
+
+&lt;Tip&gt;
+  如果工作流變大或因為步驟眾多而變複雜，考慮把它們移到獨立檔案，並告訴代理依手邊的任務讀取適當的檔案。
+&lt;/Tip&gt;
+
+## 評估與疊代
+
+### 先建立評估
+
+**在撰寫大量文件之前，先建立評估。**這能確保你的技能解決真實問題，而不是把想像中的問題寫成文件。
+
+**評估驅動開發：**
+
+1. **找出缺口**：在沒有技能的情況下，用代表性的任務執行你的代理。記錄具體的失敗或缺漏的上下文
+2. **建立評估**：建立三個能測試這些缺口的場景
+3. **確立基線**：在沒有技能的情況下衡量代理的表現
+4. **撰寫最小指令**：只建立足以處理缺口並通過評估的內容
+5. **疊代**：執行評估、與基線比較，並調整
+
+這個方法確保你解決的是實際問題，而不是預測可能永遠不會發生的需求。
+
+**評估結構**：
+
+```json  theme={null}
+{
+  &quot;skills&quot;: [&quot;pdf-processing&quot;],
+  &quot;query&quot;: &quot;Extract all text from this PDF file and save it to output.txt&quot;,
+  &quot;files&quot;: [&quot;test-files/document.pdf&quot;],
+  &quot;expected_behavior&quot;: [
+    &quot;Successfully reads the PDF file using an appropriate PDF processing library or command-line tool&quot;,
+    &quot;Extracts text content from all pages in the document without missing any pages&quot;,
+    &quot;Saves the extracted text to a file named output.txt in a clear, readable format&quot;
+  ]
+}
+```
+
+&lt;Note&gt;
+  這個範例展示了一種資料驅動的評估，帶有簡單的測試評分標準。我們目前沒有提供執行這些評估的內建方式。使用者可以建立自己的評估系統。評估是你衡量技能有效性的真相來源。
+&lt;/Note&gt;
+
+### 與代理一起疊代式開發技能
+
+最有效的技能開發流程涉及代理本身。與一個實例（「Agent A」）合作建立一個會被其他實例（「Agent B」）使用的技能。Agent A 幫你設計並調整指令，Agent B 在真實任務中測試它們。這之所以可行，是因為底層模型既理解如何撰寫有效的代理指令，也知道代理需要哪些資訊。
+
+**建立一個新技能：**
+
+1. **在沒有技能的情況下完成任務**：用正常的 prompt 與 Agent A 一起解決問題。工作過程中，你會自然提供上下文、解釋偏好、分享程序性知識。注意你重複提供了哪些資訊。
+
+2. **找出可重用的模式**：完成任務後，找出你提供的哪些上下文對未來類似的任務有用。
+
+   **範例**：如果你做了一次 BigQuery 分析，你可能提供了資料表名稱、欄位定義、篩選規則（像是「永遠排除測試帳號」），以及常見的查詢模式。
+
+3. **請 Agent A 建立技能**：「建立一個捕捉我們剛剛使用的 BigQuery 分析模式的技能。包含資料表 schema、命名慣例，以及關於篩選測試帳號的規則。」
+
+   &lt;Tip&gt;
+     現代代理天生就理解技能格式與結構。你不需要特殊的 system prompt 或「writing skills」技能來獲得建立技能的協助。只要請代理建立技能，它就會產生結構正確的 SKILL.md 內容，帶有適當的 frontmatter 與本體內容。
+   &lt;/Tip&gt;
+
+4. **檢查簡潔度**：確認 Agent A 沒有加入不必要的解釋。詢問：「移除關於 win rate 是什麼意思的解釋——代理已經知道了。」
+
+5. **改善資訊架構**：請 Agent A 更有效地組織內容。例如：「把這個組織成資料表 schema 放在獨立的參考檔案。我們之後可能會加入更多資料表。」
+
+6. **在類似的任務上測試**：在相關的使用案例上，用 Agent B（一個載入技能的乾淨實例）使用這個技能。觀察 Agent B 是否找到正確資訊、正確套用規則，並成功處理任務。
+
+7. **依觀察疊代**：如果 Agent B 卡住或漏掉某些東西，帶著具體細節回到 Agent A：「當代理使用這個技能時，它忘了用日期篩選 Q4。我們該加一個關於日期篩選模式的小節嗎？」
+
+**對既有技能疊代：**
+
+同樣的階層模式在改善技能時會持續。你在以下之間交替：
+
+* **與 Agent A 合作**（協助調整技能的專家）
+* **用 Agent B 測試**（使用技能執行真實工作的代理）
+* **觀察 Agent B 的行為**，並把洞察帶回給 Agent A
+
+1. **在真實工作流中使用技能**：給 Agent B（已載入技能）實際任務，而不是測試場景
+
+2. **觀察 Agent B 的行為**：記下它在哪裡卡住、成功，或做出意料之外的選擇
+
+   **範例觀察**：「當我請 Agent B 做區域銷售報告時，它寫了查詢，卻忘了濾掉測試帳號，即使技能提到了這條規則。」
+
+3. **回到 Agent A 尋求改善**：分享目前的 SKILL.md 並描述你觀察到的現象。詢問：「我注意到當我請 Agent B 做區域報告時，它忘了濾掉測試帳號。技能有提到篩選，但可能還不夠顯眼？」
+
+4. **審查 Agent A 的建議**：Agent A 可能建議重新組織讓規則更顯眼、使用更強的語言（像是「MUST filter」而非「always filter」），或重構工作流小節。
+
+5. **套用並測試變更**：用 Agent A 的調整更新技能，然後在類似的請求上再次用 Agent B 測試
+
+6. **依使用情況重複**：當你遇到新的情境時，持續這個觀察-調整-測試循環。每一次疊代都是根據真實的代理行為（而非假設）來改善技能。
+
+**收集團隊回饋：**
+
+1. 與同事分享技能，並觀察他們的使用情況
+2. 詢問：技能是否在預期時觸發？指令清楚嗎？缺少什麼？
+3. 把回饋納入，以處理你自己使用模式中的盲點
+
+**這個方法為何有效**：Agent A 理解代理的需求，你提供領域專業，Agent B 透過真實使用揭露缺口，而疊代式調整根據觀察到的行為（而非假設）改善技能。
+
+### 觀察代理如何導覽技能
+
+當你對技能疊代時，注意代理在實務中實際如何使用它們。留意：
+
+* **意料之外的探索路徑**：代理是否以你沒預料到的順序讀取檔案？這可能表示你的結構不如你想像中直覺
+* **漏掉的連結**：代理是否沒有遵循指向重要檔案的參考？你的連結可能需要更明確或更顯眼
+* **過度依賴某些小節**：如果代理重複讀取同一個檔案，考慮那些內容是否應該放進主要 SKILL.md
+* **被忽略的內容**：如果代理從未存取某個打包的檔案，它可能是多餘的，或是在主要指令中沒有被清楚提示
+
+根據這些觀察（而非假設）疊代。技能 metadata 中的 `name` 與 `description` 特別關鍵。代理在決定是否要對目前任務觸發這個技能時會用到它們。確保它們清楚描述技能做什麼以及何時該使用。
+
+## 要避免的反模式
+
+### 避免 Windows 風格路徑
+
+一律在檔案路徑中使用正斜線，即使在 Windows 上也是：
+
+* ✓ **好**：`scripts/helper.py`、`reference/guide.md`
+* ✗ **避免**：`scripts\helper.py`、`reference\guide.md`
+
+Unix 風格路徑在所有平台上都能運作，而 Windows 風格路徑在 Unix 系統上會造成錯誤。
+
+### 避免提供太多選項
+
+除非必要，否則不要提出多種做法：
+
+````markdown  theme={null}
+**Bad example: Too many choices** (confusing):
+&quot;You can use pypdf, or pdfplumber, or PyMuPDF, or pdf2image, or...&quot;
+
+**Good example: Provide a default** (with escape hatch):
+&quot;Use pdfplumber for text extraction:
+```python
+import pdfplumber
+```
+
+For scanned PDFs requiring OCR, use pdf2image with pytesseract instead.&quot;
+</code></pre>
+<h2>進階：帶可執行程式碼的技能</h2>
+<p>下方小節聚焦於包含可執行腳本的技能。如果你的技能只用 markdown 指令，跳到<a href="#有效技能檢查清單">有效技能檢查清單</a>。</p>
+<h3>解決問題，不要推給代理</h3>
+<p>撰寫技能腳本時，要處理錯誤情況，而不是把問題推給代理。</p>
+<p><strong>好範例：明確處理錯誤</strong>：</p>
+<p>```python  theme={null}
+def process_file(path):
+    """Process a file, creating it if it doesn't exist."""
+    try:
+        with open(path) as f:
+            return f.read()
+    except FileNotFoundError:
+        # Create file with default content instead of failing
+        print(f"File {path} not found, creating default")
+        with open(path, 'w') as f:
+            f.write('')
+        return ''
+    except PermissionError:
+        # Provide alternative instead of failing
+        print(f"Cannot access {path}, using default")
+        return ''</p>
+<pre><code>
+**壞範例：推給代理**：
+
+```python  theme={null}
+def process_file(path):
+    # Just fail and let the agent figure it out
+    return open(path).read()
+</code></pre>
+<p>設定參數也應該說明理由並寫上文件，以避免「巫毒常數」（Ousterhout 定律）。如果你不知道正確的值，代理要怎麼決定？</p>
+<p><strong>好範例：自我文件化</strong>：</p>
+<p>```python  theme={null}</p>
+<h1>HTTP requests typically complete within 30 seconds</h1>
+<h1>Longer timeout accounts for slow connections</h1>
+<p>REQUEST_TIMEOUT = 30</p>
+<h1>Three retries balances reliability vs speed</h1>
+<h1>Most intermittent failures resolve by the second retry</h1>
+<p>MAX_RETRIES = 3</p>
+<pre><code>
+**壞範例：魔術數字**：
+
+```python  theme={null}
+TIMEOUT = 47  # Why 47?
+RETRIES = 5   # Why 5?
+</code></pre>
+<h3>提供公用程式腳本</h3>
+<p>即使你的代理可以自己寫腳本，預先做好的腳本仍提供優勢：</p>
+<p><strong>公用程式腳本的好處</strong>：</p>
+<ul>
+<li>比產生的程式碼更可靠</li>
+<li>節省 tokens（不需要把程式碼放進上下文）</li>
+<li>節省時間（不需要產生程式碼）</li>
+<li>確保跨使用情境一致</li>
+</ul>
+<p><img src="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=4bbc45f2c2e0bee9f2f0d5da669bad00" alt="Bundling executable scripts alongside instruction files" data-og-width="2048" width="2048" data-og-height="1154" height="1154" data-path="images/agent-skills-executable-scripts.png" data-optimize="true" data-opv="3" srcset="https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=280&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=9a04e6535a8467bfeea492e517de389f 280w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=560&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=e49333ad90141af17c0d7651cca7216b 560w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=840&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=954265a5df52223d6572b6214168c428 840w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=1100&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=2ff7a2d8f2a83ee8af132b29f10150fd 1100w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=1650&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=48ab96245e04077f4d15e9170e081cfb 1650w, https://mintcdn.com/anthropic-claude-docs/4Bny2bjzuGBK7o00/images/agent-skills-executable-scripts.png?w=2500&fit=max&auto=format&n=4Bny2bjzuGBK7o00&q=85&s=0301a6c8b3ee879497cc5b5483177c90 2500w" /></p>
+<p>上方的圖展示了可執行腳本如何與指令檔案並行運作。指令檔案（forms.md）參考腳本，而代理可以在不把內容載入上下文的情況下執行它。</p>
+<p><strong>重要區別</strong>：在你的指令中清楚說明代理應該：</p>
+<ul>
+<li><strong>執行腳本</strong>（最常見）："Run <code>analyze_form.py</code> to extract fields"</li>
+<li><strong>把它當作參考閱讀</strong>（對複雜邏輯）："See <code>analyze_form.py</code> for the field extraction algorithm"</li>
+</ul>
+<p>對大多數公用程式腳本，執行是優先選項，因為它更可靠且更有效率。關於腳本執行如何運作的細節，請見下方的<a href="#執行環境">執行環境</a>小節。</p>
+<p><strong>範例</strong>：</p>
+<p>````markdown  theme={null}</p>
+<h2>Utility scripts</h2>
+<p><strong>analyze_form.py</strong>: Extract all form fields from PDF</p>
+<pre><code class="language-bash">python scripts/analyze_form.py input.pdf &gt; fields.json
+</code></pre>
+<p>Output format:</p>
+<pre><code class="language-json">{
+  &quot;field_name&quot;: {&quot;type&quot;: &quot;text&quot;, &quot;x&quot;: 100, &quot;y&quot;: 200},
+  &quot;signature&quot;: {&quot;type&quot;: &quot;sig&quot;, &quot;x&quot;: 150, &quot;y&quot;: 500}
+}
+</code></pre>
+<p><strong>validate_boxes.py</strong>: Check for overlapping bounding boxes</p>
+<pre><code class="language-bash">python scripts/validate_boxes.py fields.json
+# Returns: &quot;OK&quot; or lists conflicts
+</code></pre>
+<p><strong>fill_form.py</strong>: Apply field values to PDF</p>
+<pre><code class="language-bash">python scripts/fill_form.py input.pdf fields.json output.pdf
+</code></pre>
+<pre><code>
+### 使用視覺分析
+
+當輸入可以渲染成圖片時，讓代理分析它們：
+
+````markdown  theme={null}
+## Form layout analysis
+
+1. Convert PDF to images:
+   ```bash
+   python scripts/pdf_to_images.py form.pdf
+   ```
+
+2. Analyze each page image to identify form fields
+3. The agent can see field locations and types visually
+</code></pre>
+<p><Note>
+  在這個範例中，你需要撰寫 <code>pdf_to_images.py</code> 腳本。
+</Note></p>
+<p>代理的視覺能力有助於理解版面與結構。</p>
+<h3>建立可驗證的中間輸出</h3>
+<p>當代理執行複雜、開放式的任務時，它們可能犯錯。「計畫-驗證-執行」模式讓代理先用結構化格式建立計畫，再用腳本驗證該計畫，然後才執行，藉此及早捕捉錯誤。</p>
+<p><strong>範例</strong>：想像請代理根據一份試算表更新 PDF 中的 50 個表單欄位。沒有驗證的話，它可能會引用不存在的欄位、建立衝突的值、漏掉必填欄位，或錯誤地套用更新。</p>
+<p><strong>解決方案</strong>：使用上面展示的工作流模式（PDF 表單填寫），但加入一個在套用變更前先被驗證的中間 <code>changes.json</code> 檔案。工作流變成：分析 → <strong>建立計畫檔案</strong> → <strong>驗證計畫</strong> → 執行 → 驗證。</p>
+<p><strong>這個模式為何有效：</strong></p>
+<ul>
+<li><strong>及早捕捉錯誤</strong>：驗證在變更套用前就發現問題</li>
+<li><strong>機器可驗證</strong>：腳本提供客觀的驗證</li>
+<li><strong>可逆的計畫</strong>：代理可以在不觸碰原檔的情況下對計畫疊代</li>
+<li><strong>清楚的除錯</strong>：錯誤訊息指向特定問題</li>
+</ul>
+<p><strong>使用時機</strong>：批次操作、破壞性變更、複雜的驗證規則、高風險操作。</p>
+<p><strong>實作提示</strong>：讓驗證腳本詳細，帶有特定的錯誤訊息，像是 "Field 'signature_date' not found. Available fields: customer_name, order_total, signature_date_signed"，以幫助代理修復問題。</p>
+<h3>打包相依套件</h3>
+<p>技能在程式碼執行環境中執行，帶有平台特定限制：</p>
+<ul>
+<li><strong>claude.ai</strong>：可以從 npm 與 PyPI 安裝套件，並從 GitHub 儲存庫拉取</li>
+<li><strong>Anthropic API</strong>：沒有網路存取，也沒有執行期套件安裝</li>
+</ul>
+<p>在 SKILL.md 中列出所需的套件，並確認它們在<a href="https://platform.claude.com/docs/en/agents-and-tools/tool-use/code-execution-tool">程式碼執行工具文件</a>中可用。</p>
+<h3>執行環境</h3>
+<p>技能在帶有檔案系統存取、bash 指令與程式碼執行能力的程式碼執行環境中執行。關於這個架構的概念說明，請見總覽中的<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#the-skills-architecture">技能架構</a>。</p>
+<p><strong>這如何影響你的撰寫：</strong></p>
+<p><strong>代理如何存取技能：</strong></p>
+<ol>
+<li><strong>Metadata 預先載入</strong>：啟動時，所有技能 YAML frontmatter 中的 name 與 description 會被載入 system prompt</li>
+<li><strong>按需讀取檔案</strong>：代理使用檔案讀取工具，在需要時從檔案系統存取 SKILL.md 與其他檔案</li>
+<li><strong>有效率地執行腳本</strong>：公用程式腳本可以透過 bash 執行，而不需要把它們的完整內容載入上下文。只有腳本的輸出消耗 tokens</li>
+<li><strong>大型檔案沒有上下文懲罰</strong>：參考檔案、資料或文件在實際讀取前不消耗上下文 tokens</li>
+</ol>
+<ul>
+<li><strong>檔案路徑很重要</strong>：代理會像導覽檔案系統一樣導覽你的技能目錄。使用正斜線（<code>reference/guide.md</code>），不要用反斜線</li>
+<li><strong>具描述性地命名檔案</strong>：使用能指出內容的名稱：<code>form_validation_rules.md</code>，而不是 <code>doc2.md</code></li>
+<li><strong>為探索而組織</strong>：依領域或功能組織目錄</li>
+<li>好：<code>reference/finance.md</code>、<code>reference/sales.md</code></li>
+<li>壞：<code>docs/file1.md</code>、<code>docs/file2.md</code></li>
+<li><strong>打包完整資源</strong>：包含完整的 API 文件、大量的範例、大型資料集；在存取前沒有上下文懲罰</li>
+<li><strong>對確定性操作偏好腳本</strong>：撰寫 <code>validate_form.py</code>，而不是要求代理產生驗證程式碼</li>
+<li><strong>讓執行意圖清楚</strong>：</li>
+<li>"Run <code>analyze_form.py</code> to extract fields"（執行）</li>
+<li>"See <code>analyze_form.py</code> for the extraction algorithm"（作為參考閱讀）</li>
+<li><strong>測試檔案存取模式</strong>：用真實請求測試，確認代理能導覽你的目錄結構</li>
+</ul>
+<p><strong>範例：</strong></p>
+<pre><code>bigquery-skill/
+├── SKILL.md (overview, points to reference files)
+└── reference/
+    ├── finance.md (revenue metrics)
+    ├── sales.md (pipeline data)
+    └── product.md (usage analytics)
+</code></pre>
+<p>當使用者問到營收時，代理讀取 SKILL.md、看到指向 <code>reference/finance.md</code> 的參考，並呼叫 bash 只讀取那個檔案。sales.md 與 product.md 留在檔案系統上，在需要前不消耗任何上下文 tokens。這個以檔案系統為基礎的模型正是漸進揭露之所以可行的原因。代理可以導覽並選擇性地載入每個任務所需的確切內容。</p>
+<p>技術架構的完整細節，請見技能總覽中的<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#how-skills-work">技能如何運作</a>。</p>
+<h3>MCP 工具參考</h3>
+<p>如果你的技能使用 MCP（Model Context Protocol）工具，永遠使用完整限定的工具名稱，以避免「tool not found」錯誤。</p>
+<p><strong>格式</strong>：<code>ServerName:tool_name</code></p>
+<p><strong>範例</strong>：</p>
+<p><code>markdown  theme={null}
+Use the BigQuery:bigquery_schema tool to retrieve table schemas.
+Use the GitHub:create_issue tool to create issues.</code></p>
+<p>其中：</p>
+<ul>
+<li><code>BigQuery</code> 與 <code>GitHub</code> 是 MCP server 名稱</li>
+<li><code>bigquery_schema</code> 與 <code>create_issue</code> 是這些 server 內的工具名稱</li>
+</ul>
+<p>沒有 server 前綴時，代理可能找不到工具，特別是在有多個 MCP server 可用時。</p>
+<h3>避免假設工具已安裝</h3>
+<p>不要假設套件已可用：</p>
+<p>````markdown  theme={null}
+<strong>Bad example: Assumes installation</strong>:
+"Use the pdf library to process the file."</p>
+<p><strong>Good example: Explicit about dependencies</strong>:
+"Install required package: <code>pip install pypdf</code></p>
+<p>Then use it:
+<code>python
+from pypdf import PdfReader
+reader = PdfReader("file.pdf")</code>"
+````</p>
+<h2>技術備註</h2>
+<h3>YAML frontmatter 需求</h3>
+<p>SKILL.md 的 frontmatter 需要 <code>name</code>（最多 64 字元）與 <code>description</code>（最多 1024 字元）欄位。完整的結構細節請見<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure">技能總覽</a>。</p>
+<h3>Token 預算</h3>
+<p>讓 SKILL.md 本體保持在 500 行以內以獲得最佳效能。如果你的內容超過這個數字，用先前描述的漸進揭露模式把它拆到獨立檔案。架構細節請見<a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#how-skills-work">技能總覽</a>。</p>
+<h2>有效技能檢查清單</h2>
+<p>分享技能之前，驗證：</p>
+<h3>核心品質</h3>
+<ul>
+<li>[ ] Description 具體且包含關鍵詞</li>
+<li>[ ] Description 同時包含技能做什麼與何時使用</li>
+<li>[ ] SKILL.md 本體在 500 行以內</li>
+<li>[ ] 額外細節放在獨立檔案（若需要）</li>
+<li>[ ] 沒有對時間敏感的資訊（或放在「舊模式」小節）</li>
+<li>[ ] 全程使用一致的術語</li>
+<li>[ ] 範例具體，而非抽象</li>
+<li>[ ] 檔案參考維持一層深度</li>
+<li>[ ] 適當地使用漸進揭露</li>
+<li>[ ] 工作流有清楚的步驟</li>
+</ul>
+<h3>程式碼與腳本</h3>
+<ul>
+<li>[ ] 腳本解決問題，而不是推給代理</li>
+<li>[ ] 錯誤處理明確且有幫助</li>
+<li>[ ] 沒有「巫毒常數」（所有值都有理由）</li>
+<li>[ ] 所需套件列在指令中並驗證可用</li>
+<li>[ ] 腳本有清楚的文件</li>
+<li>[ ] 沒有 Windows 風格路徑（全部用正斜線）</li>
+<li>[ ] 對關鍵操作有驗證／確認步驟</li>
+<li>[ ] 對品質關鍵任務包含回饋迴圈</li>
+</ul>
+<h3>測試</h3>
+<ul>
+<li>[ ] 建立至少三個評估</li>
+<li>[ ] 用 Haiku、Sonnet 與 Opus 測試過</li>
+<li>[ ] 用真實使用情境測試過</li>
+<li>[ ] 已納入團隊回饋（若適用）</li>
+</ul>
+<h2>下一步</h2>
+<p><CardGroup cols={2}>
+  <Card title="Get started with Agent Skills" icon="rocket" href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/quickstart">
+    Create your first Skill
+  </Card></p>
+<p><Card title="Use Skills in Claude Code" icon="terminal" href="https://code.claude.com/docs/en/skills">
+    Create and manage Skills in Claude Code
+  </Card></p>
+<p><Card title="Use Skills with the API" icon="code" href="https://platform.claude.com/docs/en/build-with-claude/skills-guide">
+    Upload and use Skills programmatically
+  </Card>
+</CardGroup></p></div></div>
+
+</div>
+</body>
+</html>

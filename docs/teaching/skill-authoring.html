@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>如何寫 Skill · Skill Authoring · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">← 首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="index.html">教學中心</a>
+</div>
+<header>
+  <h1>如何寫 Skill</h1>
+  <div class="subtitle">meta 技能：把「寫技能」本身當成 TDD 來做——先有會失敗的測試，再寫技能</div>
+</header>
+<div class="guide">
+
+<h2>最重要的信念：寫技能就是 TDD</h2>
+<p>Superpowers 的 <code>writing-skills</code> 技能有一個鐵律：<strong>沒有失敗的測試，就不准有技能。</strong></p>
+<p>翻譯成白話：如果你沒看過「沒有這個技能時，代理會搞砸」，你就不知道這個技能教的到底是不是對的東西。流程是——</p>
+<ol>
+  <li><strong>RED</strong>：先寫一個壓力情境（用子代理跑測試），看代理在沒有技能時怎麼失敗、用什麼藉口合理化。</li>
+  <li><strong>GREEN</strong>：寫最小技能，只針對那些具體的失敗模式。</li>
+  <li><strong>REFACTOR</strong>：再跑一次，代理找到新藉口？補上去，再測，直到打不穿。</li>
+</ol>
+
+<h2>技能是什麼、不是什麼</h2>
+<ul>
+  <li><strong>是</strong>：可重用的技術、模式、工具的參考指南。</li>
+  <li><strong>不是</strong>：你某次解決問題的敘事。</li>
+</ul>
+
+<h2>SKILL.md 的長相</h2>
+<p>每個技能是一個資料夾，內含 <code>SKILL.md</code>（必要）+ 支援檔案（需要才放）。</p>
+<pre>skills/
+  skill-name/
+    SKILL.md              # 主文件（必要）
+    supporting-file.*     # 只有在需要時才加</pre>
+<p>frontmatter 只有兩個必填欄位：<code>name</code> 與 <code>description</code>（合計最多 1024 字元）。</p>
+
+<h2>description 的唯一任務：決定「何時用」</h2>
+<p>這是 Superpowers 花最多力氣講的地方。description 是未來代理「要不要讀這個技能」的判斷依據，所以：</p>
+<ul>
+  <li>以「Use when...」開頭，只描述<strong>觸發情境</strong>。</li>
+  <li><strong>絕對不要</strong>在 description 裡總結技能的工作流。測試發現：description 一旦總結流程，代理就會照著 description 做，而不去讀技能正文——技能正文就變成被跳過的文件。</li>
+  <li>用具體的觸發詞、症狀、情境，而不是技術名詞或過程。</li>
+</ul>
+<pre># ❌ 不好：總結了工作流
+description: Use when executing plans - dispatches subagent per task with code review between tasks
+
+# ✅ 好：只寫觸發情境
+description: Use when executing implementation plans with independent tasks in the current session</pre>
+
+<h2>針對失敗形式，選擇正確的寫法</h2>
+<p>同一段建議，對某種失敗有效、對另一種會適得其反：</p>
+<table>
+<tr><th>基線失敗</th><th>對的寫法</th><th>錯的寫法</th></tr>
+<tr><td>壓力下違反規則（知道但不做）</td><td>禁令 + 合理化藉口表 + 紅旗</td><td>軟性建議（「盡量...」「考慮...」）</td></tr>
+<tr><td>輸出形狀不對（膨脹、把結論藏起來）</td><td>正向配方：直接定義輸出該長什麼樣</td><td>禁令清單（「不要重述」）</td></tr>
+<tr><td>漏掉必要元素</td><td>結構性：在範本裡設 REQUIRED 欄位</td><td>在範本旁邊寫散文提醒</td></tr>
+</table>
+
+<h2>堵住每個漏洞</h2>
+<p>紀律類技能（像 TDD）要能抵抗合理化。幾招：</p>
+<ul>
+  <li><strong>明確禁止每個繞路</strong>：不只說「寫測試前先寫程式？刪掉」，要補「不要留著當參考」「不要邊寫測試邊改寫它」「刪掉就是刪掉」。</li>
+  <li><strong>建立合理化藉口表</strong>：把測試時抓到的每個藉口寫成一張「藉口 → 事實」表。</li>
+  <li><strong>建紅旗清單</strong>：讓代理能自我檢查「我是不是正在合理化」。</li>
+</ul>
+
+<h2>多長才算好</h2>
+<ul>
+  <li>開場工作流：<code>&lt;150</code> 字</li>
+  <li>常用技能：<code>&lt;200</code> 字</li>
+  <li>其他技能：<code>&lt;500</code> 字</li>
+</ul>
+<p>重的參考資料（API docs、語法大全）拆到獨立檔案，別塞進 SKILL.md。技能的 token 成本是永久的——每個用到它的 session 都要付。</p>
+
+<h2>對本教學站的意義</h2>
+<p>本站每個技能頁面左欄英文、右欄繁中，逐段對照。如果你想為自己的專案寫新技能，<code>writing-skills</code> 的完整規則在 <a href="../../writing-skills/SKILL.html">writing-skills 技能頁</a>；想理解它怎麼測技能，見附屬的 <a href="../../writing-skills/testing-skills-with-subagents.html">testing-skills-with-subagents</a>。</p>
+
+</div>
+<footer>
+  <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
+  <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>
+</footer>
+</div>
+</body>
+</html>

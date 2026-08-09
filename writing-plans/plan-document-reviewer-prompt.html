@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>writing-plans / plan-document-reviewer-prompt · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 writing-plans</a> 
+</div>
+<h1>plan-document-reviewer-prompt</h1>
+<div class="subtitle">writing-plans · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Plan Document Reviewer Prompt Template</h1></div><div class="col-zh" lang="zh-Hant"><h1>計畫文件審查者 Prompt 範本</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use this template when dispatching a plan document reviewer subagent.</p></div><div class="col-zh" lang="zh-Hant"><p>在派發計畫文件審查子代理時使用此範本。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Purpose:</strong> Verify the plan is complete, matches the spec, and has proper task decomposition.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>目的：</strong> 驗證計畫完整、符合規格，並具備適當的任務分解。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Dispatch after:</strong> The complete plan is written.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>派發時機：</strong> 完整計畫寫好之後。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Subagent (general-purpose):
+  description: &quot;Review plan document&quot;
+  prompt: |
+    You are a plan document reviewer. Verify this plan is complete and ready for implementation.
+
+    **Plan to review:** [PLAN_FILE_PATH]
+    **Spec for reference:** [SPEC_FILE_PATH]
+
+    ## What to Check
+
+    | Category | What to Look For |
+    |----------|------------------|
+    | Completeness | TODOs, placeholders, incomplete tasks, missing steps |
+    | Spec Alignment | Plan covers spec requirements, no major scope creep |
+    | Task Decomposition | Tasks have clear boundaries, steps are actionable |
+    | Buildability | Could an engineer follow this plan without getting stuck? |
+
+    ## Calibration
+
+    **Only flag issues that would cause real problems during implementation.**
+    An implementer building the wrong thing or getting stuck is an issue.
+    Minor wording, stylistic preferences, and &quot;nice to have&quot; suggestions are not.
+
+    Approve unless there are serious gaps — missing requirements from the spec,
+    contradictory steps, placeholder content, or tasks so vague they can't be acted on.
+
+    ## Output Format
+
+    ## Plan Review
+
+    **Status:** Approved | Issues Found
+
+    **Issues (if any):**
+    - [Task X, Step Y]: [specific issue] - [why it matters for implementation]
+
+    **Recommendations (advisory, do not block approval):**
+    - [suggestions for improvement]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Subagent (general-purpose):
+  description: &quot;Review plan document&quot;
+  prompt: |
+    You are a plan document reviewer. Verify this plan is complete and ready for implementation.
+
+    **Plan to review:** [PLAN_FILE_PATH]
+    **Spec for reference:** [SPEC_FILE_PATH]
+
+    ## What to Check
+
+    | Category | What to Look For |
+    |----------|------------------|
+    | Completeness | TODOs, placeholders, incomplete tasks, missing steps |
+    | Spec Alignment | Plan covers spec requirements, no major scope creep |
+    | Task Decomposition | Tasks have clear boundaries, steps are actionable |
+    | Buildability | Could an engineer follow this plan without getting stuck? |
+
+    ## Calibration
+
+    **Only flag issues that would cause real problems during implementation.**
+    An implementer building the wrong thing or getting stuck is an issue.
+    Minor wording, stylistic preferences, and &quot;nice to have&quot; suggestions are not.
+
+    Approve unless there are serious gaps — missing requirements from the spec,
+    contradictory steps, placeholder content, or tasks so vague they can't be acted on.
+
+    ## Output Format
+
+    ## Plan Review
+
+    **Status:** Approved | Issues Found
+
+    **Issues (if any):**
+    - [Task X, Step Y]: [specific issue] - [why it matters for implementation]
+
+    **Recommendations (advisory, do not block approval):**
+    - [suggestions for improvement]
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Reviewer returns:</strong> Status, Issues (if any), Recommendations</p></div><div class="col-zh" lang="zh-Hant"><p><strong>審查者回傳：</strong> 狀態、問題（如有）、建議</p></div></div>
+
+</div>
+</body>
+</html>

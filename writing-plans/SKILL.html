@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>writing-plans · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>writing-plans</code></td></tr>
+<tr><td>description (EN)</td><td>Use when you have a spec or requirements for a multi-step task, before touching code</td></tr>
+<tr><td>說明 (繁中)</td><td>當你有一份多步驟任務的規格或需求，在動任何程式碼之前使用</td></tr>
+</table>
+<h1>writing-plans</h1>
+<div class="subtitle">把定稿的設計拆成一步一步、小到 2–5 分鐘的任務，每個都標好檔案與驗證方式。</div>
+<div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="plan-document-reviewer-prompt.html">plan-document-reviewer-prompt</a></div>
+<div class="pair"><div class="col-en" lang="en"><h1>Writing Plans</h1></div><div class="col-zh" lang="zh-Hant"><h1>撰寫計畫</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.</p></div><div class="col-zh" lang="zh-Hant"><p>撰寫全面的實作計畫，並假設工程師對我們的程式碼庫零上下文、品味存疑。記錄他們需要知道的一切：每個任務要動哪些檔案、程式碼、測試、可能需要查閱的文件、如何測試。把整個計畫拆成小塊任務交給他們。DRY。YAGNI。TDD。頻繁 commit。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Assume they are a skilled developer, but know almost nothing about our toolset or problem domain. Assume they don't know good test design very well.</p></div><div class="col-zh" lang="zh-Hant"><p>假設他們是熟練的開發者，但對我們的工具組或問題領域幾乎一無所知。假設他們不太懂好的測試設計。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Announce at start:</strong> "I'm using the writing-plans skill to create the implementation plan."</p></div><div class="col-zh" lang="zh-Hant"><p><strong>開始時宣告：</strong> 「我正使用 writing-plans 技能來建立實作計畫。」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Context:</strong> If working in an isolated worktree, it should have been created via the <code>superpowers:using-git-worktrees</code> skill at execution time.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>上下文：</strong> 如果在隔離的 worktree 中工作，它應該已在執行時透過 <code>superpowers:using-git-worktrees</code> 技能建立。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Save plans to:</strong> <code>docs/superpowers/plans/YYYY-MM-DD-&lt;feature-name&gt;.md</code>
+- (User preferences for plan location override this default)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>計畫儲存位置：</strong> <code>docs/superpowers/plans/YYYY-MM-DD-&lt;feature-name&gt;.md</code>
+- （使用者對計畫位置的偏好會覆蓋這個預設）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Scope Check</h2></div><div class="col-zh" lang="zh-Hant"><h2>範圍檢查</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.</p></div><div class="col-zh" lang="zh-Hant"><p>如果規格涵蓋多個獨立的子系統，它應該在腦力激盪時被拆成子專案規格。如果沒有，建議把它拆成多份獨立計畫 —— 每個子系統一份。每份計畫應該要能獨立產出可運作、可測試的軟體。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>File Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2>檔案結構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.</p></div><div class="col-zh" lang="zh-Hant"><p>在定義任務之前，先規劃哪些檔案會被建立或修改，以及每個檔案負責什麼。分解的決策在這裡鎖定。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Design units with clear boundaries and well-defined interfaces. Each file should have one clear responsibility.</li>
+<li>You reason best about code you can hold in context at once, and your edits are more reliable when files are focused. Prefer smaller, focused files over large ones that do too much.</li>
+<li>Files that change together should live together. Split by responsibility, not by technical layer.</li>
+<li>In existing codebases, follow established patterns. If the codebase uses large files, don't unilaterally restructure - but if a file you're modifying has grown unwieldy, including a split in the plan is reasonable.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>設計邊界清楚、介面定義良好的單元。每個檔案應該有單一清楚的職責。</li>
+<li>你對能同時放進上下文的程式碼思考得最好，而檔案越聚焦，你的編輯就越可靠。偏好較小、聚焦的檔案，勝過塞太多事的巨型檔案。</li>
+<li>一起變更的檔案應該住在一起。依職責拆分，而不是依技術層拆分。</li>
+<li>在既有程式碼庫中，遵循既有模式。如果程式碼庫使用大型檔案，不要單方面重構 —— 但如果你正在修改的檔案已經長到難以掌控，把拆分寫進計畫是合理的。</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>This structure informs the task decomposition. Each task should produce self-contained changes that make sense independently.</p></div><div class="col-zh" lang="zh-Hant"><p>這個結構支撐任務的分解。每個任務應該產出自足的變更，且可以獨立理解。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Task Right-Sizing</h2></div><div class="col-zh" lang="zh-Hant"><h2>任務尺寸調校</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A task is the smallest unit that carries its own test cycle and is worth a
+fresh reviewer's gate. When drawing task boundaries: fold setup,
+configuration, scaffolding, and documentation steps into the task whose
+deliverable needs them; split only where a reviewer could meaningfully
+reject one task while approving its neighbor. Each task ends with an
+independently testable deliverable.</p></div><div class="col-zh" lang="zh-Hant"><p>一個任務是承載自己的測試循環、並值得一個全新審查者關卡的最小單位。在劃分任務邊界時：把設定、配置、脚手架與文件步驟併入需要這些產物的任務；只有在審查者可以有意義地否決一個任務、同時核准其鄰居任務的地方才拆分。每個任務都以一個可獨立測試的產物結束。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Bite-Sized Task Granularity</h2></div><div class="col-zh" lang="zh-Hant"><h2>小塊任務粒度</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Each step is one action (2-5 minutes):</strong>
+- "Write the failing test" - step
+- "Run it to make sure it fails" - step
+- "Implement the minimal code to make the test pass" - step
+- "Run the tests and make sure they pass" - step
+- "Commit" - step</p></div><div class="col-zh" lang="zh-Hant"><p><strong>每個步驟是單一動作（2-5 分鐘）：</strong>
+- 「撰寫失敗的測試」- 步驟
+- 「執行它以確認它失敗」- 步驟
+- 「撰寫能讓測試通過的最小程式碼」- 步驟
+- 「執行測試並確認它們通過」- 步驟
+- 「Commit」- 步驟</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Plan Document Header</h2></div><div class="col-zh" lang="zh-Hant"><h2>計畫文件標頭</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Every plan MUST start with this header:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>每份計畫都必須以此標頭開始：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-markdown"># [Feature Name] Implementation Plan
+
+&gt; **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** [One sentence describing what this builds]
+
+**Architecture:** [2-3 sentences about approach]
+
+**Tech Stack:** [Key technologies/libraries]
+
+## Global Constraints
+
+[The spec's project-wide requirements — version floors, dependency limits,
+naming and copy rules, platform requirements — one line each, with exact
+values copied verbatim from the spec. Every task's requirements implicitly
+include this section.]
+
+---
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-markdown"># [Feature Name] Implementation Plan
+
+&gt; **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** [One sentence describing what this builds]
+
+**Architecture:** [2-3 sentences about approach]
+
+**Tech Stack:** [Key technologies/libraries]
+
+## Global Constraints
+
+[The spec's project-wide requirements — version floors, dependency limits,
+naming and copy rules, platform requirements — one line each, with exact
+values copied verbatim from the spec. Every task's requirements implicitly
+include this section.]
+
+---
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Task Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2>任務結構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>````markdown</p>
+<h3>Task N: [Component Name]</h3>
+<p><strong>Files:</strong>
+- Create: <code>exact/path/to/file.py</code>
+- Modify: <code>exact/path/to/existing.py:123-145</code>
+- Test: <code>tests/exact/path/to/test.py</code></p>
+<p><strong>Interfaces:</strong>
+- Consumes: [what this task uses from earlier tasks — exact signatures]
+- Produces: [what later tasks rely on — exact function names, parameter
+  and return types. A task's implementer sees only their own task; this
+  block is how they learn the names and types neighboring tasks use.]</p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing test</strong></li>
+</ul>
+<p>```python</p></div><div class="col-zh" lang="zh-Hant"><p>````markdown</p>
+<h3>Task N: [Component Name]</h3>
+<p><strong>Files:</strong>
+- Create: <code>exact/path/to/file.py</code>
+- Modify: <code>exact/path/to/existing.py:123-145</code>
+- Test: <code>tests/exact/path/to/test.py</code></p>
+<p><strong>Interfaces:</strong>
+- Consumes: [what this task uses from earlier tasks — exact signatures]
+- Produces: [what later tasks rely on — exact function names, parameter
+  and return types. A task's implementer sees only their own task; this
+  block is how they learn the names and types neighboring tasks use.]</p>
+<ul>
+<li>[ ] <strong>Step 1: Write the failing test</strong></li>
+</ul>
+<p>```python</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>def test_specific_behavior():
+    result = function(input)
+    assert result == expected
+```</p></div><div class="col-zh" lang="zh-Hant"><p>def test_specific_behavior():
+    result = function(input)
+    assert result == expected
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>[ ] <strong>Step 2: Run test to verify it fails</strong></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>[ ] <strong>Step 2: Run test to verify it fails</strong></li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Run: <code>pytest tests/path/test.py::test_name -v</code>
+Expected: FAIL with "function not defined"</p></div><div class="col-zh" lang="zh-Hant"><p>Run: <code>pytest tests/path/test.py::test_name -v</code>
+Expected: FAIL with "function not defined"</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>[ ] <strong>Step 3: Write minimal implementation</strong></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>[ ] <strong>Step 3: Write minimal implementation</strong></li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-python">def function(input):
+    return expected
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-python">def function(input):
+    return expected
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>[ ] <strong>Step 4: Run test to verify it passes</strong></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>[ ] <strong>Step 4: Run test to verify it passes</strong></li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Run: <code>pytest tests/path/test.py::test_name -v</code>
+Expected: PASS</p></div><div class="col-zh" lang="zh-Hant"><p>Run: <code>pytest tests/path/test.py::test_name -v</code>
+Expected: PASS</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>[ ] <strong>Step 5: Commit</strong></li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">git add tests/path/test.py src/path/file.py
+git commit -m &quot;feat: add specific feature&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">git add tests/path/test.py src/path/file.py
+git commit -m &quot;feat: add specific feature&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>````</p>
+<h2>No Placeholders</h2>
+<p>Every step must contain the actual content an engineer needs. These are <strong>plan failures</strong> — never write them:
+- "TBD", "TODO", "implement later", "fill in details"
+- "Add appropriate error handling" / "add validation" / "handle edge cases"
+- "Write tests for the above" (without actual test code)
+- "Similar to Task N" (repeat the code — the engineer may be reading tasks out of order)
+- Steps that describe what to do without showing how (code blocks required for code steps)
+- References to types, functions, or methods not defined in any task</p>
+<h2>Self-Review</h2>
+<p>After writing the complete plan, look at the spec with fresh eyes and check the plan against it. This is a checklist you run yourself — not a subagent dispatch.</p>
+<p><strong>1. Spec coverage:</strong> Skim each section/requirement in the spec. Can you point to a task that implements it? List any gaps.</p>
+<p><strong>2. Placeholder scan:</strong> Search your plan for red flags — any of the patterns from the "No Placeholders" section above. Fix them.</p>
+<p><strong>3. Type consistency:</strong> Do the types, method signatures, and property names you used in later tasks match what you defined in earlier tasks? A function called <code>clearLayers()</code> in Task 3 but <code>clearFullLayers()</code> in Task 7 is a bug.</p>
+<p>If you find issues, fix them inline. No need to re-review — just fix and move on. If you find a spec requirement with no task, add the task.</p>
+<h2>Execution Handoff</h2>
+<p>After saving the plan, offer execution choice:</p>
+<p><strong>"Plan complete and saved to <code>docs/superpowers/plans/&lt;filename&gt;.md</code>. Two execution options:</strong></p>
+<p><strong>1. Subagent-Driven (recommended)</strong> - I dispatch a fresh subagent per task, review between tasks, fast iteration</p>
+<p><strong>2. Inline Execution</strong> - Execute tasks in this session using executing-plans, batch execution with checkpoints</p>
+<p><strong>Which approach?"</strong></p>
+<p><strong>If Subagent-Driven chosen:</strong>
+- <strong>REQUIRED SUB-SKILL:</strong> Use superpowers:subagent-driven-development
+- Fresh subagent per task + two-stage review</p>
+<p><strong>If Inline Execution chosen:</strong>
+- <strong>REQUIRED SUB-SKILL:</strong> Use superpowers:executing-plans
+- Batch execution with checkpoints for review</p></div><div class="col-zh" lang="zh-Hant"><p>````</p>
+<h2>禁止占位符</h2>
+<p>每個步驟都必須包含工程師需要的實際內容。這些都是<strong>計畫失敗</strong>——絕不允許：
+- 「TBD」「TODO」「之後再實作」「補上細節」
+- 「加入適當的錯誤處理」/「加入驗證」/「處理邊界情況」
+- 「為上述撰寫測試」（沒有實際測試程式碼）
+- 「類似任務 N」（重複程式碼 —— 工程師可能不依順序閱讀任務）
+- 只描述要做什麼、卻不展示怎麼做的步驟（程式碼步驟需要程式碼區塊）
+- 引用任何任務中都未定義的型別、函式或方法</p>
+<h2>自我審查</h2>
+<p>寫完完整計畫後，以全新眼光看待規格，並據此檢查計畫。這是你自己執行的檢查清單 —— 不是子代理派發。</p>
+<p><strong>1. 規格涵蓋：</strong> 略讀規格中的每個段落/需求。你能指出實作它的任務嗎？列出任何缺口。</p>
+<p><strong>2. 占位符掃描：</strong> 搜尋計畫中的紅旗 —— 上方「禁止占位符」一節的任何模式。修正它們。</p>
+<p><strong>3. 型別一致性：</strong> 你在後續任務中使用的型別、方法簽名與屬性名稱，是否與較早任務中定義的一致？任務 3 中叫 <code>clearLayers()</code>、任務 7 卻叫 <code>clearFullLayers()</code> 的函式就是一個 bug。</p>
+<p>如果發現問題，就地修正。不需要重新審查 —— 修好就繼續。如果發現某個規格需求沒有對應任務，就把任務加上去。</p>
+<h2>執行交接</h2>
+<p>儲存計畫後，提供執行方式的選擇：</p>
+<p><strong>「計畫已完成並儲存至 <code>docs/superpowers/plans/&lt;filename&gt;.md</code>。兩種執行方式：</strong></p>
+<p><strong>1. 子代理驅動（建議）</strong> - 每個任務派發全新子代理，任務之間進行審查，快速迭代</p>
+<p><strong>2. 行內執行</strong> - 使用 executing-plans 在此 session 中執行任務，批次執行並設檢查點</p>
+<p><strong>想用哪一種？」</strong></p>
+<p><strong>如果選擇子代理驅動：</strong>
+- <strong>必要子技能：</strong> 使用 superpowers:subagent-driven-development
+- 每個任務全新子代理 + 兩階段審查</p>
+<p><strong>如果選擇行內執行：</strong>
+- <strong>必要子技能：</strong> 使用 superpowers:executing-plans
+- 批次執行並設審查檢查點</p></div></div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>systematic-debugging / condition-based-waiting · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 systematic-debugging</a> 
+</div>
+<h1>condition-based-waiting</h1>
+<div class="subtitle">systematic-debugging · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Condition-Based Waiting</h1></div><div class="col-zh" lang="zh-Hant"><h1>條件式等待</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>概述</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Flaky tests often guess at timing with arbitrary delays. This creates race conditions where tests pass on fast machines but fail under load or in CI.</p></div><div class="col-zh" lang="zh-Hant"><p>不穩定的測試常常用任意的延遲來猜測時機。這會造成競態條件：測試在快的機器上通過，但在負載或 CI 下失敗。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Wait for the actual condition you care about, not a guess about how long it takes.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 等待你真正關心的條件，而不是猜測要花多久時間。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph when_to_use {
+    &quot;Test uses setTimeout/sleep?&quot; [shape=diamond];
+    &quot;Testing timing behavior?&quot; [shape=diamond];
+    &quot;Document WHY timeout needed&quot; [shape=box];
+    &quot;Use condition-based waiting&quot; [shape=box];
+
+    &quot;Test uses setTimeout/sleep?&quot; -&gt; &quot;Testing timing behavior?&quot; [label=&quot;yes&quot;];
+    &quot;Testing timing behavior?&quot; -&gt; &quot;Document WHY timeout needed&quot; [label=&quot;yes&quot;];
+    &quot;Testing timing behavior?&quot; -&gt; &quot;Use condition-based waiting&quot; [label=&quot;no&quot;];
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-dot">digraph when_to_use {
+    &quot;Test uses setTimeout/sleep?&quot; [shape=diamond];
+    &quot;Testing timing behavior?&quot; [shape=diamond];
+    &quot;Document WHY timeout needed&quot; [shape=box];
+    &quot;Use condition-based waiting&quot; [shape=box];
+
+    &quot;Test uses setTimeout/sleep?&quot; -&gt; &quot;Testing timing behavior?&quot; [label=&quot;yes&quot;];
+    &quot;Testing timing behavior?&quot; -&gt; &quot;Document WHY timeout needed&quot; [label=&quot;yes&quot;];
+    &quot;Testing timing behavior?&quot; -&gt; &quot;Use condition-based waiting&quot; [label=&quot;no&quot;];
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Use when:</strong>
+- Tests have arbitrary delays (<code>setTimeout</code>, <code>sleep</code>, <code>time.sleep()</code>)
+- Tests are flaky (pass sometimes, fail under load)
+- Tests timeout when run in parallel
+- Waiting for async operations to complete</p></div><div class="col-zh" lang="zh-Hant"><p><strong>適用時機：</strong>
+- 測試含有任意延遲（<code>setTimeout</code>、<code>sleep</code>、<code>time.sleep()</code>）
+- 測試不穩定（有時通過、負載下失敗）
+- 並行執行時測試逾時
+- 等待非同步操作完成</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Don't use when:</strong>
+- Testing actual timing behavior (debounce, throttle intervals)
+- Always document WHY if using arbitrary timeout</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不適用時機：</strong>
+- 測試真正的時序行為（debounce、throttle 間隔）
+- 若使用任意逾時，一定要說明「為什麼」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Core Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2>核心模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">// ❌ BEFORE: Guessing at timing
+await new Promise(r =&gt; setTimeout(r, 50));
+const result = getResult();
+expect(result).toBeDefined();
+
+// ✅ AFTER: Waiting for condition
+await waitFor(() =&gt; getResult() !== undefined);
+const result = getResult();
+expect(result).toBeDefined();
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">// ❌ BEFORE: Guessing at timing
+await new Promise(r =&gt; setTimeout(r, 50));
+const result = getResult();
+expect(result).toBeDefined();
+
+// ✅ AFTER: Waiting for condition
+await waitFor(() =&gt; getResult() !== undefined);
+const result = getResult();
+expect(result).toBeDefined();
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Quick Patterns</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Wait for event</td>
+<td><code>waitFor(() =&gt; events.find(e =&gt; e.type === 'DONE'))</code></td>
+</tr>
+<tr>
+<td>Wait for state</td>
+<td><code>waitFor(() =&gt; machine.state === 'ready')</code></td>
+</tr>
+<tr>
+<td>Wait for count</td>
+<td><code>waitFor(() =&gt; items.length &gt;= 5)</code></td>
+</tr>
+<tr>
+<td>Wait for file</td>
+<td><code>waitFor(() =&gt; fs.existsSync(path))</code></td>
+</tr>
+<tr>
+<td>Complex condition</td>
+<td><code>waitFor(() =&gt; obj.ready &amp;&amp; obj.value &gt; 10)</code></td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>情境</th>
+<th>模式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>等待事件</td>
+<td><code>waitFor(() =&gt; events.find(e =&gt; e.type === 'DONE'))</code></td>
+</tr>
+<tr>
+<td>等待狀態</td>
+<td><code>waitFor(() =&gt; machine.state === 'ready')</code></td>
+</tr>
+<tr>
+<td>等待數量</td>
+<td><code>waitFor(() =&gt; items.length &gt;= 5)</code></td>
+</tr>
+<tr>
+<td>等待檔案</td>
+<td><code>waitFor(() =&gt; fs.existsSync(path))</code></td>
+</tr>
+<tr>
+<td>複雜條件</td>
+<td><code>waitFor(() =&gt; obj.ready &amp;&amp; obj.value &gt; 10)</code></td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Implementation</h2></div><div class="col-zh" lang="zh-Hant"><h2>實作</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Generic polling function:
+```typescript
+async function waitFor<T>(
+  condition: () =&gt; T | undefined | null | false,
+  description: string,
+  timeoutMs = 5000
+): Promise<T> {
+  const startTime = Date.now();</p></div><div class="col-zh" lang="zh-Hant"><p>泛用輪詢函式：
+```typescript
+async function waitFor<T>(
+  condition: () =&gt; T | undefined | null | false,
+  description: string,
+  timeoutMs = 5000
+): Promise<T> {
+  const startTime = Date.now();</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>while (true) {
+    const result = condition();
+    if (result) return result;</p></div><div class="col-zh" lang="zh-Hant"><p>while (true) {
+    const result = condition();
+    if (result) return result;</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>if (Date.now() - startTime &gt; timeoutMs) {
+  throw new Error(`Timeout waiting for ${description} after ${timeoutMs}ms`);
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>if (Date.now() - startTime &gt; timeoutMs) {
+  throw new Error(`Timeout waiting for ${description} after ${timeoutMs}ms`);
+}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>await new Promise(r =&gt; setTimeout(r, 10)); // Poll every 10ms
+</code></pre>
+<p>}
+}
+```</p></div><div class="col-zh" lang="zh-Hant"><pre><code>await new Promise(r =&gt; setTimeout(r, 10)); // Poll every 10ms
+</code></pre>
+<p>}
+}
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>See <code>condition-based-waiting-example.ts</code> in this directory for complete implementation with domain-specific helpers (<code>waitForEvent</code>, <code>waitForEventCount</code>, <code>waitForEventMatch</code>) from actual debugging session.</p></div><div class="col-zh" lang="zh-Hant"><p>本目錄中的 <code>condition-based-waiting-example.ts</code> 提供完整實作，內含來自實際除錯 session 的領域特定輔助函式（<code>waitForEvent</code>、<code>waitForEventCount</code>、<code>waitForEventMatch</code>）。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Mistakes</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見錯誤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>❌ Polling too fast:</strong> <code>setTimeout(check, 1)</code> - wastes CPU
+<strong>✅ Fix:</strong> Poll every 10ms</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 輪詢太快：</strong> <code>setTimeout(check, 1)</code> —— 浪費 CPU
+<strong>✅ 修正：</strong> 每 10ms 輪詢一次</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>❌ No timeout:</strong> Loop forever if condition never met
+<strong>✅ Fix:</strong> Always include timeout with clear error</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 沒有逾時：</strong> 條件永遠不成立時會無限迴圈
+<strong>✅ 修正：</strong> 永遠要帶逾時，並附上清楚的錯誤</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>❌ Stale data:</strong> Cache state before loop
+<strong>✅ Fix:</strong> Call getter inside loop for fresh data</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 資料過期：</strong> 在迴圈前就快取狀態
+<strong>✅ 修正：</strong> 在迴圈內呼叫 getter 取得最新資料</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When Arbitrary Timeout IS Correct</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時「任意逾時」是正確的</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">// Tool ticks every 100ms - need 2 ticks to verify partial output
+await waitForEvent(manager, 'TOOL_STARTED'); // First: wait for condition
+await new Promise(r =&gt; setTimeout(r, 200));   // Then: wait for timed behavior
+// 200ms = 2 ticks at 100ms intervals - documented and justified
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-typescript">// Tool ticks every 100ms - need 2 ticks to verify partial output
+await waitForEvent(manager, 'TOOL_STARTED'); // First: wait for condition
+await new Promise(r =&gt; setTimeout(r, 200));   // Then: wait for timed behavior
+// 200ms = 2 ticks at 100ms intervals - documented and justified
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Requirements:</strong>
+1. First wait for triggering condition
+2. Based on known timing (not guessing)
+3. Comment explaining WHY</p></div><div class="col-zh" lang="zh-Hant"><p><strong>條件：</strong>
+1. 先等待觸發條件
+2. 基於已知的時序（不是猜測）
+3. 加上註解說明「為什麼」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Real-World Impact</h2></div><div class="col-zh" lang="zh-Hant"><h2>實際影響</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>From debugging session (2025-10-03):
+- Fixed 15 flaky tests across 3 files
+- Pass rate: 60% → 100%
+- Execution time: 40% faster
+- No more race conditions</p></div><div class="col-zh" lang="zh-Hant"><p>來自除錯 session（2025-10-03）：
+- 修好 3 個檔案中 15 個不穩定的測試
+- 通過率：60% → 100%
+- 執行時間：快了 40%
+- 不再有競態條件</p></div></div>
+
+</div>
+</body>
+</html>

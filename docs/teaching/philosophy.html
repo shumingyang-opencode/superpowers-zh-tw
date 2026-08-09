@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哲學四原則 · Philosophy · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">← 首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="index.html">教學中心</a>
+</div>
+<header>
+  <h1>哲學四原則</h1>
+  <div class="subtitle">Superpowers 的信仰宣言——四個原則如何滲透到每個技能</div>
+</header>
+<div class="guide">
+
+<h2>原則一：測試驅動開發（永遠先寫測試）</h2>
+<p><strong>口號：</strong>「沒有先寫失敗的測試，就不准有正式程式碼。」</p>
+<p>這不是口號，是鐵律。從 <code>test-driven-development</code> 到 <code>writing-skills</code>（寫技能也要先有會失敗的測試）再到 <code>systematic-debugging</code>（修 bug 前先寫一支會紅的測試），整個流程每一環都被同一條紀律把關。</p>
+<p>為什麼？因為回饋的速度就是你的速度上限。你沒看過測試失敗，就不知道它在測什麼；你沒看過它變綠，就不知道程式真的做了你以為的事。TDD 讓代理每次都拿到「程式真的在運作」的證據，而不是「我猜應該可以」。</p>
+
+<h2>原則二：系統化勝於 ad-hoc（流程勝於瞎猜）</h2>
+<p>Superpowers 的每個技能都是一套<strong>明確的流程</strong>，不是一段建議。brainstorming 有它的提問結構，systematic-debugging 有它的四階段，subagent-driven-development 有它的任務迴圈與兩階段審查。</p>
+<p>ad-hoc 依賴運氣：這把 bug 看起來像那回事就試試看，這次憑感覺改一改。系統化則保證每次都走同一條被驗證過的路。代理壓力越大，越需要流程——壓力會讓人（跟代理）退回憑感覺。</p>
+
+<h2>原則三：降低複雜度（簡潔是首要目標）</h2>
+<p>設計文件、計畫、測試、技能文件——全都要求最小、夠用就好。writing-plans 把任務拆到 2–5 分鐘，writing-skills 要求技能文件 <code>&lt;500</code> 字、常用技能 <code>&lt;200</code> 字。複雜度是累積的：每個多餘的環節都會在未來的每個 session 消耗 token 與注意力。</p>
+<p>「YAGNI（You Aren't Gonna Need It）」與「DRY」不只是 coding 原則，也被套用到流程本身：不加不需要的環節，不重複寫已經有技能涵蓋的指示。</p>
+
+<h2>原則四：證據勝於宣稱（驗證成功才叫成功）</h2>
+<p>「測過了」「應該可以」「我記得它可以用」——全部不算數。<code>verification-before-completion</code> 要求：宣告完成之前，真的跑驗證指令、貼出輸出、確認結果。TDD 要求親眼看到紅與綠。</p>
+<p>這條原則直接對抗代理最大的通病：<strong>過度自信地宣告成功</strong>。它把「證據」設為唯一可接受的完成標準，斷言之前必須先有輸出。</p>
+
+<h2>四原則如何互咬</h2>
+<p>這四條不是獨立的口號，它們互相支撐：</p>
+<ul>
+  <li>TDD 提供證據（原則一 → 原則四）。</li>
+  <li>系統化流程讓 TDD 不會被繞過（原則二 → 原則一）。</li>
+  <li>簡潔讓流程可持續、不嚇人（原則三 → 原則二）。</li>
+  <li>證據原則反過來驗證流程本身有效（原則四 → 原則二）。</li>
+</ul>
+<p>想看到它們在實際工作中怎麼落地，看 <a href="workflow.html">基本工作流拆解</a> 或直接進 <a href="../../map.html">全景圖</a>。</p>
+
+</div>
+<footer>
+  <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
+  <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>
+</footer>
+</div>
+</body>
+</html>

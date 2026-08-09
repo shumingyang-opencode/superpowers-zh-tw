@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>brainstorming / visual-companion · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  <a href="SKILL.html">← 技能主頁 brainstorming</a> 
+</div>
+<h1>visual-companion</h1>
+<div class="subtitle">brainstorming · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Visual Companion Guide</h1></div><div class="col-zh" lang="zh-Hant"><h1>視覺夥伴指南</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Browser-based visual brainstorming companion for showing mockups, diagrams, and options.</p></div><div class="col-zh" lang="zh-Hant"><p>以瀏覽器為基礎的視覺腦力激盪夥伴，用於展示 mockups、圖表與選項。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Decide per-question, not per-session. The test: <strong>would the user understand this better by seeing it than reading it?</strong></p></div><div class="col-zh" lang="zh-Hant"><p>逐問題決定，而非逐 session。判斷標準：<strong>使用者「看」會比「讀」更容易理解嗎？</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Use the browser</strong> when the content itself is visual:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>內容本身是視覺的，使用瀏覽器：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>UI mockups</strong> — wireframes, layouts, navigation structures, component designs</li>
+<li><strong>Architecture diagrams</strong> — system components, data flow, relationship maps</li>
+<li><strong>Side-by-side visual comparisons</strong> — comparing two layouts, two color schemes, two design directions</li>
+<li><strong>Design polish</strong> — when the question is about look and feel, spacing, visual hierarchy</li>
+<li><strong>Spatial relationships</strong> — state machines, flowcharts, entity relationships rendered as diagrams</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>UI mockups</strong> ——線框圖、佈局、導覽結構、元件設計</li>
+<li><strong>架構圖</strong> ——系統元件、資料流、關係圖</li>
+<li><strong>並排的視覺比較</strong> ——比較兩種佈局、兩種配色、兩個設計方向</li>
+<li><strong>設計潤飾</strong> ——當問題關於外觀與感受、間距、視覺層級</li>
+<li><strong>空間關係</strong> ——以圖表呈現的狀態機、流程圖、實體關係</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Use the terminal</strong> when the content is text or tabular:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>內容是文字或表格的，使用終端機：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Requirements and scope questions</strong> — "what does X mean?", "which features are in scope?"</li>
+<li><strong>Conceptual A/B/C choices</strong> — picking between approaches described in words</li>
+<li><strong>Tradeoff lists</strong> — pros/cons, comparison tables</li>
+<li><strong>Technical decisions</strong> — API design, data modeling, architectural approach selection</li>
+<li><strong>Clarifying questions</strong> — anything where the answer is words, not a visual preference</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>需求與範圍問題</strong> ——「X 是什麼意思？」、「哪些功能在範圍內？」</li>
+<li><strong>概念性的 A/B/C 選擇</strong> ——在以文字描述的做法之間做選擇</li>
+<li><strong>取捨清單</strong> ——優點／缺點、比較表</li>
+<li><strong>技術決策</strong> ——API 設計、資料建模、架構做法選擇</li>
+<li><strong>釐清問題</strong> ——任何答案是一段文字、而非視覺偏好的事物</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A question <em>about</em> a UI topic is not automatically a visual question. "What kind of wizard do you want?" is conceptual — use the terminal. "Which of these wizard layouts feels right?" is visual — use the browser.</p></div><div class="col-zh" lang="zh-Hant"><p>一個<em>關於</em> UI 主題的問題不自動是視覺問題。「你想要哪種精靈？」是概念問題——使用終端機。「這些精靈佈局哪個感覺對？」是視覺問題——使用瀏覽器。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>How It Works</h2></div><div class="col-zh" lang="zh-Hant"><h2>運作方式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The server watches a directory for HTML files and serves the newest one to the browser. You write HTML content to <code>screen_dir</code>, the user sees it in their browser and can click to select options. Selections are recorded to <code>state_dir/events</code> that you read on your next turn.</p></div><div class="col-zh" lang="zh-Hant"><p>伺服器監看一個目錄中的 HTML 檔案，並把最新的那份提供給瀏覽器。你把 HTML 內容寫到 <code>screen_dir</code>，使用者在其瀏覽器中看到它，並能點擊以選取選項。選取會被記錄到 <code>state_dir/events</code>，你可以在下一個回合讀取。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Content fragments vs full documents:</strong> If your HTML file starts with <code>&lt;!DOCTYPE</code> or <code>&lt;html</code>, the server serves it as-is (just injects the helper script). Otherwise, the server automatically wraps your content in the frame template — adding the header, CSS theme, connection status, and all interactive infrastructure. <strong>Write content fragments by default.</strong> Only write full documents when you need complete control over the page.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>內容片段 vs 完整文件：</strong> 若你的 HTML 檔案以 <code>&lt;!DOCTYPE</code> 或 <code>&lt;html</code> 開頭，伺服器會原樣提供它（只注入 helper 腳本）。否則，伺服器會自動把你的內容包進 frame 範本——加上頁首、CSS 主題、連線狀態與所有互動基礎設施。<strong>預設撰寫內容片段。</strong> 只有在你需要完全掌控頁面時才撰寫完整文件。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Starting a Session</h2></div><div class="col-zh" lang="zh-Hant"><h2>啟動一個 session</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Start AFTER the user approves the companion. --open auto-opens their browser on
+# the first screen; --project-dir persists mockups and enables same-port restart.
+scripts/start-server.sh --project-dir /path/to/project --open
+
+# Returns: {&quot;type&quot;:&quot;server-started&quot;,&quot;port&quot;:52341,
+#           &quot;url&quot;:&quot;http://localhost:52341/?key=ab12…&quot;,
+#           &quot;screen_dir&quot;:&quot;/path/to/project/.superpowers/brainstorm/12345-1706000000/content&quot;,
+#           &quot;state_dir&quot;:&quot;/path/to/project/.superpowers/brainstorm/12345-1706000000/state&quot;}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash"># Start AFTER the user approves the companion. --open auto-opens their browser on
+# the first screen; --project-dir persists mockups and enables same-port restart.
+scripts/start-server.sh --project-dir /path/to/project --open
+
+# Returns: {&quot;type&quot;:&quot;server-started&quot;,&quot;port&quot;:52341,
+#           &quot;url&quot;:&quot;http://localhost:52341/?key=ab12…&quot;,
+#           &quot;screen_dir&quot;:&quot;/path/to/project/.superpowers/brainstorm/12345-1706000000/content&quot;,
+#           &quot;state_dir&quot;:&quot;/path/to/project/.superpowers/brainstorm/12345-1706000000/state&quot;}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Save <code>screen_dir</code> and <code>state_dir</code> from the response. With <code>--open</code>, the browser opens itself when you push the first screen — you don't need to ask the user to open it, but still share the URL as a fallback (headless/remote setups won't auto-open).</p></div><div class="col-zh" lang="zh-Hant"><p>從回應中保存 <code>screen_dir</code> 與 <code>state_dir</code>。使用 <code>--open</code> 時，當你推送第一個畫面，瀏覽器會自動開啟——你不需要請使用者開啟它，但仍要分享 URL 作為備援（headless／遠端設定不會自動開啟）。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>The URL contains a session key (<code>?key=…</code>).</strong> The server rejects any request
+without it, so always give the user the <strong>complete</strong> URL from the <code>url</code> field —
+never strip the query string, and never hand out a bare <code>http://host:port</code>. The
+key gates HTTP and WebSocket access so a stray browser tab or another machine on
+the network can't read the screens or inject events. After the first load the
+browser remembers the key via a cookie, so reloads and <code>/files/*</code> assets work
+without repeating it.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>URL 含有 session 金鑰（<code>?key=…</code>）。</strong> 伺服器會拒絕任何沒有它的請求，所以務必給使用者 <code>url</code> 欄位中的<strong>完整</strong> URL——絕不要剝掉查詢字串，也絕不要交出一個裸的 <code>http://host:port</code>。金鑰把關 HTTP 與 WebSocket 的存取，因此閒置的瀏覽器分頁或網路上的另一台機器無法讀取畫面或注入事件。首次載入後，瀏覽器會透過 cookie 記住金鑰，因此重新載入與 <code>/files/*</code> 資源不需重複它。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Finding connection info:</strong> The server writes its startup JSON to <code>$STATE_DIR/server-info</code>. If you launched the server in the background and didn't capture stdout, read that file to get the URL and port. When using <code>--project-dir</code>, check <code>&lt;project&gt;/.superpowers/brainstorm/</code> for the session directory.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>尋找連線資訊：</strong> 伺服器把它的啟動 JSON 寫到 <code>$STATE_DIR/server-info</code>。若你在背景啟動伺服器且未擷取 stdout，讀取該檔案以取得 URL 與 port。使用 <code>--project-dir</code> 時，在 <code>&lt;project&gt;/.superpowers/brainstorm/</code> 檢查 session 目錄。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Note:</strong> Pass the project root as <code>--project-dir</code> so mockups persist in <code>.superpowers/brainstorm/</code> and survive server restarts. Without it, files go to <code>/tmp</code> and get cleaned up. Remind the user to add <code>.superpowers/</code> to <code>.gitignore</code> if it's not already there.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>注意：</strong> 把專案根目錄以 <code>--project-dir</code> 傳入，讓 mockups 保存在 <code>.superpowers/brainstorm/</code> 中並在伺服器重啟後存活。沒有它的話，檔案會進到 <code>/tmp</code> 並被清理。提醒使用者把 <code>.superpowers/</code> 加入 <code>.gitignore</code>（若還沒有的話）。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Launching the server by platform:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>依平台啟動伺服器：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Claude Code:</strong></p>
+<pre><code class="language-bash"># Default mode works — the script backgrounds the server itself.
+scripts/start-server.sh --project-dir /path/to/project --open
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Claude Code：</strong></p>
+<pre><code class="language-bash"># Default mode works — the script backgrounds the server itself.
+scripts/start-server.sh --project-dir /path/to/project --open
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>On Windows, the script auto-detects and switches to foreground mode (which blocks the tool call). Use <code>run_in_background: true</code> on the Bash tool call so the server survives across conversation turns, then read <code>$STATE_DIR/server-info</code> on the next turn to get the URL and port.</p></div><div class="col-zh" lang="zh-Hant"><p>在 Windows 上，腳本會自動偵測並切換到前景模式（這會阻擋工具呼叫）。在 Bash 工具呼叫上使用 <code>run_in_background: true</code>，讓伺服器跨對話回合存活，然後在下一個回合讀取 <code>$STATE_DIR/server-info</code> 以取得 URL 與 port。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Codex:</strong></p>
+<pre><code class="language-bash"># Codex reaps background processes. The script auto-detects CODEX_CI and
+# switches to foreground mode. Run it normally — no extra flags needed.
+scripts/start-server.sh --project-dir /path/to/project --open
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Codex：</strong></p>
+<pre><code class="language-bash"># Codex reaps background processes. The script auto-detects CODEX_CI and
+# switches to foreground mode. Run it normally — no extra flags needed.
+scripts/start-server.sh --project-dir /path/to/project --open
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Gemini CLI:</strong></p>
+<pre><code class="language-bash"># Use --foreground and set is_background: true on your shell tool call
+# so the process survives across turns
+scripts/start-server.sh --project-dir /path/to/project --open --foreground
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Gemini CLI：</strong></p>
+<pre><code class="language-bash"># Use --foreground and set is_background: true on your shell tool call
+# so the process survives across turns
+scripts/start-server.sh --project-dir /path/to/project --open --foreground
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Copilot CLI:</strong></p>
+<pre><code class="language-bash"># Use --foreground and start the server via the bash tool with mode: &quot;async&quot;
+# so the process survives across turns. Capture the returned shellId for
+# read_bash / stop_bash if you need to interact with it later.
+scripts/start-server.sh --project-dir /path/to/project --open --foreground
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Copilot CLI：</strong></p>
+<pre><code class="language-bash"># Use --foreground and start the server via the bash tool with mode: &quot;async&quot;
+# so the process survives across turns. Capture the returned shellId for
+# read_bash / stop_bash if you need to interact with it later.
+scripts/start-server.sh --project-dir /path/to/project --open --foreground
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Other environments:</strong> The server must keep running in the background across conversation turns. If your environment reaps detached processes, use <code>--foreground</code> and launch the command with your platform's background execution mechanism.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>其他環境：</strong> 伺服器必須在背景中跨對話回合持續執行。若你的環境會收割分離的 process，使用 <code>--foreground</code>，並以你平台的背景執行機制啟動指令。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host:</p></div><div class="col-zh" lang="zh-Hant"><p>若你的瀏覽器無法連到該 URL（在遠端／容器化設定中很常見），綁定一個非 loopback 的主機：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">scripts/start-server.sh \
+  --project-dir /path/to/project \
+  --host 0.0.0.0 \
+  --url-host localhost
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">scripts/start-server.sh \
+  --project-dir /path/to/project \
+  --host 0.0.0.0 \
+  --url-host localhost
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use <code>--url-host</code> to control what hostname is printed in the returned URL JSON.</p></div><div class="col-zh" lang="zh-Hant"><p>使用 <code>--url-host</code> 控制回傳的 URL JSON 中印出哪個主機名稱。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Loop</h2></div><div class="col-zh" lang="zh-Hant"><h2>迴圈</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Check server is alive</strong>, then <strong>write HTML</strong> to a new file in <code>screen_dir</code>:
+   - <strong>Required: confirm the server is alive before referring to the URL or pushing a screen.</strong> Check that <code>$STATE_DIR/server-info</code> exists and <code>$STATE_DIR/server-stopped</code> does not. If it has shut down, restart it with <code>start-server.sh</code> using the <strong>same <code>--project-dir</code></strong> — it reuses the same port, so the user's open tab reconnects on its own (it shows a "paused" overlay while the server is down) and you don't need to send a new URL. The server auto-exits after 4 hours idle (configurable with <code>--idle-timeout-minutes</code>).
+   - Use semantic filenames: <code>platform.html</code>, <code>visual-style.html</code>, <code>layout.html</code>
+   - <strong>Never reuse filenames</strong> — each screen gets a fresh file
+   - Use your file-creation tool — <strong>never use cat/heredoc</strong> (dumps noise into terminal)
+   - Server automatically serves the newest file</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>檢查伺服器存活</strong>，然後<strong>把 HTML 寫入</strong> <code>screen_dir</code> 中的一個新檔案：
+   - <strong>必要：在參照 URL 或推送畫面之前，先確認伺服器存活。</strong> 檢查 <code>$STATE_DIR/server-info</code> 存在、且 <code>$STATE_DIR/server-stopped</code> 不存在。若它已關閉，用<strong>相同的 <code>--project-dir</code></strong> 以 <code>start-server.sh</code> 重新啟動——它會重用相同的 port，因此使用者已開啟的分頁會自行重新連線（伺服器停機期間它會顯示「paused」覆蓋層），你也不需要寄送新 URL。伺服器在閒置 4 小時後自動結束（可用 <code>--idle-timeout-minutes</code> 設定）。
+   - 使用語意化檔名：<code>platform.html</code>、<code>visual-style.html</code>、<code>layout.html</code>
+   - <strong>絕不重用檔名</strong> ——每個畫面都使用新的檔案
+   - 使用你的檔案建立工具——<strong>絕不使用 cat/heredoc</strong>（會把雜訊倒進終端機）
+   - 伺服器自動提供最新的檔案</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="2">
+<li><strong>Tell user what to expect and end your turn:</strong>
+   - Remind them of the URL (every step, not just first)
+   - Give a brief text summary of what's on screen (e.g., "Showing 3 layout options for the homepage")
+   - Ask them to respond in the terminal: "Take a look and let me know what you think. Click to select an option if you'd like."</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="2">
+<li><strong>告訴使用者會看到什麼並結束你的回合：</strong>
+   - 提醒他們 URL（每一步都要，不只是第一次）
+   - 給出畫面上內容的簡短文字摘要（例如「顯示首頁的 3 種佈局選項」）
+   - 請他們在終端機中回應：「看一下並讓我知道你的想法。若你願意，可以點擊選取一個選項。」</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="3">
+<li><strong>On your next turn</strong> — after the user responds in the terminal:
+   - Read <code>$STATE_DIR/events</code> if it exists — this contains the user's browser interactions (clicks, selections) as JSON lines
+   - Merge with the user's terminal text to get the full picture
+   - The terminal message is the primary feedback; <code>state_dir/events</code> provides structured interaction data</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="3">
+<li><strong>在你的下一個回合</strong> ——在使用者於終端機回應之後：
+   - 若存在，讀取 <code>$STATE_DIR/events</code> ——它包含使用者的瀏覽器互動（點擊、選取），以 JSON 行格式呈現
+   - 與使用者的終端機文字合併，取得完整樣貌
+   - 終端機訊息是主要回饋；<code>state_dir/events</code> 提供結構化的互動資料</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="4">
+<li><strong>Iterate or advance</strong> — if feedback changes current screen, write a new file (e.g., <code>layout-v2.html</code>). Only move to the next question when the current step is validated.</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="4">
+<li><strong>迭代或前進</strong> ——若回饋改變目前的畫面，寫入一個新檔案（例如 <code>layout-v2.html</code>）。只有目前步驟獲得驗證後才移動到下一個問題。</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="5">
+<li><strong>Unload when returning to terminal</strong> — when the next step doesn't need the browser (e.g., a clarifying question, a tradeoff discussion), push a waiting screen to clear the stale content:</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="5">
+<li><strong>回到終端機時卸載</strong> ——當下一步不需要瀏覽器時（例如釐清問題、取捨討論），推送一個等待畫面以清除過時的內容：</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>```html
+   <!-- filename: waiting.html (or waiting-2.html, etc.) --></p>
+<div style="display:flex;align-items:center;justify-content:center;min-height:60vh">
+     <p class="subtitle">Continuing in terminal...</p>
+   </div>
+<p>```</p></div><div class="col-zh" lang="zh-Hant"><p>```html
+   <!-- filename: waiting.html (or waiting-2.html, etc.) --></p>
+<div style="display:flex;align-items:center;justify-content:center;min-height:60vh">
+     <p class="subtitle">Continuing in terminal...</p>
+   </div>
+<p>```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>This prevents the user from staring at a resolved choice while the conversation has moved on. When the next visual question comes up, push a new content file as usual.</p></div><div class="col-zh" lang="zh-Hant"><p>這能防止使用者在對話已前進時，還盯著一個已解決的選擇。當下一個視覺問題出現時，照常推送新的內容檔案。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="6">
+<li>Repeat until done.</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="6">
+<li>重複直到完成。</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Writing Content Fragments</h2></div><div class="col-zh" lang="zh-Hant"><h2>撰寫內容片段</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Write just the content that goes inside the page. The server wraps it in the frame template automatically (header, theme CSS, connection status, and all interactive infrastructure).</p></div><div class="col-zh" lang="zh-Hant"><p>只撰寫會放進頁面內的內容。伺服器會自動把它包進 frame 範本（頁首、主題 CSS、連線狀態與所有互動基礎設施）。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Minimal example:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>最小範例：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;h2&gt;Which layout works better?&lt;/h2&gt;
+&lt;p class=&quot;subtitle&quot;&gt;Consider readability and visual hierarchy&lt;/p&gt;
+
+&lt;div class=&quot;options&quot;&gt;
+  &lt;div class=&quot;option&quot; data-choice=&quot;a&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;letter&quot;&gt;A&lt;/div&gt;
+    &lt;div class=&quot;content&quot;&gt;
+      &lt;h3&gt;Single Column&lt;/h3&gt;
+      &lt;p&gt;Clean, focused reading experience&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;option&quot; data-choice=&quot;b&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;letter&quot;&gt;B&lt;/div&gt;
+    &lt;div class=&quot;content&quot;&gt;
+      &lt;h3&gt;Two Column&lt;/h3&gt;
+      &lt;p&gt;Sidebar navigation with main content&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;h2&gt;Which layout works better?&lt;/h2&gt;
+&lt;p class=&quot;subtitle&quot;&gt;Consider readability and visual hierarchy&lt;/p&gt;
+
+&lt;div class=&quot;options&quot;&gt;
+  &lt;div class=&quot;option&quot; data-choice=&quot;a&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;letter&quot;&gt;A&lt;/div&gt;
+    &lt;div class=&quot;content&quot;&gt;
+      &lt;h3&gt;Single Column&lt;/h3&gt;
+      &lt;p&gt;Clean, focused reading experience&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;option&quot; data-choice=&quot;b&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;letter&quot;&gt;B&lt;/div&gt;
+    &lt;div class=&quot;content&quot;&gt;
+      &lt;h3&gt;Two Column&lt;/h3&gt;
+      &lt;p&gt;Sidebar navigation with main content&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>That's it. No <code>&lt;html&gt;</code>, no CSS, no <code>&lt;script&gt;</code> tags needed. The server provides all of that.</p></div><div class="col-zh" lang="zh-Hant"><p>就是這樣。不需要 <code>&lt;html&gt;</code>、CSS 或 <code>&lt;script&gt;</code> 標籤。伺服器會提供所有這些。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>CSS Classes Available</h2></div><div class="col-zh" lang="zh-Hant"><h2>可用的 CSS 類別</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The frame template provides these CSS classes for your content:</p></div><div class="col-zh" lang="zh-Hant"><p>frame 範本為你的內容提供這些 CSS 類別：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Options (A/B/C choices)</h3></div><div class="col-zh" lang="zh-Hant"><h3>選項（A/B/C 選擇）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;options&quot;&gt;
+  &lt;div class=&quot;option&quot; data-choice=&quot;a&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;letter&quot;&gt;A&lt;/div&gt;
+    &lt;div class=&quot;content&quot;&gt;
+      &lt;h3&gt;Title&lt;/h3&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;options&quot;&gt;
+  &lt;div class=&quot;option&quot; data-choice=&quot;a&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;letter&quot;&gt;A&lt;/div&gt;
+    &lt;div class=&quot;content&quot;&gt;
+      &lt;h3&gt;Title&lt;/h3&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Multi-select:</strong> Add <code>data-multiselect</code> to the container to let users select multiple options. Each click toggles the item's selected styling.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>多重選取：</strong> 在容器上加入 <code>data-multiselect</code>，讓使用者可以選取多個選項。每次點擊會切換該項目的選取樣式。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;options&quot; data-multiselect&gt;
+  &lt;!-- same option markup — users can select/deselect multiple --&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;options&quot; data-multiselect&gt;
+  &lt;!-- same option markup — users can select/deselect multiple --&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Cards (visual designs)</h3></div><div class="col-zh" lang="zh-Hant"><h3>卡片（視覺設計）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;cards&quot;&gt;
+  &lt;div class=&quot;card&quot; data-choice=&quot;design1&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;card-image&quot;&gt;&lt;!-- mockup content --&gt;&lt;/div&gt;
+    &lt;div class=&quot;card-body&quot;&gt;
+      &lt;h3&gt;Name&lt;/h3&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;cards&quot;&gt;
+  &lt;div class=&quot;card&quot; data-choice=&quot;design1&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
+    &lt;div class=&quot;card-image&quot;&gt;&lt;!-- mockup content --&gt;&lt;/div&gt;
+    &lt;div class=&quot;card-body&quot;&gt;
+      &lt;h3&gt;Name&lt;/h3&gt;
+      &lt;p&gt;Description&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Mockup container</h3></div><div class="col-zh" lang="zh-Hant"><h3>Mockup 容器</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;mockup&quot;&gt;
+  &lt;div class=&quot;mockup-header&quot;&gt;Preview: Dashboard Layout&lt;/div&gt;
+  &lt;div class=&quot;mockup-body&quot;&gt;&lt;!-- your mockup HTML --&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;mockup&quot;&gt;
+  &lt;div class=&quot;mockup-header&quot;&gt;Preview: Dashboard Layout&lt;/div&gt;
+  &lt;div class=&quot;mockup-body&quot;&gt;&lt;!-- your mockup HTML --&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Split view (side-by-side)</h3></div><div class="col-zh" lang="zh-Hant"><h3>分割檢視（並排）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;split&quot;&gt;
+  &lt;div class=&quot;mockup&quot;&gt;&lt;!-- left --&gt;&lt;/div&gt;
+  &lt;div class=&quot;mockup&quot;&gt;&lt;!-- right --&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;split&quot;&gt;
+  &lt;div class=&quot;mockup&quot;&gt;&lt;!-- left --&gt;&lt;/div&gt;
+  &lt;div class=&quot;mockup&quot;&gt;&lt;!-- right --&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Pros/Cons</h3></div><div class="col-zh" lang="zh-Hant"><h3>優點／缺點</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;pros-cons&quot;&gt;
+  &lt;div class=&quot;pros&quot;&gt;&lt;h4&gt;Pros&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Benefit&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+  &lt;div class=&quot;cons&quot;&gt;&lt;h4&gt;Cons&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Drawback&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;pros-cons&quot;&gt;
+  &lt;div class=&quot;pros&quot;&gt;&lt;h4&gt;Pros&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Benefit&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+  &lt;div class=&quot;cons&quot;&gt;&lt;h4&gt;Cons&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Drawback&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Mock elements (wireframe building blocks)</h3></div><div class="col-zh" lang="zh-Hant"><h3>Mock 元素（線框圖建構積木）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;mock-nav&quot;&gt;Logo | Home | About | Contact&lt;/div&gt;
+&lt;div style=&quot;display: flex;&quot;&gt;
+  &lt;div class=&quot;mock-sidebar&quot;&gt;Navigation&lt;/div&gt;
+  &lt;div class=&quot;mock-content&quot;&gt;Main content area&lt;/div&gt;
+&lt;/div&gt;
+&lt;button class=&quot;mock-button&quot;&gt;Action Button&lt;/button&gt;
+&lt;input class=&quot;mock-input&quot; placeholder=&quot;Input field&quot;&gt;
+&lt;div class=&quot;placeholder&quot;&gt;Placeholder area&lt;/div&gt;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-html">&lt;div class=&quot;mock-nav&quot;&gt;Logo | Home | About | Contact&lt;/div&gt;
+&lt;div style=&quot;display: flex;&quot;&gt;
+  &lt;div class=&quot;mock-sidebar&quot;&gt;Navigation&lt;/div&gt;
+  &lt;div class=&quot;mock-content&quot;&gt;Main content area&lt;/div&gt;
+&lt;/div&gt;
+&lt;button class=&quot;mock-button&quot;&gt;Action Button&lt;/button&gt;
+&lt;input class=&quot;mock-input&quot; placeholder=&quot;Input field&quot;&gt;
+&lt;div class=&quot;placeholder&quot;&gt;Placeholder area&lt;/div&gt;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Typography and sections</h3></div><div class="col-zh" lang="zh-Hant"><h3>排版與區段</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><code>h2</code> — page title</li>
+<li><code>h3</code> — section heading</li>
+<li><code>.subtitle</code> — secondary text below title</li>
+<li><code>.section</code> — content block with bottom margin</li>
+<li><code>.label</code> — small uppercase label text</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><code>h2</code> ——頁面標題</li>
+<li><code>h3</code> ——區段標題</li>
+<li><code>.subtitle</code> ——標題下方的次要文字</li>
+<li><code>.section</code> ——含底部邊距的內容區塊</li>
+<li><code>.label</code> ——小號大寫標籤文字</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Browser Events Format</h2></div><div class="col-zh" lang="zh-Hant"><h2>瀏覽器事件格式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When the user clicks options in the browser, their interactions are recorded to <code>$STATE_DIR/events</code> (one JSON object per line). The file is cleared automatically when you push a new screen.</p></div><div class="col-zh" lang="zh-Hant"><p>當使用者在瀏覽器中點擊選項時，他們的互動會被記錄到 <code>$STATE_DIR/events</code>（每行一個 JSON 物件）。當你推送新畫面時，檔案會自動清空。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-jsonl">{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;a&quot;,&quot;text&quot;:&quot;Option A - Simple Layout&quot;,&quot;timestamp&quot;:1706000101}
+{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;c&quot;,&quot;text&quot;:&quot;Option C - Complex Grid&quot;,&quot;timestamp&quot;:1706000108}
+{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;b&quot;,&quot;text&quot;:&quot;Option B - Hybrid&quot;,&quot;timestamp&quot;:1706000115}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-jsonl">{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;a&quot;,&quot;text&quot;:&quot;Option A - Simple Layout&quot;,&quot;timestamp&quot;:1706000101}
+{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;c&quot;,&quot;text&quot;:&quot;Option C - Complex Grid&quot;,&quot;timestamp&quot;:1706000108}
+{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;b&quot;,&quot;text&quot;:&quot;Option B - Hybrid&quot;,&quot;timestamp&quot;:1706000115}
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The full event stream shows the user's exploration path — they may click multiple options before settling. The last <code>choice</code> event is typically the final selection, but the pattern of clicks can reveal hesitation or preferences worth asking about.</p></div><div class="col-zh" lang="zh-Hant"><p>完整的事件串流顯示使用者的探索路徑——他們可能先點擊多個選項才定案。最後的 <code>choice</code> 事件通常是最終選取，但點擊模式可以透露出值得追問的猶豫或偏好。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If <code>$STATE_DIR/events</code> doesn't exist, the user didn't interact with the browser — use only their terminal text.</p></div><div class="col-zh" lang="zh-Hant"><p>若 <code>$STATE_DIR/events</code> 不存在，表示使用者沒有與瀏覽器互動——只使用他們的終端機文字。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Design Tips</h2></div><div class="col-zh" lang="zh-Hant"><h2>設計提示</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Scale fidelity to the question</strong> — wireframes for layout, polish for polish questions</li>
+<li><strong>Explain the question on each page</strong> — "Which layout feels more professional?" not just "Pick one"</li>
+<li><strong>Iterate before advancing</strong> — if feedback changes current screen, write a new version</li>
+<li><strong>2-4 options max</strong> per screen</li>
+<li><strong>Use real content when it matters</strong> — for a photography portfolio, use actual images (Unsplash). Placeholder content obscures design issues.</li>
+<li><strong>Keep mockups simple</strong> — focus on layout and structure, not pixel-perfect design</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>把擬真度對齊問題</strong> ——佈局用線框圖，潤飾問題用潤飾</li>
+<li><strong>在每個頁面上說明問題</strong> ——「哪種佈局感覺更專業？」而不只是「選一個」</li>
+<li><strong>前進之前先迭代</strong> ——若回饋改變目前的畫面，寫入一個新版本</li>
+<li>每個畫面<strong>最多 2-4 個選項</strong></li>
+<li><strong>在重要時使用真實內容</strong> ——對攝影作品集，使用真實的圖片（Unsplash）。佔位內容會掩蓋設計問題。</li>
+<li><strong>保持 mockups 簡單</strong> ——聚焦於佈局與結構，而非像素完美的設計</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>File Naming</h2></div><div class="col-zh" lang="zh-Hant"><h2>檔名</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Use semantic names: <code>platform.html</code>, <code>visual-style.html</code>, <code>layout.html</code></li>
+<li>Never reuse filenames — each screen must be a new file</li>
+<li>For iterations: append version suffix like <code>layout-v2.html</code>, <code>layout-v3.html</code></li>
+<li>Server serves newest file by modification time</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>使用語意化名稱：<code>platform.html</code>、<code>visual-style.html</code>、<code>layout.html</code></li>
+<li>絕不重用檔名——每個畫面都必須是新檔案</li>
+<li>迭代時：加上版本後綴，例如 <code>layout-v2.html</code>、<code>layout-v3.html</code></li>
+<li>伺服器依修改時間提供最新的檔案</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Cleaning Up</h2></div><div class="col-zh" lang="zh-Hant"><h2>清理</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">scripts/stop-server.sh $SESSION_DIR
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">scripts/stop-server.sh $SESSION_DIR
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If the session used <code>--project-dir</code>, mockup files persist in <code>.superpowers/brainstorm/</code> for later reference. Only <code>/tmp</code> sessions get deleted on stop.</p></div><div class="col-zh" lang="zh-Hant"><p>若 session 使用了 <code>--project-dir</code>，mockup 檔案會保存在 <code>.superpowers/brainstorm/</code> 中供日後參照。只有 <code>/tmp</code> session 會在停止時被刪除。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>參考文件</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Frame template (CSS reference): <code>scripts/frame-template.html</code></li>
+<li>Helper script (client-side): <code>scripts/helper.js</code></li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li>Frame 範本（CSS 參考）：<code>scripts/frame-template.html</code></li>
+<li>Helper 腳本（用戶端）：<code>scripts/helper.js</code></li>
+</ul></div></div>
+
+</div>
+</body>
+</html>

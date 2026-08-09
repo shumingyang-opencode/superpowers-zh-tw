@@ -1,0 +1,102 @@
+{
+  "skills": {
+    "using-superpowers": {
+      "cat": "meta",
+      "level": "L0",
+      "inv": "boot",
+      "blurb": "開場白技能：任何對話開始時先檢查有沒有技能適用，先呼叫再行動。",
+      "description_zh": "使用時機：任何對話開始時——確立如何尋找與使用技能，要求在「任何回應（包括澄清問題）」之前先呼叫技能"
+    },
+    "brainstorming": {
+      "cat": "process",
+      "level": "L1",
+      "inv": "model",
+      "blurb": "動工前的第一站：把你的點子敲成具體設計，問到你講清楚為止。",
+      "description_zh": "在任何創意工作之前你必須使用此技能——建立功能、建構元件、新增功能、或修改行為。在實作之前探索使用者的意圖、需求與設計。"
+    },
+    "using-git-worktrees": {
+      "cat": "process",
+      "level": "L1",
+      "inv": "model",
+      "blurb": "開工先開一個隔離的 git worktree，主分支不被打擾。",
+      "description_zh": "當開始需要與目前工作區隔離的功能工作，或在執行實作計畫之前使用 —— 透過原生工具或 git worktree 備援方式確保有隔離的工作區"
+    },
+    "writing-plans": {
+      "cat": "process",
+      "level": "L2",
+      "inv": "model",
+      "blurb": "把定稿的設計拆成一步一步、小到 2–5 分鐘的任務，每個都標好檔案與驗證方式。",
+      "description_zh": "當你有一份多步驟任務的規格或需求，在動任何程式碼之前使用"
+    },
+    "executing-plans": {
+      "cat": "process",
+      "level": "L3",
+      "inv": "model",
+      "blurb": "照寫好的計畫，在另開的 session 分批執行，每批有人類檢查點。",
+      "description_zh": "當你有一份書面的實作計畫，需要在另一個 session 中執行並設有審查檢查點時使用"
+    },
+    "subagent-driven-development": {
+      "cat": "process",
+      "level": "L3",
+      "inv": "model",
+      "blurb": "照計畫逐任務派全新的子代理實作，先對規格再對品質的兩階段審查。",
+      "description_zh": "在目前 session 中執行含有獨立任務的實作計畫時使用"
+    },
+    "dispatching-parallel-agents": {
+      "cat": "process",
+      "level": "L3",
+      "inv": "model",
+      "blurb": "面對 2+ 個互不依賴的任務，平行派子代理同時做。",
+      "description_zh": "當面對 2 個以上彼此獨立、無需共享狀態或循序依賴即可並行處理的任務時使用"
+    },
+    "requesting-code-review": {
+      "cat": "process",
+      "level": "L4",
+      "inv": "model",
+      "blurb": "任務完成、發合併前，送審查確認有沒有照需求做。",
+      "description_zh": "當完成任務、實作主要功能，或在合併之前，用於驗證工作成果符合需求時使用"
+    },
+    "receiving-code-review": {
+      "cat": "process",
+      "level": "L4",
+      "inv": "model",
+      "blurb": "收到審查意見，先想清楚再動手——不是照單全收也不是硬撐。",
+      "description_zh": "當收到程式碼審查回饋、在實作建議之前使用，尤其是當回饋看起來不清楚或技術上有疑慮時 —— 需要技術嚴謹與驗證，而不是做作地附和或盲目實作"
+    },
+    "finishing-a-development-branch": {
+      "cat": "process",
+      "level": "L4",
+      "inv": "model",
+      "blurb": "全部測過、都綠了之後，決定要合併、發 PR 還是留著。",
+      "description_zh": "當實作完成、所有測試通過，且你需要決定如何整合這份工作成果時使用"
+    },
+    "test-driven-development": {
+      "cat": "discipline",
+      "level": "L3",
+      "inv": "model",
+      "blurb": "先寫會失敗的測試，再看它紅、寫最小程式讓它綠、重構——回饋逼出好程式。",
+      "description_zh": "使用時機：實作任何功能或修 bug 時，在寫實作程式碼之前"
+    },
+    "systematic-debugging": {
+      "cat": "discipline",
+      "level": "L3",
+      "inv": "model",
+      "blurb": "遇到 bug 先別急著修：四階段根因流程，先鎖住再挖根。",
+      "description_zh": "在遇到任何 bug、測試失敗或非預期行為、尚未提出修復方案之前使用"
+    },
+    "verification-before-completion": {
+      "cat": "discipline",
+      "level": "L4",
+      "inv": "model",
+      "blurb": "宣告完成之前，先真的跑驗證指令、親眼看到輸出——證據優先於斷言。",
+      "description_zh": "當你正要宣稱工作已完成、已修正或通過，在 commit 或建立 PR 之前使用 —— 要求執行驗證指令並確認輸出，之後才能作出任何成功的宣稱；永遠先有證據再有斷言"
+    },
+    "writing-skills": {
+      "cat": "meta",
+      "level": "support",
+      "inv": "model",
+      "blurb": "怎麼寫、怎麼測、怎麼部署一個技能——寫技能本身也是 TDD。",
+      "description_zh": "在建立新技能、編輯既有技能，或於部署前驗證技能是否正常運作時使用"
+    }
+  }
+}

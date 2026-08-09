@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>executing-plans · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>executing-plans</code></td></tr>
+<tr><td>description (EN)</td><td>Use when you have a written implementation plan to execute in a separate session with review checkpoints</td></tr>
+<tr><td>說明 (繁中)</td><td>當你有一份書面的實作計畫，需要在另一個 session 中執行並設有審查檢查點時使用</td></tr>
+</table>
+<h1>executing-plans</h1>
+<div class="subtitle">照寫好的計畫，在另開的 session 分批執行，每批有人類檢查點。</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Executing Plans</h1></div><div class="col-zh" lang="zh-Hant"><h1>執行計畫</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Load plan, review critically, execute all tasks, report when complete.</p></div><div class="col-zh" lang="zh-Hant"><p>載入計畫、批判性審查、執行所有任務、完成後回報。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Announce at start:</strong> "I'm using the executing-plans skill to implement this plan."</p></div><div class="col-zh" lang="zh-Hant"><p><strong>開始時宣告：</strong> 「我正使用 executing-plans 技能來實作這個計畫。」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Note:</strong> Tell your human partner that Superpowers works much better with access to subagents (Claude Code, Codex CLI, Codex App, Copilot CLI, and Gemini CLI all qualify; see the per-platform tool refs in <code>../using-superpowers/references/</code>). If subagents are available, use superpowers:subagent-driven-development instead of this skill.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>注意：</strong> 告訴你的人工夥伴，Superpowers 在能使用子代理（Claude Code、Codex CLI、Codex App、Copilot CLI 與 Gemini CLI 皆符合；請參閱 <code>../using-superpowers/references/</code> 中各平台的工具參考）時會運作得更好。如果可以使用子代理，請改用 superpowers:subagent-driven-development，而不要使用此技能。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Process</h2></div><div class="col-zh" lang="zh-Hant"><h2>流程</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Step 1: Load and Review Plan</h3>
+<ol>
+<li>Ensure an isolated workspace: use superpowers:using-git-worktrees to create one or verify the existing one</li>
+<li>Read plan file</li>
+<li>Review critically - identify any questions or concerns about the plan</li>
+<li>If concerns: Raise them with your human partner before starting</li>
+<li>If no concerns: Create todos for the plan items and proceed</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><h3>第 1 步：載入並審查計畫</h3>
+<ol>
+<li>確保有隔離的工作區：使用 superpowers:using-git-worktrees 建立一個或驗證現有的</li>
+<li>讀取計畫檔</li>
+<li>批判性審查 —— 找出對計畫的任何疑問或顧慮</li>
+<li>若有顧慮：開始前先與你的人工夥伴提出</li>
+<li>若無顧慮：為計畫項目建立 todos 並繼續進行</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Step 2: Execute Tasks</h3></div><div class="col-zh" lang="zh-Hant"><h3>第 2 步：執行任務</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>For each task:
+1. Mark as in_progress
+2. Follow each step exactly (plan has bite-sized steps)
+3. Run verifications as specified
+4. Mark as completed</p></div><div class="col-zh" lang="zh-Hant"><p>對每個任務：
+1. 標記為 in_progress
+2. 精確依循每個步驟（計畫已切成小而專注的步驟）
+3. 依指定執行驗證
+4. 標記為 completed</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Step 3: Complete Development</h3></div><div class="col-zh" lang="zh-Hant"><h3>第 3 步：完成開發</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>After all tasks complete and verified:
+- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
+- <strong>REQUIRED SUB-SKILL:</strong> Use superpowers:finishing-a-development-branch
+- Follow that skill to verify tests, present options, execute choice</p></div><div class="col-zh" lang="zh-Hant"><p>所有任務完成並驗證後：
+- 宣告：「我正使用 finishing-a-development-branch 技能來完成這份工作。」
+- <strong>必要子技能：</strong> 使用 superpowers:finishing-a-development-branch
+- 依循該技能驗證測試、呈現選項、執行選擇</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Stop and Ask for Help</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時停下尋求協助</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>STOP executing immediately when:</strong>
+- Hit a blocker (missing dependency, test fails, instruction unclear)
+- Plan has critical gaps preventing starting
+- You don't understand an instruction
+- Verification fails repeatedly</p></div><div class="col-zh" lang="zh-Hant"><p><strong>遇到以下情況立即停止執行：</strong>
+- 卡住（缺少依賴、測試失敗、指示不明）
+- 計畫有阻礙開始的關鍵缺口
+- 不理解某個指示
+- 驗證持續失敗</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Ask for clarification rather than guessing.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>寧可詢問釐清，也不要亂猜。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Revisit Earlier Steps</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時回到較早的步驟</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Return to Review (Step 1) when:</strong>
+- Partner updates the plan based on your feedback
+- Fundamental approach needs rethinking</p></div><div class="col-zh" lang="zh-Hant"><p><strong>遇到以下情況回到審查（第 1 步）：</strong>
+- 夥伴根據你的回饋更新計畫
+- 根本做法需要重新思考</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Don't force through blockers</strong> - stop and ask.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不要硬闖卡點</strong> - 停下來詢問。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Remember</h2>
+<ul>
+<li>Review plan critically first</li>
+<li>Follow plan steps exactly</li>
+<li>Don't skip verifications</li>
+<li>Reference skills when plan says to</li>
+<li>Stop when blocked, don't guess</li>
+<li>Never start implementation on main/master branch without explicit user consent</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><h2>記住</h2>
+<ul>
+<li>先批判性審查計畫</li>
+<li>精確依循計畫步驟</li>
+<li>不要跳過驗證</li>
+<li>計畫提到時參照技能</li>
+<li>卡住就停下，不要亂猜</li>
+<li>未經使用者明確同意，絕不在 main/master 分支上開始實作</li>
+</ul></div></div>
+
+</div>
+</body>
+</html>

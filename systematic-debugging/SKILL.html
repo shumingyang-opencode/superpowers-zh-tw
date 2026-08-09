@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>systematic-debugging · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>systematic-debugging</code></td></tr>
+<tr><td>description (EN)</td><td>Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes</td></tr>
+<tr><td>說明 (繁中)</td><td>在遇到任何 bug、測試失敗或非預期行為、尚未提出修復方案之前使用</td></tr>
+</table>
+<h1>systematic-debugging</h1>
+<div class="subtitle">遇到 bug 先別急著修：四階段根因流程，先鎖住再挖根。</div>
+<div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="root-cause-tracing.html">root-cause-tracing</a>　·　<a href="defense-in-depth.html">defense-in-depth</a>　·　<a href="condition-based-waiting.html">condition-based-waiting</a>　·　<a href="CREATION-LOG.html">CREATION-LOG</a>　·　<a href="test-academic.html">test-academic</a>　·　<a href="test-pressure-1.html">test-pressure-1</a>　·　<a href="test-pressure-2.html">test-pressure-2</a>　·　<a href="test-pressure-3.html">test-pressure-3</a></div>
+<div class="pair"><div class="col-en" lang="en"><h1>Systematic Debugging</h1></div><div class="col-zh" lang="zh-Hant"><h1>系統化除錯</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>概述</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> ALWAYS find root cause before attempting fixes. Symptom fixes are failure.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 一律先找出根因再嘗試修復。只修症狀等於失敗。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Violating the letter of this process is violating the spirit of debugging.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>違反本流程的字面規定，就是違反除錯的精神。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Iron Law</h2></div><div class="col-zh" lang="zh-Hant"><h2>鐵律</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>未先調查根因，不得提出任何修復
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If you haven't completed Phase 1, you cannot propose fixes.</p></div><div class="col-zh" lang="zh-Hant"><p>如果沒有完成第一階段，就不能提出修復方案。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use for ANY technical issue:
+- Test failures
+- Bugs in production
+- Unexpected behavior
+- Performance problems
+- Build failures
+- Integration issues</p></div><div class="col-zh" lang="zh-Hant"><p>任何技術問題都適用：
+- 測試失敗
+- 生產環境的 bug
+- 非預期行為
+- 效能問題
+- 建置失敗
+- 整合問題</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Use this ESPECIALLY when:</strong>
+- Under time pressure (emergencies make guessing tempting)
+- "Just one quick fix" seems obvious
+- You've already tried multiple fixes
+- Previous fix didn't work
+- You don't fully understand the issue</p></div><div class="col-zh" lang="zh-Hant"><p><strong>尤其是以下情況時使用：</strong>
+- 時間壓力下（緊急狀況更容易讓人想用猜的）
+- 「就修一下而已」看似顯而易見
+- 你已經嘗試過多種修復
+- 之前的修復沒有效
+- 你沒有完全理解問題</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Don't skip when:</strong>
+- Issue seems simple (simple bugs have root causes too)
+- You're in a hurry (rushing guarantees rework)
+- Manager wants it fixed NOW (systematic is faster than thrashing)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>以下情況不可跳過：</strong>
+- 問題看似簡單（簡單的 bug 一樣有根因）
+- 你很趕時間（越急越容易返工）
+- 主管要你「現在就修好」（系統化比亂槍打鳥更快）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Four Phases</h2></div><div class="col-zh" lang="zh-Hant"><h2>四個階段</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>You MUST complete each phase before proceeding to the next.</p></div><div class="col-zh" lang="zh-Hant"><p>你必須依序完成每個階段，才能進入下一個。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Phase 1: Root Cause Investigation</h3></div><div class="col-zh" lang="zh-Hant"><h3>第一階段：根因調查</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>BEFORE attempting ANY fix:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>在嘗試任何修復「之前」：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Read Error Messages Carefully</strong>
+   - Don't skip past errors or warnings
+   - They often contain the exact solution
+   - Read stack traces completely
+   - Note line numbers, file paths, error codes</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>仔細閱讀錯誤訊息</strong>
+   - 不要跳過錯誤或警告
+   - 它們往往就包含確切的解法
+   - 完整閱讀堆疊追蹤
+   - 記下行號、檔案路徑、錯誤碼</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="2">
+<li><strong>Reproduce Consistently</strong>
+   - Can you trigger it reliably?
+   - What are the exact steps?
+   - Does it happen every time?
+   - If not reproducible → gather more data, don't guess</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="2">
+<li><strong>穩定重現</strong>
+   - 你能可靠地觸發它嗎？
+   - 確切的步驟是什麼？
+   - 每次都會發生嗎？
+   - 無法重現 → 蒐集更多資料，不要用猜的</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="3">
+<li><strong>Check Recent Changes</strong>
+   - What changed that could cause this?
+   - Git diff, recent commits
+   - New dependencies, config changes
+   - Environmental differences</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="3">
+<li><strong>檢查最近的變更</strong>
+   - 是什麼變更可能導致這個問題？
+   - Git diff、最近的 commit
+   - 新的相依套件、設定變更
+   - 環境差異</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="4">
+<li><strong>Gather Evidence in Multi-Component Systems</strong></li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="4">
+<li><strong>在多元件系統中蒐集證據</strong></li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>WHEN system has multiple components (CI → build → signing, API → service → database):</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>當系統含有多個元件時（CI → 建置 → 簽署、API → 服務 → 資料庫）：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>BEFORE proposing fixes, add diagnostic instrumentation:</strong>
+   ```
+   For EACH component boundary:
+     - Log what data enters component
+     - Log what data exits component
+     - Verify environment/config propagation
+     - Check state at each layer</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在提出修復方案之前，先加入診斷儀器：</strong>
+   ```
+   對每個元件的邊界：
+     - 記錄進入元件的是什麼資料
+     - 記錄離開元件的是什麼資料
+     - 驗證環境/設定的傳遞
+     - 檢查每一層的狀態</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Run once to gather evidence showing WHERE it breaks
+   THEN analyze evidence to identify failing component
+   THEN investigate that specific component
+   ```</p></div><div class="col-zh" lang="zh-Hant"><p>先執行一次，蒐集可顯示在哪裡壞掉的證據
+   然後分析證據，找出失敗的元件
+   再深入調查該特定元件
+   ```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example (multi-layer system):</strong>
+   ```bash
+   # Layer 1: Workflow
+   echo "=== Secrets available in workflow: ==="
+   echo "IDENTITY: ${IDENTITY:+SET}${IDENTITY:-UNSET}"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>範例（多層系統）：</strong>
+   ```bash
+   # 第一層：工作流
+   echo "=== Secrets available in workflow: ==="
+   echo "IDENTITY: ${IDENTITY:+SET}${IDENTITY:-UNSET}"</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p># Layer 2: Build script
+   echo "=== Env vars in build script: ==="
+   env | grep IDENTITY || echo "IDENTITY not in environment"</p></div><div class="col-zh" lang="zh-Hant"><p># 第二層：建置腳本
+   echo "=== Env vars in build script: ==="
+   env | grep IDENTITY || echo "IDENTITY not in environment"</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p># Layer 3: Signing script
+   echo "=== Keychain state: ==="
+   security list-keychains
+   security find-identity -v</p></div><div class="col-zh" lang="zh-Hant"><p># 第三層：簽署腳本
+   echo "=== Keychain state: ==="
+   security list-keychains
+   security find-identity -v</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p># Layer 4: Actual signing
+   codesign --sign "$IDENTITY" --verbose=4 "$APP"
+   ```</p></div><div class="col-zh" lang="zh-Hant"><p># 第四層：實際簽署
+   codesign --sign "$IDENTITY" --verbose=4 "$APP"
+   ```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>This reveals:</strong> Which layer fails (secrets → workflow ✓, workflow → build ✗)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>這能顯示出：</strong> 哪一層失敗（secrets → workflow ✓、workflow → build ✗）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="5">
+<li><strong>Trace Data Flow</strong></li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="5">
+<li><strong>追蹤資料流</strong></li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>WHEN error is deep in call stack:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>當錯誤位在呼叫堆疊深處時：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>See <code>root-cause-tracing.md</code> in this directory for the complete backward tracing technique.</p></div><div class="col-zh" lang="zh-Hant"><p>本目錄中的 <code>root-cause-tracing.md</code> 提供完整的回溯追蹤技術。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Quick version:</strong>
+   - Where does bad value originate?
+   - What called this with bad value?
+   - Keep tracing up until you find the source
+   - Fix at source, not at symptom</p></div><div class="col-zh" lang="zh-Hant"><p><strong>簡短版：</strong>
+   - 壞值的源頭在哪裡？
+   - 是什麼用壞值呼叫了這裡？
+   - 持續往上追蹤，直到找出源頭
+   - 在源頭修復，不要在症狀處修復</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Phase 2: Pattern Analysis</h3></div><div class="col-zh" lang="zh-Hant"><h3>第二階段：模式分析</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Find the pattern before fixing:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>先找出模式再修復：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Find Working Examples</strong>
+   - Locate similar working code in same codebase
+   - What works that's similar to what's broken?</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>尋找可運作的範例</strong>
+   - 在同一個 codebase 中找出類似的可運作程式碼
+   - 跟壞掉的部分相似、卻能正常運作的是什麼？</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="2">
+<li><strong>Compare Against References</strong>
+   - If implementing pattern, read reference implementation COMPLETELY
+   - Don't skim - read every line
+   - Understand the pattern fully before applying</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="2">
+<li><strong>對照參考實作</strong>
+   - 若在實作某種模式，請「完整」閱讀參考實作
+   - 不要略讀——每一行都要讀
+   - 套用前先徹底理解模式</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="3">
+<li><strong>Identify Differences</strong>
+   - What's different between working and broken?
+   - List every difference, however small
+   - Don't assume "that can't matter"</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="3">
+<li><strong>找出差異</strong>
+   - 可運作與壞掉的部分差在哪？
+   - 列出每一項差異，不管多小
+   - 不要假設「那個不可能有影響」</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="4">
+<li><strong>Understand Dependencies</strong>
+   - What other components does this need?
+   - What settings, config, environment?
+   - What assumptions does it make?</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="4">
+<li><strong>理解相依關係</strong>
+   - 這需要哪些其他元件？
+   - 需要什麼設定、組態、環境？
+   - 它做了什麼假設？</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Phase 3: Hypothesis and Testing</h3></div><div class="col-zh" lang="zh-Hant"><h3>第三階段：假設與測試</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Scientific method:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>科學方法：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Form Single Hypothesis</strong>
+   - State clearly: "I think X is the root cause because Y"
+   - Write it down
+   - Be specific, not vague</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>形成單一假設</strong>
+   - 清楚陳述：「我認為 X 是根因，因為 Y」
+   - 把它寫下來
+   - 要具體，不要模糊</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="2">
+<li><strong>Test Minimally</strong>
+   - Make the SMALLEST possible change to test hypothesis
+   - One variable at a time
+   - Don't fix multiple things at once</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="2">
+<li><strong>最小化測試</strong>
+   - 做「最小」的變更來測試假設
+   - 一次只改一個變數
+   - 不要同時修多個東西</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="3">
+<li><strong>Verify Before Continuing</strong>
+   - Did it work? Yes → Phase 4
+   - Didn't work? Form NEW hypothesis
+   - DON'T add more fixes on top</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="3">
+<li><strong>繼續前先驗證</strong>
+   - 有效嗎？有 → 進入第四階段
+   - 沒有效？形成「新的」假設
+   - 不要再往上疊加更多修復</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="4">
+<li><strong>When You Don't Know</strong>
+   - Say "I don't understand X"
+   - Don't pretend to know
+   - Ask for help
+   - Research more</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="4">
+<li><strong>不懂就說不懂</strong>
+   - 說「我不理解 X」
+   - 不要裝懂
+   - 尋求協助
+   - 再多做研究</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Phase 4: Implementation</h3></div><div class="col-zh" lang="zh-Hant"><h3>第四階段：實作</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Fix the root cause, not the symptom:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>修根因，不是修症狀：</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li><strong>Create Failing Test Case</strong>
+   - Simplest possible reproduction
+   - Automated test if possible
+   - One-off test script if no framework
+   - MUST have before fixing
+   - Use the <code>superpowers:test-driven-development</code> skill for writing proper failing tests</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li><strong>建立會失敗的測試案例</strong>
+   - 最簡單的重現方式
+   - 盡可能自動化測試
+   - 沒有測試框架就寫一次性測試腳本
+   - 修復前「必須」先有
+   - 使用 <code>superpowers:test-driven-development</code> 技能來撰寫正確的失敗測試</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="2">
+<li><strong>Implement Single Fix</strong>
+   - Address the root cause identified
+   - ONE change at a time
+   - No "while I'm here" improvements
+   - No bundled refactoring</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="2">
+<li><strong>實作單一修復</strong>
+   - 針對已確認的根因處理
+   - 一次只做「一個」變更
+   - 不要「順手」改善
+   - 不要夾帶重構</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="3">
+<li><strong>Verify Fix</strong>
+   - Test passes now?
+   - No other tests broken?
+   - Issue actually resolved?
+   - Use the <code>superpowers:verification-before-completion</code> skill before claiming success</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="3">
+<li><strong>驗證修復</strong>
+   - 現在測試通過了嗎？
+   - 沒有其他測試壞掉嗎？
+   - 問題真的解決了嗎？
+   - 宣稱成功前，先使用 <code>superpowers:verification-before-completion</code> 技能</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="4">
+<li><strong>If Fix Doesn't Work</strong>
+   - STOP
+   - Count: How many fixes have you tried?
+   - If &lt; 3: Return to Phase 1, re-analyze with new information
+   - <strong>If ≥ 3: STOP and question the architecture (step 5 below)</strong>
+   - DON'T attempt Fix #4 without architectural discussion</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="4">
+<li><strong>如果修復沒有效</strong>
+   - 停下來
+   - 數一下：你已經試過幾次修復？
+   - 少於 3 次：回到第一階段，帶著新資訊重新分析
+   - <strong>大於等於 3 次：停下來，質疑架構（見下方第 5 步）</strong>
+   - 未經架構討論，不要嘗試第 4 次修復</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol start="5">
+<li><strong>If 3+ Fixes Failed: Question Architecture</strong></li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol start="5">
+<li><strong>如果 3 次以上修復都失敗：質疑架構</strong></li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Pattern indicating architectural problem:</strong>
+   - Each fix reveals new shared state/coupling/problem in different place
+   - Fixes require "massive refactoring" to implement
+   - Each fix creates new symptoms elsewhere</p></div><div class="col-zh" lang="zh-Hant"><p><strong>顯示架構問題的模式：</strong>
+   - 每次修復都在不同地方揭露新的共享狀態/耦合力/問題
+   - 修復需要「大規模重構」才能實作
+   - 每次修復都會在別處產生新症狀</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>STOP and question fundamentals:</strong>
+   - Is this pattern fundamentally sound?
+   - Are we "sticking with it through sheer inertia"?
+   - Should we refactor architecture vs. continue fixing symptoms?</p></div><div class="col-zh" lang="zh-Hant"><p><strong>停下來質疑根本：</strong>
+   - 這個模式從根本上就是對的嗎？
+   - 我們是否「純粹因為慣性而硬撐」？
+   - 應該重構架構，還是繼續修症狀？</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Discuss with your human partner before attempting more fixes</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>在嘗試更多修復之前，先與你的人類夥伴討論</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>This is NOT a failed hypothesis - this is a wrong architecture.</p></div><div class="col-zh" lang="zh-Hant"><p>這不是假設失敗——這是架構錯誤。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Red Flags - STOP and Follow Process</h2></div><div class="col-zh" lang="zh-Hant"><h2>紅旗——停下來，照流程走</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If you catch yourself thinking:
+- "Quick fix for now, investigate later"
+- "Just try changing X and see if it works"
+- "Add multiple changes, run tests"
+- "Skip the test, I'll manually verify"
+- "It's probably X, let me fix that"
+- "I don't fully understand but this might work"
+- "Pattern says X but I'll adapt it differently"
+- "Here are the main problems: [lists fixes without investigation]"
+- Proposing solutions before tracing data flow
+- <strong>"One more fix attempt" (when already tried 2+)</strong>
+- <strong>Each fix reveals new problem in different place</strong></p></div><div class="col-zh" lang="zh-Hant"><p>如果你發現自己正在這樣想：
+- 「先快速修一下，之後再調查」
+- 「就試試改 X 看有沒有用」
+- 「一次改多個地方，跑測試」
+- 「跳過測試，我手動驗證就好」
+- 「大概是 X，我來修」
+- 「我沒完全理解，但這也許有用」
+- 「模式說要做 X，但我可以改一下做法」
+- 「主要的問題如下：[列出一堆未經調查的修復]」
+- 在追蹤資料流之前就提出解決方案
+- <strong>「再試一次修復」（已經試過 2 次以上時）</strong>
+- <strong>每次修復都在不同地方揭露新問題</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>ALL of these mean: STOP. Return to Phase 1.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>以上任何一種情況都代表：停下來。回到第一階段。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If 3+ fixes failed:</strong> Question the architecture (see Phase 4.5)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果 3 次以上修復失敗：</strong> 質疑架構（見第四階段第 5 步）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>your human partner's Signals You're Doing It Wrong</h2></div><div class="col-zh" lang="zh-Hant"><h2>表示你做錯方向的人類夥伴訊號</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Watch for these redirections:</strong>
+- "Is that not happening?" - You assumed without verifying
+- "Will it show us...?" - You should have added evidence gathering
+- "Stop guessing" - You're proposing fixes without understanding
+- "Ultra-think this" - Question fundamentals, not just symptoms
+- "We're stuck?" (frustrated) - Your approach isn't working</p></div><div class="col-zh" lang="zh-Hant"><p><strong>留意這些轉向提示：</strong>
+- 「那不是沒發生嗎？」——你在未經驗證的情況下就下結論
+- 「這會顯示給我們看嗎……？」——你應該加入證據蒐集
+- 「別再猜了」——你在未理解的狀況下提出修復
+- 「好好深入想一下」——要質疑根本，不要只修症狀
+- 「我們卡住了？」（感到挫折）——你的做法行不通</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>When you see these:</strong> STOP. Return to Phase 1.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>看到這些訊號時：</strong> 停下來。回到第一階段。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見的合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Excuse</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Issue is simple, don't need process"</td>
+<td>Simple issues have root causes too. Process is fast for simple bugs.</td>
+</tr>
+<tr>
+<td>"Emergency, no time for process"</td>
+<td>Systematic debugging is FASTER than guess-and-check thrashing.</td>
+</tr>
+<tr>
+<td>"Just try this first, then investigate"</td>
+<td>First fix sets the pattern. Do it right from the start.</td>
+</tr>
+<tr>
+<td>"I'll write test after confirming fix works"</td>
+<td>Untested fixes don't stick. Test first proves it.</td>
+</tr>
+<tr>
+<td>"Multiple fixes at once saves time"</td>
+<td>Can't isolate what worked. Causes new bugs.</td>
+</tr>
+<tr>
+<td>"Reference too long, I'll adapt the pattern"</td>
+<td>Partial understanding guarantees bugs. Read it completely.</td>
+</tr>
+<tr>
+<td>"I see the problem, let me fix it"</td>
+<td>Seeing symptoms ≠ understanding root cause.</td>
+</tr>
+<tr>
+<td>"One more fix attempt" (after 2+ failures)</td>
+<td>3+ failures = architectural problem. Question pattern, don't fix again.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>藉口</th>
+<th>真相</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「問題很簡單，不需要流程」</td>
+<td>簡單的問題一樣有根因。簡單的 bug 用流程反而快。</td>
+</tr>
+<tr>
+<td>「緊急狀況，沒時間走流程」</td>
+<td>系統化除錯比亂猜亂試「更快」。</td>
+</tr>
+<tr>
+<td>「先試這個，之後再調查」</td>
+<td>第一次修復會定下方向。一開始就做對。</td>
+</tr>
+<tr>
+<td>「確認修復有效後再寫測試」</td>
+<td>沒測過的修復留不住。先有測試才算數。</td>
+</tr>
+<tr>
+<td>「一次修多個省時間」</td>
+<td>無法隔離是哪個起了作用。還會製造新 bug。</td>
+</tr>
+<tr>
+<td>「參考文件太長，我改一下模式就好」</td>
+<td>只理解一半必然出 bug。要完整讀完。</td>
+</tr>
+<tr>
+<td>「我看到問題了，我來修」</td>
+<td>看到症狀 ≠ 理解根因。</td>
+</tr>
+<tr>
+<td>「再試一次修復」（失敗 2 次以上之後）</td>
+<td>3 次以上失敗 = 架構問題。質疑模式，別再修。</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速參考</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Key Activities</th>
+<th>Success Criteria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. Root Cause</strong></td>
+<td>Read errors, reproduce, check changes, gather evidence</td>
+<td>Understand WHAT and WHY</td>
+</tr>
+<tr>
+<td><strong>2. Pattern</strong></td>
+<td>Find working examples, compare</td>
+<td>Identify differences</td>
+</tr>
+<tr>
+<td><strong>3. Hypothesis</strong></td>
+<td>Form theory, test minimally</td>
+<td>Confirmed or new hypothesis</td>
+</tr>
+<tr>
+<td><strong>4. Implementation</strong></td>
+<td>Create test, fix, verify</td>
+<td>Bug resolved, tests pass</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>階段</th>
+<th>關鍵活動</th>
+<th>成功準則</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1. 根因</strong></td>
+<td>閱讀錯誤、重現、檢查變更、蒐集證據</td>
+<td>理解「是什麼」與「為什麼」</td>
+</tr>
+<tr>
+<td><strong>2. 模式</strong></td>
+<td>尋找可運作範例、對照比較</td>
+<td>找出差異</td>
+</tr>
+<tr>
+<td><strong>3. 假設</strong></td>
+<td>形成理論、最小化測試</td>
+<td>假設得到確認或產生新假設</td>
+</tr>
+<tr>
+<td><strong>4. 實作</strong></td>
+<td>建立測試、修復、驗證</td>
+<td>bug 解決、測試通過</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When Process Reveals "No Root Cause"</h2></div><div class="col-zh" lang="zh-Hant"><h2>當流程揭露「沒有根因」時</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If systematic investigation reveals issue is truly environmental, timing-dependent, or external:</p></div><div class="col-zh" lang="zh-Hant"><p>如果系統化調查顯示問題確實是環境性、時間相關或外部的：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ol>
+<li>You've completed the process</li>
+<li>Document what you investigated</li>
+<li>Implement appropriate handling (retry, timeout, error message)</li>
+<li>Add monitoring/logging for future investigation</li>
+</ol></div><div class="col-zh" lang="zh-Hant"><ol>
+<li>你已完成流程</li>
+<li>記錄你調查了什麼</li>
+<li>實作適當的處理方式（重試、逾時、錯誤訊息）</li>
+<li>加入監控/日誌，供日後調查使用</li>
+</ol></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>But:</strong> 95% of "no root cause" cases are incomplete investigation.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>但：</strong> 95% 的「沒有根因」其實是調查不完整。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Supporting Techniques</h2></div><div class="col-zh" lang="zh-Hant"><h2>輔助技術</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>These techniques are part of systematic debugging and available in this directory:</p></div><div class="col-zh" lang="zh-Hant"><p>這些技術屬於系統化除錯的一環，皆在本目錄中：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong><code>root-cause-tracing.md</code></strong> - Trace bugs backward through call stack to find original trigger</li>
+<li><strong><code>defense-in-depth.md</code></strong> - Add validation at multiple layers after finding root cause</li>
+<li><strong><code>condition-based-waiting.md</code></strong> - Replace arbitrary timeouts with condition polling</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong><code>root-cause-tracing.md</code></strong> —— 沿著呼叫堆疊回溯 bug，找出最初的觸發點</li>
+<li><strong><code>defense-in-depth.md</code></strong> —— 找出根因後，在多個層次加入驗證</li>
+<li><strong><code>condition-based-waiting.md</code></strong> —— 用條件輪詢取代任意逾時</li>
+</ul></div></div>
+
+</div>
+</body>
+</html>

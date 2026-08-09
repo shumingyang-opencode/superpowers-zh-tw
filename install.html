@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安裝指南 · Install Guide · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link"><a href="index.html">← 首頁</a><a href="map.html">全景圖</a><a href="learning-path.html">學習路線</a></div>
+<header>
+  <h1>安裝指南</h1>
+  <div class="subtitle">Install Guide · Superpowers 支援的每一個平台，一步一步裝</div>
+  <div class="badge-line">裝好之後，每個 session 開場就自動生效——先檢查技能，再行動</div>
+</header>
+<div class="guide">
+
+<h2>這是什麼</h2>
+<p>Superpowers 是一套給 coding agent 的「完整軟體開發方法論」——建構在一組可組合的技能之上，加上確保 agent 會使用它們的開場指令。它是 <a href="https://github.com/obra/superpowers" target="_blank" rel="noopener">obra/superpowers</a>（MIT License）的<strong>繁體中文翻譯學習站</strong>。<strong>本 repo 只改說明文字，指令、路徑、技能名全部照原樣，所以安裝方式跟上游完全一樣。</strong></p>
+<p class="hint">Superpowers 官方建議：如果你用多個 harness，請分別為每個安裝。</p>
+
+<h2>OpenCode（本機開發主平台）</h2>
+<p>在 <code>opencode.json</code>（全域或專案層級）的 <code>plugin</code> 陣列加入：</p>
+<pre>{
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git"]
+}</pre>
+<p>重開 OpenCode。外掛透過 plugin manager 安裝並註冊所有技能。驗證：問「Tell me about your superpowers」。想釘版本就改用分支或 tag：</p>
+<pre>{
+  "plugin": ["superpowers@git+https://github.com/obra/superpowers.git#v5.0.3"]
+}</pre>
+<p>詳見 <a href="https://raw.githubusercontent.com/obra/superpowers/main/docs/README.opencode.md" target="_blank" rel="noopener">docs/README.opencode.md</a>（OpenCode 版完整指南，含 troubleshooting）。</p>
+
+<h2>Claude Code</h2>
+<p>官方 marketplace 安裝：</p>
+<pre>/plugin install superpowers@claude-plugins-official</pre>
+<p>或註冊 Superpowers marketplace 再裝：</p>
+<pre>/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace</pre>
+
+<h2>Codex App / Codex CLI</h2>
+<p>Codex App：側欄 Plugins → Coding 區塊找到 Superpowers → 按 <code>+</code> 安裝。</p>
+<p>Codex CLI：</p>
+<pre>/plugins</pre>
+<p>搜尋 <code>superpowers</code> → 選擇 Install Plugin。</p>
+
+<h2>Cursor</h2>
+<p>在 Cursor Agent chat 安裝：</p>
+<pre>/add-plugin superpowers</pre>
+<p>或在 plugin marketplace 搜尋「superpowers」。</p>
+
+<h2>Gemini CLI</h2>
+<pre>gemini extensions install https://github.com/obra/superpowers</pre>
+<p>更新：<code>gemini extensions update superpowers</code></p>
+
+<h2>GitHub Copilot CLI</h2>
+<pre>copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin install superpowers@superpowers-marketplace</pre>
+
+<h2>Kimi Code</h2>
+<pre>/plugins</pre>
+<p>Marketplace → Superpowers 安裝；或直接從 repo 安裝：</p>
+<pre>/plugins install https://github.com/obra/superpowers</pre>
+
+<h2>Antigravity</h2>
+<pre>agy plugin install https://github.com/obra/superpowers</pre>
+
+<h2>Factory Droid</h2>
+<pre>droid plugin marketplace add https://github.com/obra/superpowers
+droid plugin install superpowers@superpowers</pre>
+
+<h2>Pi</h2>
+<pre>pi install git:github.com/obra/superpowers</pre>
+
+<h2>開始使用</h2>
+<ol>
+  <li>裝好後，下一個 session 開場就注入 Superpowers 的開場指令。</li>
+  <li>直接說「我們來做 X」——它會先觸發 <code>brainstorming</code>，把點子敲成設計。</li>
+  <li>本網站就是這套技能的閱讀版：<a href="map.html">全景圖</a>看工作流，<a href="learning-path.html">學習路線</a>照順序學，每個技能頁都是中英逐段對照。</li>
+</ol>
+
+<h2>注意</h2>
+<ul>
+  <li>這是<strong>翻譯學習站</strong>；想用英文原版，直接安裝上游：<code>superpowers@git+https://github.com/obra/superpowers.git</code>。</li>
+  <li><strong>不要兩套都裝</strong>——每個技能會出現兩次。選擇其一。</li>
+  <li>翻譯只動說明文字，若遇問題請先比對上游行為。</li>
+</ul>
+
+</div>
+<footer>
+  <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
+  <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關 · 使用 OpenCode 與 deepseek-v4-flash 進行繁中翻譯與網站設計建置</div>
+</footer>
+
+</div>
+</body>
+</html>

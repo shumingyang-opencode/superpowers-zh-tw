@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>receiving-code-review · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../index.html">首頁</a>
+  <a href="../map.html">全景圖</a>
+  <a href="../learning-path.html">學習路線</a>
+  
+</div>
+<table class="fm-table">
+<tr><td>name</td><td><code>receiving-code-review</code></td></tr>
+<tr><td>description (EN)</td><td>Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performative agreement or blind implementation</td></tr>
+<tr><td>說明 (繁中)</td><td>當收到程式碼審查回饋、在實作建議之前使用，尤其是當回饋看起來不清楚或技術上有疑慮時 —— 需要技術嚴謹與驗證，而不是做作地附和或盲目實作</td></tr>
+</table>
+<h1>receiving-code-review</h1>
+<div class="subtitle">收到審查意見，先想清楚再動手——不是照單全收也不是硬撐。</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Code Review Reception</h1></div><div class="col-zh" lang="zh-Hant"><h1>接收程式碼審查</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Code review requires technical evaluation, not emotional performance.</p></div><div class="col-zh" lang="zh-Hant"><p>程式碼審查需要技術評估，而不是情緒表演。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Verify before implementing. Ask before assuming. Technical correctness over social comfort.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 先驗證再實作。先詢問再臆測。技術正確性優先於社交舒適感。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>The Response Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2>回應模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>WHEN receiving code review feedback:
+
+1. READ: Complete feedback without reacting
+2. UNDERSTAND: Restate requirement in own words (or ask)
+3. VERIFY: Check against codebase reality
+4. EVALUATE: Technically sound for THIS codebase?
+5. RESPOND: Technical acknowledgment or reasoned pushback
+6. IMPLEMENT: One item at a time, test each
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>WHEN receiving code review feedback:
+
+1. READ: Complete feedback without reacting
+2. UNDERSTAND: Restate requirement in own words (or ask)
+3. VERIFY: Check against codebase reality
+4. EVALUATE: Technically sound for THIS codebase?
+5. RESPOND: Technical acknowledgment or reasoned pushback
+6. IMPLEMENT: One item at a time, test each
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Forbidden Responses</h2></div><div class="col-zh" lang="zh-Hant"><h2>禁止的回應</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>NEVER:</strong>
+- "You're absolutely right!" (explicit instruction-file violation)
+- "Great point!" / "Excellent feedback!" (performative)
+- "Let me implement that now" (before verification)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>絕不：</strong>
+- 「你完全正確！」（明確違反指令檔）
+- 「好觀點！」/「優秀的回饋！」（做作）
+- 「我現在就來實作」（在驗證之前）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>INSTEAD:</strong>
+- Restate the technical requirement
+- Ask clarifying questions
+- Push back with technical reasoning if wrong
+- Just start working (actions &gt; words)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>取而代之：</strong>
+- 複述技術需求
+- 提出釐清問題
+- 如果錯誤，用技術論證提出異議
+- 直接動手做（行動勝於言語）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Handling Unclear Feedback</h2></div><div class="col-zh" lang="zh-Hant"><h2>處理不清楚的回饋</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>IF any item is unclear:
+  STOP - do not implement anything yet
+  ASK for clarification on unclear items
+
+WHY: Items may be related. Partial understanding = wrong implementation.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>IF any item is unclear:
+  STOP - do not implement anything yet
+  ASK for clarification on unclear items
+
+WHY: Items may be related. Partial understanding = wrong implementation.
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Example:</strong>
+```
+your human partner: "Fix 1-6"
+You understand 1,2,3,6. Unclear on 4,5.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong>
+```
+your human partner: "Fix 1-6"
+You understand 1,2,3,6. Unclear on 4,5.</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>❌ WRONG: Implement 1,2,3,6 now, ask about 4,5 later
+✅ RIGHT: "I understand items 1,2,3,6. Need clarification on 4 and 5 before proceeding."
+```</p></div><div class="col-zh" lang="zh-Hant"><p>❌ WRONG: Implement 1,2,3,6 now, ask about 4,5 later
+✅ RIGHT: "I understand items 1,2,3,6. Need clarification on 4 and 5 before proceeding."
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Source-Specific Handling</h2></div><div class="col-zh" lang="zh-Hant"><h2>依來源分別處理</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>From your human partner</h3>
+<ul>
+<li><strong>Trusted</strong> - implement after understanding</li>
+<li><strong>Still ask</strong> if scope unclear</li>
+<li><strong>No performative agreement</strong></li>
+<li><strong>Skip to action</strong> or technical acknowledgment</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><h3>來自你的人工夥伴</h3>
+<ul>
+<li><strong>值得信賴</strong> - 理解後再實作</li>
+<li><strong>範圍不清楚時仍要詢問</strong></li>
+<li><strong>不做作地附和</strong></li>
+<li><strong>直接動手</strong>或技術性確認</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>From External Reviewers</h3>
+<p>```
+BEFORE implementing:
+  1. Check: Technically correct for THIS codebase?
+  2. Check: Breaks existing functionality?
+  3. Check: Reason for current implementation?
+  4. Check: Works on all platforms/versions?
+  5. Check: Does reviewer understand full context?</p></div><div class="col-zh" lang="zh-Hant"><h3>來自外部審查者</h3>
+<p>```
+BEFORE implementing:
+  1. Check: Technically correct for THIS codebase?
+  2. Check: Breaks existing functionality?
+  3. Check: Reason for current implementation?
+  4. Check: Works on all platforms/versions?
+  5. Check: Does reviewer understand full context?</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>IF suggestion seems wrong:
+  Push back with technical reasoning</p></div><div class="col-zh" lang="zh-Hant"><p>IF suggestion seems wrong:
+  Push back with technical reasoning</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>IF can't easily verify:
+  Say so: "I can't verify this without [X]. Should I [investigate/ask/proceed]?"</p></div><div class="col-zh" lang="zh-Hant"><p>IF can't easily verify:
+  Say so: "I can't verify this without [X]. Should I [investigate/ask/proceed]?"</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>IF conflicts with your human partner's prior decisions:
+  Stop and discuss with your human partner first
+```</p></div><div class="col-zh" lang="zh-Hant"><p>IF conflicts with your human partner's prior decisions:
+  Stop and discuss with your human partner first
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>your human partner's rule:</strong> "External feedback - be skeptical, but check carefully"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>你的人工夥伴的規則：</strong> 「外部回饋 - 保持懷疑，但要仔細檢查」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>YAGNI Check for "Professional" Features</h2></div><div class="col-zh" lang="zh-Hant"><h2>對「正式」功能的 YAGNI 檢查</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>IF reviewer suggests &quot;implementing properly&quot;:
+  grep codebase for actual usage
+
+  IF unused: &quot;This endpoint isn't called. Remove it (YAGNI)?&quot;
+  IF used: Then implement properly
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>IF reviewer suggests &quot;implementing properly&quot;:
+  grep codebase for actual usage
+
+  IF unused: &quot;This endpoint isn't called. Remove it (YAGNI)?&quot;
+  IF used: Then implement properly
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>your human partner's rule:</strong> "You and reviewer both report to me. If we don't need this feature, don't add it."</p></div><div class="col-zh" lang="zh-Hant"><p><strong>你的人工夥伴的規則：</strong> 「你與審查者都向我匯報。如果我們不需要這個功能，就不要加。」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Implementation Order</h2></div><div class="col-zh" lang="zh-Hant"><h2>實作順序</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>FOR multi-item feedback:
+  1. Clarify anything unclear FIRST
+  2. Then implement in this order:
+     - Blocking issues (breaks, security)
+     - Simple fixes (typos, imports)
+     - Complex fixes (refactoring, logic)
+  3. Test each fix individually
+  4. Verify no regressions
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>FOR multi-item feedback:
+  1. Clarify anything unclear FIRST
+  2. Then implement in this order:
+     - Blocking issues (breaks, security)
+     - Simple fixes (typos, imports)
+     - Complex fixes (refactoring, logic)
+  3. Test each fix individually
+  4. Verify no regressions
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>When To Push Back</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時提出異議</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Push back when:
+- Suggestion breaks existing functionality
+- Reviewer lacks full context
+- Violates YAGNI (unused feature)
+- Technically incorrect for this stack
+- Legacy/compatibility reasons exist
+- Conflicts with your human partner's architectural decisions</p></div><div class="col-zh" lang="zh-Hant"><p>在以下情況提出異議：
+- 建議會破壞現有功能
+- 審查者缺乏完整上下文
+- 違反 YAGNI（未使用的功能）
+- 對這個技術棧來說技術上不正確
+- 存在舊版/相容性理由
+- 與你的人工夥伴的架構決策衝突</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>How to push back:</strong>
+- Use technical reasoning, not defensiveness
+- Ask specific questions
+- Reference working tests/code
+- Involve your human partner if architectural</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如何提出異議：</strong>
+- 用技術論證，而不是防衛心態
+- 提出具體問題
+- 引用能運作的測試/程式碼
+- 如果是架構層級的問題，讓人工夥伴參與</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If you're uncomfortable pushing back out loud:</strong> Name that tension, then tell your partner about the issue you've seen. They'll appreciate your honesty.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果你對公開提出異議感到不自在：</strong> 說出那個張力，然後把你看見的問題告訴你的夥伴。他們會感謝你的誠實。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Acknowledging Correct Feedback</h2></div><div class="col-zh" lang="zh-Hant"><h2>肯定正確的回饋</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When feedback IS correct:
+```
+✅ "Fixed. [Brief description of what changed]"
+✅ "Good catch - [specific issue]. Fixed in [location]."
+✅ [Just fix it and show in the code]</p></div><div class="col-zh" lang="zh-Hant"><p>當回饋確實正確時：
+```
+✅ "Fixed. [Brief description of what changed]"
+✅ "Good catch - [specific issue]. Fixed in [location]."
+✅ [Just fix it and show in the code]</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>❌ "You're absolutely right!"
+❌ "Great point!"
+❌ "Thanks for catching that!"
+❌ "Thanks for [anything]"
+❌ ANY gratitude expression
+```</p></div><div class="col-zh" lang="zh-Hant"><p>❌ "You're absolutely right!"
+❌ "Great point!"
+❌ "Thanks for catching that!"
+❌ "Thanks for [anything]"
+❌ ANY gratitude expression
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Why no thanks:</strong> Actions speak. Just fix it. The code itself shows you heard the feedback.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>為什麼不道謝：</strong> 行動勝於言語。直接修好它。程式碼本身就會顯示你聽見了回饋。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>If you catch yourself about to write "Thanks":</strong> DELETE IT. State the fix instead.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果你發現自己正要打出「Thanks」：</strong> 刪掉它。改為陳述修正。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Gracefully Correcting Your Pushback</h2></div><div class="col-zh" lang="zh-Hant"><h2>優雅地修正你提出異議的錯誤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>If you pushed back and were wrong:
+```
+✅ "You were right - I checked [X] and it does [Y]. Implementing now."
+✅ "Verified this and you're correct. My initial understanding was wrong because [reason]. Fixing."</p></div><div class="col-zh" lang="zh-Hant"><p>如果你提出異議但錯了：
+```
+✅ "You were right - I checked [X] and it does [Y]. Implementing now."
+✅ "Verified this and you're correct. My initial understanding was wrong because [reason]. Fixing."</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>❌ Long apology
+❌ Defending why you pushed back
+❌ Over-explaining
+```</p></div><div class="col-zh" lang="zh-Hant"><p>❌ Long apology
+❌ Defending why you pushed back
+❌ Over-explaining
+```</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>State the correction factually and move on.</p></div><div class="col-zh" lang="zh-Hant"><p>如實陳述修正並繼續前進。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Mistakes</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見錯誤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Performative agreement</td>
+<td>State requirement or just act</td>
+</tr>
+<tr>
+<td>Blind implementation</td>
+<td>Verify against codebase first</td>
+</tr>
+<tr>
+<td>Batch without testing</td>
+<td>One at a time, test each</td>
+</tr>
+<tr>
+<td>Assuming reviewer is right</td>
+<td>Check if breaks things</td>
+</tr>
+<tr>
+<td>Avoiding pushback</td>
+<td>Technical correctness &gt; comfort</td>
+</tr>
+<tr>
+<td>Partial implementation</td>
+<td>Clarify all items first</td>
+</tr>
+<tr>
+<td>Can't verify, proceed anyway</td>
+<td>State limitation, ask for direction</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>錯誤</th>
+<th>修正</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>做作地附和</td>
+<td>陳述需求或直接行動</td>
+</tr>
+<tr>
+<td>盲目實作</td>
+<td>先對照程式碼現況驗證</td>
+</tr>
+<tr>
+<td>一次大量修改未測試</td>
+<td>一次一項，逐項測試</td>
+</tr>
+<tr>
+<td>預設審查者一定對</td>
+<td>檢查是否破壞其他東西</td>
+</tr>
+<tr>
+<td>迴避提出異議</td>
+<td>技術正確性 &gt; 舒適感</td>
+</tr>
+<tr>
+<td>部分實作</td>
+<td>先釐清所有項目</td>
+</tr>
+<tr>
+<td>無法驗證卻繼續進行</td>
+<td>說明限制，請示方向</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Real Examples</h2></div><div class="col-zh" lang="zh-Hant"><h2>實際範例</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Performative Agreement (Bad):</strong></p>
+<pre><code>Reviewer: &quot;Remove legacy code&quot;
+❌ &quot;You're absolutely right! Let me remove that...&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>做作地附和（不良）：</strong></p>
+<pre><code>Reviewer: &quot;Remove legacy code&quot;
+❌ &quot;You're absolutely right! Let me remove that...&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Technical Verification (Good):</strong></p>
+<pre><code>Reviewer: &quot;Remove legacy code&quot;
+✅ &quot;Checking... build target is 10.15+, this API needs 13+. Need legacy for backward compat. Current impl has wrong bundle ID - fix it or drop pre-13 support?&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>技術驗證（良好）：</strong></p>
+<pre><code>Reviewer: &quot;Remove legacy code&quot;
+✅ &quot;Checking... build target is 10.15+, this API needs 13+. Need legacy for backward compat. Current impl has wrong bundle ID - fix it or drop pre-13 support?&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>YAGNI (Good):</strong></p>
+<pre><code>Reviewer: &quot;Implement proper metrics tracking with database, date filters, CSV export&quot;
+✅ &quot;Grepped codebase - nothing calls this endpoint. Remove it (YAGNI)? Or is there usage I'm missing?&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>YAGNI（良好）：</strong></p>
+<pre><code>Reviewer: &quot;Implement proper metrics tracking with database, date filters, CSV export&quot;
+✅ &quot;Grepped codebase - nothing calls this endpoint. Remove it (YAGNI)? Or is there usage I'm missing?&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Unclear Item (Good):</strong></p>
+<pre><code>your human partner: &quot;Fix items 1-6&quot;
+You understand 1,2,3,6. Unclear on 4,5.
+✅ &quot;Understand 1,2,3,6. Need clarification on 4 and 5 before implementing.&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>不清楚的項目（良好）：</strong></p>
+<pre><code>your human partner: &quot;Fix items 1-6&quot;
+You understand 1,2,3,6. Unclear on 4,5.
+✅ &quot;Understand 1,2,3,6. Need clarification on 4 and 5 before implementing.&quot;
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>GitHub Thread Replies</h2></div><div class="col-zh" lang="zh-Hant"><h2>GitHub 討論串回覆</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When replying to inline review comments on GitHub, reply in the comment thread (<code>gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies</code>), not as a top-level PR comment.</p></div><div class="col-zh" lang="zh-Hant"><p>回覆 GitHub 上的行內審查意見時，請在該意見的討論串中回覆（<code>gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies</code>），而不是在 PR 頂層加一則留言。</p></div></div>
+
+</div>
+</body>
+</html>
