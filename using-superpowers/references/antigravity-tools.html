@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>using-superpowers / antigravity-tools · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="../SKILL.html">← 技能主頁 using-superpowers</a> 
+</div>
+<h1>antigravity-tools</h1>
+<div class="subtitle">using-superpowers · references · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Antigravity CLI (<code>agy</code>) Tool Mapping</h1></div><div class="col-zh" lang="zh-Hant"><h1>Antigravity CLI（<code>agy</code>）工具對應</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills speak in actions ("dispatch a subagent", "create a todo", "read a file"). On the Antigravity CLI (<code>agy</code>) these resolve to the tools below.</p></div><div class="col-zh" lang="zh-Hant"><p>技能用行動來表達（「派遣子代理」、「建立 todo」、「讀取檔案」）。在 Antigravity CLI（<code>agy</code>）上，這些會對應到下方的工具。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Action skills request</th>
+<th>Antigravity CLI equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dispatch a subagent (<code>Subagent (general-purpose):</code> template)</td>
+<td><code>invoke_subagent</code> with a built-in <code>TypeName</code> — <code>self</code> for full-capability work, <code>research</code> for read-only</td>
+</tr>
+<tr>
+<td>Task tracking ("create a todo", "mark complete")</td>
+<td>a <strong>task artifact</strong> — <code>write_to_file</code> with <code>IsArtifact: true</code> and <code>ArtifactType: "task"</code> (see <a href="#task-tracking">Task tracking</a>). <strong>Not</strong> <code>manage_task</code>, which manages background processes.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>技能要求的行動</th>
+<th>Antigravity CLI 的對應</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>派遣子代理（<code>Subagent (general-purpose):</code> 範本）</td>
+<td>使用內建 <code>TypeName</code> 的 <code>invoke_subagent</code>——完整能力的工作用 <code>self</code>，唯讀用 <code>research</code></td>
+</tr>
+<tr>
+<td>任務追蹤（「建立 todo」、「標記完成」）</td>
+<td>一個 <strong>task artifact</strong>——以 <code>write_to_file</code> 搭配 <code>IsArtifact: true</code> 與 <code>ArtifactType: "task"</code>（見 <a href="#task-tracking">任務追蹤</a>）。<strong>不是</strong> <code>manage_task</code>，那是管理背景行程用的。</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Task tracking</h2></div><div class="col-zh" lang="zh-Hant"><h2>任務追蹤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Antigravity has <strong>no todo tool</strong> (<code>manage_task</code> manages background
+processes — <code>list</code>/<code>kill</code>/<code>status</code>/<code>send_input</code> — it is <em>not</em> a checklist). When a
+skill says to create a todo list or track tasks, maintain a <strong>task artifact</strong>: a
+markdown checklist saved with <code>write_to_file</code> (<code>IsArtifact: true</code>,
+<code>ArtifactMetadata.ArtifactType: "task"</code>), edited with <code>replace_file_content</code> /
+<code>multi_replace_file_content</code> as you go.</p></div><div class="col-zh" lang="zh-Hant"><p>Antigravity <strong>沒有 todo 工具</strong>（<code>manage_task</code> 管理背景行程——<code>list</code>／<code>kill</code>／<code>status</code>／<code>send_input</code>——它_不是_檢查清單）。當技能要求建立 todo 清單或追蹤任務時，維護一個 <strong>task artifact</strong>：以 <code>write_to_file</code>（<code>IsArtifact: true</code>、<code>ArtifactMetadata.ArtifactType: "task"</code>）儲存的 markdown 檢查清單，邊進行邊用 <code>replace_file_content</code>／<code>multi_replace_file_content</code> 編輯。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>At the start of any multi-step task, create the task artifact listing every step of
+your plan. As you complete each step, edit the artifact to mark it done (<code>- [x]</code>).
+If the plan changes, update the checklist. Keep it current — it is your source of
+truth for what remains; once the conversation gets long, re-read it before starting
+each step.</p></div><div class="col-zh" lang="zh-Hant"><p>任何多步驟任務開始時，建立列出你計畫中每個步驟的 task artifact。每完成一步，編輯該 artifact 把它標記為完成（<code>- [x]</code>）。如果計畫改變，更新檢查清單。保持它為最新——它是你「還剩下什麼」的真相來源；對話變長之後，在開始每一步之前重新讀它。</p></div></div>
+
+</div>
+</body>
+</html>

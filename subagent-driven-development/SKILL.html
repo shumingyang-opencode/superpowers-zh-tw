@@ -438,17 +438,18 @@ review — it enters the fix loop with the other findings.</li>
 <li>不要替審查者預判發現——絕不可指示審查者忽略或不要標記某個特定問題。若你認為某個發現會是
   誤報，讓審查者提出來，然後在審查迴圈中裁決它。若你正在寫的 prompt 含有「不要標記」、
   「不要把 X 當作缺陷」、「最多 Minor」或「計畫選擇了」——停下來：你在預判，
-  通常是為了省掉自己一次審查迴圈。</li>
-</ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Template: <a href="task-reviewer-prompt.html">task-reviewer-prompt.md</a></p></div><div class="col-zh" lang="zh-Hant"><p>任務審查者可能回報「⚠️ Cannot verify from diff」項目——即位於未變更程式碼中、或橫跨多個任務的需求。
+  通常是為了省掉自己一次審查迴圈。
+任務審查者可能回報「⚠️ Cannot verify from diff」項目——即位於未變更程式碼中、或橫跨多個任務的需求。
 這些不會阻擋其餘審查，但你在標記任務完成前必須自行逐一解決：你握有審查者欠缺的
 計畫與跨任務上下文。若你確認某項是真正的缺口，把它當作一次失敗的規格審查處理——它與其他發現
-一起進入修正迴圈。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>4. The fix loop</h3></div><div class="col-zh" lang="zh-Hant"><p>範本：<a href="task-reviewer-prompt.html">task-reviewer-prompt.md</a></p></div></div>
+一起進入修正迴圈。</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Template: <a href="task-reviewer-prompt.html">task-reviewer-prompt.md</a></p></div><div class="col-zh" lang="zh-Hant"><p>範本：<a href="task-reviewer-prompt.html">task-reviewer-prompt.md</a></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>4. The fix loop</h3></div><div class="col-zh" lang="zh-Hant"><h3>4. 修正迴圈</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The loop triggers when the review reports spec ❌, any Critical or Important
-finding, or a ⚠️ item you confirmed as a real gap.</p></div><div class="col-zh" lang="zh-Hant"><h3>4. 修正迴圈</h3></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Before the loop starts, two routes leave it immediately:</p></div><div class="col-zh" lang="zh-Hant"><p>當審查回報規格 ❌、任何 Critical 或 Important 發現、或一項你確認是真正缺口的 ⚠️ 項目時，
+finding, or a ⚠️ item you confirmed as a real gap.</p></div><div class="col-zh" lang="zh-Hant"><p>當審查回報規格 ❌、任何 Critical 或 Important 發現、或一項你確認是真正缺口的 ⚠️ 項目時，
 迴圈觸發。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before the loop starts, two routes leave it immediately:</p></div><div class="col-zh" lang="zh-Hant"><p>迴圈開始前，有兩條路線會立刻離開它：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li>Record Minor findings in the progress ledger as you go
   (<code>Task &lt;N&gt;: minor (deferred): &lt;one-liner&gt;</code>), and point the final
@@ -462,36 +463,43 @@ finding, or a ⚠️ item you confirmed as a real gap.</p></div><div class="col-
   dispatch a fix that contradicts the plan without asking.
 Everything else enters the loop. A fix round is one fix dispatch plus one
 scoped re-review. Five rounds maximum per task:</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><p>迴圈開始前，有兩條路線會立刻離開它：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Rounds 1-3 — resume the original implementer.</strong> Send it the open findings
-verbatim. Its context is intact: it knows the task, the code, and its own
-choices. If your harness cannot send another message to a live subagent,
-dispatch a fresh implementer carrying the brief path, the report-file path,
-and the findings — the report file is the persistent memory either way.</p></div><div class="col-zh" lang="zh-Hant"><ul>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
 <li>邊進行邊把 Minor 發現記錄在進度記錄簿中
   （<code>Task &lt;N&gt;: minor (deferred): &lt;one-liner&gt;</code>），並把該清單指給最終的
   整支分支審查，讓它能分流哪些必須在合併前修正。沒人讀的彙總就是靜默的丟棄。Minor 發現
   永不進入迴圈。</li>
 <li>標示為計畫要求（plan-mandated）的發現——或任何與計畫文字要求衝突的發現——
   是人的決定，如同任何計畫矛盾：呈現發現與計畫文字，詢問何者為準。
-  不要因為計畫要求它而駁回該發現，也不要在未詢問的情況下派出與計畫矛盾的修正。</li>
+  不要因為計畫要求它而駁回該發現，也不要在未詢問的情況下派出與計畫矛盾的修正。
+其餘一切進入迴圈。一輪修正 = 一次修正派發加上一次限定範圍的重審。每個任務最多五輪：</li>
 </ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Rounds 1-3 — resume the original implementer.</strong> Send it the open findings
+verbatim. Its context is intact: it knows the task, the code, and its own
+choices. If your harness cannot send another message to a live subagent,
+dispatch a fresh implementer carrying the brief path, the report-file path,
+and the findings — the report file is the persistent memory either way.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>第 1-3 輪——繼續原來的實作子代理。</strong> 把未解決的發現逐字發給它。
+它的上下文完好：它知道任務、程式碼與自己的選擇。若你的 harness 無法對一個
+仍在運作的子代理再發訊息，就派發一個帶著簡報路徑、報告檔案路徑與發現的全新實作子代理——
+無論如何，報告檔案就是持久記憶。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Rounds 4-5 — dispatch a fresh implementer on a more capable model</strong> (per
 Model Selection), with the brief path, the report-file path, the open
 findings, and this framing: "A prior implementer attempted this task
 [N] times; you own it now. Read the report file for what was tried." A loop
 that survives three resumes usually means the implementer cannot see its
-own problem — fresh eyes and a capability bump in one move.</p></div><div class="col-zh" lang="zh-Hant"><p>其餘一切進入迴圈。一輪修正 = 一次修正派發加上一次限定範圍的重審。每個任務最多五輪：</p></div></div>
+own problem — fresh eyes and a capability bump in one move.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>第 4-5 輪——用更強的模型派發全新實作子代理</strong>（依模型選擇），帶著簡報路徑、報告檔案路徑、
+未解決的發現，以及這段框架：「先前的實作子代理嘗試了這個任務 [N] 次；現在由你接手。
+讀報告檔案了解試過什麼。」撐過三次續派的迴圈通常代表實作子代理看不到自己的問題——
+換一雙新眼睛並提升能力，一次搞定。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Every round, either way:</strong> the implementer fixes, re-runs the tests
 covering the amended code, appends its fix report to the same report file,
 and returns the short contract. Before re-dispatching the reviewer, confirm
 the fix report contains the covering tests, the command run, and the
 output; dispatch the re-review once all three are present. Name the
 covering test files in the fix message — a one-line fix does not need the
-whole suite.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>第 1-3 輪——繼續原來的實作子代理。</strong> 把未解決的發現逐字發給它。
-它的上下文完好：它知道任務、程式碼與自己的選擇。若你的 harness 無法對一個
-仍在運作的子代理再發訊息，就派發一個帶著簡報路徑、報告檔案路徑與發現的全新實作子代理——
-無論如何，報告檔案就是持久記憶。</p></div></div>
+whole suite.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>每一輪，無論哪種方式：</strong> 實作子代理修正、重跑覆蓋被修改程式碼的測試、
+把修正報告附加到同一份報告檔案，並回傳簡短的狀態約定。重新派發審查者前，確認修正報告
+含有覆蓋測試、執行的指令與輸出；三項都齊了才派發重審。在修正訊息中指名的覆蓋測試檔案——
+一行修正不需要整個測試套件。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>The re-review is scoped.</strong> Run <code>scripts/review-package PLAN_FILE FIX_BASE HEAD</code>
 where FIX_BASE is the head the previous review saw, and dispatch
 <a href="re-review-prompt.html">re-review-prompt.md</a> with the findings list, the
@@ -499,26 +507,22 @@ brief, the report file, and the printed diff path. The re-reviewer verdicts
 each finding ADDRESSED or NOT ADDRESSED and flags new breakage in the fix
 diff only. New Critical/Important breakage in the fix diff joins the open
 findings list. Out-of-scope observations go to the ledger as deferred
-minors — they never extend the loop.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>第 4-5 輪——用更強的模型派發全新實作子代理</strong>（依模型選擇），帶著簡報路徑、報告檔案路徑、
-未解決的發現，以及這段框架：「先前的實作子代理嘗試了這個任務 [N] 次；現在由你接手。
-讀報告檔案了解試過什麼。」撐過三次續派的迴圈通常代表實作子代理看不到自己的問題——
-換一雙新眼睛並提升能力，一次搞定。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>After each round,</strong> append to the ledger:
-<code>Task &lt;N&gt;: fix round &lt;R&gt;/5 (&lt;X&gt; addressed, &lt;Y&gt; open — &lt;finding one-liners&gt;; commits &lt;a7&gt;..&lt;b7&gt;)</code></p></div><div class="col-zh" lang="zh-Hant"><p><strong>每一輪，無論哪種方式：</strong> 實作子代理修正、重跑覆蓋被修改程式碼的測試、
-把修正報告附加到同一份報告檔案，並回傳簡短的狀態約定。重新派發審查者前，確認修正報告
-含有覆蓋測試、執行的指令與輸出；三項都齊了才派發重審。在修正訊息中指名的覆蓋測試檔案——
-一行修正不需要整個測試套件。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Never fix findings yourself in the controller session — your context stays
-clean for coordination, and controller fixes skip review.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>重審是限定範圍的。</strong> 執行 <code>scripts/review-package PLAN_FILE FIX_BASE HEAD</code>，
+minors — they never extend the loop.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>重審是限定範圍的。</strong> 執行 <code>scripts/review-package PLAN_FILE FIX_BASE HEAD</code>，
 其中 FIX_BASE 是先前審查所見的 head，並以發現清單、簡報、報告檔案與印出的 diff 路徑
 派發 <a href="re-review-prompt.html">re-review-prompt.md</a>。重審者將每個發現判決為
 ADDRESSED 或 NOT ADDRESSED，並且只在修正 diff 中標記新破壞。修正 diff 中的
 新 Critical/Important 破壞會加入未解決的發現清單。範圍外的觀察記錄到記錄簿中作為延後的
 minor——它們永不延長迴圈。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>After each round,</strong> append to the ledger:
+<code>Task &lt;N&gt;: fix round &lt;R&gt;/5 (&lt;X&gt; addressed, &lt;Y&gt; open — &lt;finding one-liners&gt;; commits &lt;a7&gt;..&lt;b7&gt;)</code></p></div><div class="col-zh" lang="zh-Hant"><p><strong>每輪結束後，</strong> 附加到記錄簿：
+<code>Task &lt;N&gt;: fix round &lt;R&gt;/5 (&lt;X&gt; addressed, &lt;Y&gt; open — &lt;finding one-liners&gt;; commits &lt;a7&gt;..&lt;b7&gt;)</code></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Never fix findings yourself in the controller session — your context stays
+clean for coordination, and controller fixes skip review.</p></div><div class="col-zh" lang="zh-Hant"><p>絕不在控制器 session 中自己修正發現——你的上下文要保持乾淨以進行協調，
+而且控制器的修正會跳過審查。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>The breaker.</strong> When round 5's re-review still leaves findings open, stop
 dispatching. Adjudicate each open finding yourself — you hold the plan and
-the cross-task context the reviewer lacks:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>每輪結束後，</strong> 附加到記錄簿：
-<code>Task &lt;N&gt;: fix round &lt;R&gt;/5 (&lt;X&gt; addressed, &lt;Y&gt; open — &lt;finding one-liners&gt;; commits &lt;a7&gt;..&lt;b7&gt;)</code></p></div></div>
+the cross-task context the reviewer lacks:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>斷路器。</strong> 當第 5 輪的重審仍留下未解決的發現時，停止派發。
+自行裁決每個未解決的發現——你握有審查者欠缺的計畫與跨任務上下文：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li><strong>The reviewer is wrong, or the point is contestable:</strong> park it —
   <code>Task &lt;N&gt;: parked — &lt;finding&gt; — ruling: &lt;why the code stands&gt;</code>. The final
@@ -530,13 +534,7 @@ the cross-task context the reviewer lacks:</p></div><div class="col-zh" lang="zh
   your human partner with the finding, the plan text it collides with, and
   the fix history. Parking a structural failure lets every dependent task
   build on it and hands the final review a problem it cannot fix either.</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><p>絕不在控制器 session 中自己修正發現——你的上下文要保持乾淨以進行協調，
-而且控制器的修正會跳過審查。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Adjudicate only at the cap. Adjudicating earlier to end a loop is
-pre-judging with a different name. Every adjudication is a ledger entry —
-a silent discard is forbidden.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>斷路器。</strong> 當第 5 輪的重審仍留下未解決的發現時，停止派發。
-自行裁決每個未解決的發現——你握有審查者欠缺的計畫與跨任務上下文：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>5. Complete the task</h3></div><div class="col-zh" lang="zh-Hant"><ul>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
 <li><strong>審查者錯了，或該點可爭論：</strong> 擱置它——
   <code>Task &lt;N&gt;: parked — &lt;finding&gt; — ruling: &lt;why the code stands&gt;</code>。最終審查會看到兩邊。</li>
 <li><strong>真實存在，但下游沒有東西建構其上：</strong> 以同樣方式擱置，附上說明它真實存在且已延後的裁決。</li>
@@ -545,23 +543,28 @@ a silent discard is forbidden.</p></div><div class="col-zh" lang="zh-Hant"><p><s
   它碰撞的計畫文字與修正歷史。擱置結構性失敗會讓每個依賴任務都建構其上，
   並把一個連最終審查也修不好的問題交出去。</li>
 </ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Adjudicate only at the cap. Adjudicating earlier to end a loop is
+pre-judging with a different name. Every adjudication is a ledger entry —
+a silent discard is forbidden.</p></div><div class="col-zh" lang="zh-Hant"><p>只在到達上限時裁決。為了結束迴圈而提早裁決，不過是換個名字的預判。每一次裁決都是一條記錄簿
+條目——靜默丟棄是禁止的。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>5. Complete the task</h3></div><div class="col-zh" lang="zh-Hant"><h3>5. 完成任務</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>When the review comes back clean — or every open finding is parked with a
 ruling at the cap — append the completion line to the ledger in the same
-message as your other bookkeeping:</p></div><div class="col-zh" lang="zh-Hant"><p>只在到達上限時裁決。為了結束迴圈而提早裁決，不過是換個名字的預判。每一次裁決都是一條記錄簿
-條目——靜默丟棄是禁止的。</p></div></div>
+message as your other bookkeeping:</p></div><div class="col-zh" lang="zh-Hant"><p>當審查乾淨地回來——或所有未解決的發現都已附上裁決擱置到上限——在同一個訊息中，
+與你的其他記帳一起，把完成行附加到記錄簿：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li><code>Task &lt;N&gt;: complete (commits &lt;base7&gt;..&lt;head7&gt;, review clean)</code></li>
 <li><code>Task &lt;N&gt;: complete (commits &lt;base7&gt;..&lt;head7&gt;, &lt;K&gt; parked)</code> after a
   tripped breaker</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><h3>5. 完成任務</h3></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Then mark the todo complete and move on. Never move to the next task while
-the review has open Critical/Important issues that are neither fixed nor
-parked-with-ruling at the cap.</p></div><div class="col-zh" lang="zh-Hant"><p>當審查乾淨地回來——或所有未解決的發現都已附上裁決擱置到上限——在同一個訊息中，
-與你的其他記帳一起，把完成行附加到記錄簿：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Final Review</h2></div><div class="col-zh" lang="zh-Hant"><ul>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
 <li><code>Task &lt;N&gt;: complete (commits &lt;base7&gt;..&lt;head7&gt;, review clean)</code></li>
 <li>觸發斷路器後：<code>Task &lt;N&gt;: complete (commits &lt;base7&gt;..&lt;head7&gt;, &lt;K&gt; parked)</code></li>
 </ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Then mark the todo complete and move on. Never move to the next task while
+the review has open Critical/Important issues that are neither fixed nor
+parked-with-ruling at the cap.</p></div><div class="col-zh" lang="zh-Hant"><p>然後標記 todo 完成並繼續。當審查仍有既未修正、也未在到達上限時附裁決擱置的未解決
+Critical/Important 問題時，絕不前往下一個任務。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Final Review</h2></div><div class="col-zh" lang="zh-Hant"><h2>最終審查</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The final whole-branch review gets a package too: run
 <code>scripts/review-package PLAN_FILE MERGE_BASE HEAD</code> (MERGE_BASE = the commit the
 branch started from, e.g. <code>git merge-base main HEAD</code>) and include the
@@ -569,10 +572,15 @@ printed path in the final review dispatch, so the final reviewer reads
 one file instead of re-deriving the branch diff with git commands. Dispatch
 on the most capable available model (see Model Selection), using
 superpowers:requesting-code-review's
-<a href="../requesting-code-review/code-reviewer.md">code-reviewer.md</a>. Point it at
+<a href="../requesting-code-review/code-reviewer.html">code-reviewer.md</a>. Point it at
 the ledger's deferred-minor and parked lines so it can triage which must be
-fixed before merge.</p></div><div class="col-zh" lang="zh-Hant"><p>然後標記 todo 完成並繼續。當審查仍有既未修正、也未在到達上限時附裁決擱置的未解決
-Critical/Important 問題時，絕不前往下一個任務。</p></div></div>
+fixed before merge.</p></div><div class="col-zh" lang="zh-Hant"><p>最終的整支分支審查也拿到一份套件：執行
+<code>scripts/review-package PLAN_FILE MERGE_BASE HEAD</code>（MERGE_BASE = 分支開始時的 commit，
+例如 <code>git merge-base main HEAD</code>），並把印出的路徑包含在最終審查的派發中，
+這樣最終審查者讀一個檔案即可，不必用 git 指令重新推導分支 diff。用現有最強的模型派發
+（見模型選擇），使用 superpowers:requesting-code-review 的
+<a href="../requesting-code-review/code-reviewer.html">code-reviewer.md</a>。把它指向
+記錄簿中延後 minor 與擱置的行，讓它能分流哪些必須在合併前修正。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>If the final whole-branch review returns findings, dispatch ONE fix subagent
 with the complete findings list — not one fixer per finding.
 Per-finding fixers each rebuild context and re-run suites; a real
@@ -583,28 +591,22 @@ Then run exactly one scoped re-review of the fix wave
 Adjudicate any residual findings as in the task loop's breaker: park with
 rulings, or stop on load-bearing ones. There is no second fix wave —
 residual load-bearing findings surface to your human partner when
-finishing-a-development-branch presents the options.</p></div><div class="col-zh" lang="zh-Hant"><h2>最終審查</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Finish</h2></div><div class="col-zh" lang="zh-Hant"><p>最終的整支分支審查也拿到一份套件：執行
-<code>scripts/review-package PLAN_FILE MERGE_BASE HEAD</code>（MERGE_BASE = 分支開始時的 commit，
-例如 <code>git merge-base main HEAD</code>），並把印出的路徑包含在最終審查的派發中，
-這樣最終審查者讀一個檔案即可，不必用 git 指令重新推導分支 diff。用現有最強的模型派發
-（見模型選擇），使用 superpowers:requesting-code-review 的
-<a href="../requesting-code-review/code-reviewer.md">code-reviewer.md</a>。把它指向
-記錄簿中延後 minor 與擱置的行，讓它能分流哪些必須在合併前修正。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>When the final whole-branch review is clean and its fixes are merged,
-delete this plan's workspace (<code>rm -rf &lt;workspace&gt;</code>) — the git history is
-the record now. Sibling directories belong to other plans; leave them
-alone.</p></div><div class="col-zh" lang="zh-Hant"><p>若最終的整支分支審查回報發現，派發<strong>一個</strong>修正子代理並附上完整的發現清單——而不是每個發現一個修正者。
+finishing-a-development-branch presents the options.</p></div><div class="col-zh" lang="zh-Hant"><p>若最終的整支分支審查回報發現，派發<strong>一個</strong>修正子代理並附上完整的發現清單——而不是每個發現一個修正者。
 逐項修正者都會各自重建上下文並重跑測試套件；真實 session 的最終審查修正波成本
 超過其所有任務的總和。然後對修正波執行正好一次限定範圍的重審
 （在修正範圍上執行 <code>scripts/review-package PLAN_FILE FIX_BASE HEAD</code>，
 <a href="re-review-prompt.html">re-review-prompt.md</a>）。
 如同任務迴圈的斷路器，裁決任何殘餘發現：附裁決擱置，或在承重的發現上停止。沒有第二次修正波——
 殘餘的承重發現會在 finishing-a-development-branch 呈現選項時浮現給你的真人夥伴。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Use superpowers:finishing-a-development-branch.</p></div><div class="col-zh" lang="zh-Hant"><h2>收尾</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><p>當最終的整支分支審查乾淨、且其修正已合併時，
+<div class="pair"><div class="col-en" lang="en"><h2>Finish</h2></div><div class="col-zh" lang="zh-Hant"><h2>收尾</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When the final whole-branch review is clean and its fixes are merged,
+delete this plan's workspace (<code>rm -rf &lt;workspace&gt;</code>) — the git history is
+the record now. Sibling directories belong to other plans; leave them
+alone.</p></div><div class="col-zh" lang="zh-Hant"><p>當最終的整支分支審查乾淨、且其修正已合併時，
 刪除本計畫的工作區（<code>rm -rf &lt;workspace&gt;</code>）——現在 git 歷史就是紀錄。
 兄弟目錄屬於其他計畫；讓它們保持原樣。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use superpowers:finishing-a-development-branch.</p></div><div class="col-zh" lang="zh-Hant"><p>使用 superpowers:finishing-a-development-branch。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見合理化藉口</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -646,8 +648,49 @@ alone.</p></div><div class="col-zh" lang="zh-Hant"><p>若最終的整支分支�
 <td>The ledger is what survives compaction. Controllers without one have re-dispatched entire completed task sequences.</td>
 </tr>
 </tbody>
-</table></div><div class="col-zh" lang="zh-Hant"><p>使用 superpowers:finishing-a-development-branch。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Example Workflow</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見合理化藉口</h2></div></div>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>藉口</th>
+<th>實情</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>「規格符合度差不多就好」</td>
+<td>審查者找到規格缺口 = 尚未完成。修正，或撞上上限並裁決——那是僅有的出口。</td>
+</tr>
+<tr>
+<td>「我自己修就好，派發是額外開銷」</td>
+<td>控制器修正會污染你的上下文並跳過審查。繼續用原實作子代理。</td>
+</tr>
+<tr>
+<td>「再多一輪就會收斂」</td>
+<td>超過上限後，輪次不會收斂——失敗是結構性的。裁決並分流。</td>
+</tr>
+<tr>
+<td>「反正審查者總會找出新的東西」</td>
+<td>限定範圍的重審只驗證修正；它無法游走。未觸及程式碼上的新發現進記錄簿，不進迴圈。</td>
+</tr>
+<tr>
+<td>「這發現顯然錯了，我丟掉它」</td>
+<td>你只在到達上限時裁決，而每一次裁決都是一條記錄簿條目。靜默丟棄是禁止的。</td>
+</tr>
+<tr>
+<td>「修正很小，跳過重審吧」</td>
+<td>未經審查的修正正是迴歸登陸的方式。每一輪都以限定範圍的重審結束。</td>
+</tr>
+<tr>
+<td>「審查拖慢了迴圈」</td>
+<td>沒有審查的迴圈只是未驗證的空轉。審查是迴圈的煞車與方向盤。</td>
+</tr>
+<tr>
+<td>「記錄簿記帳是額外開銷」</td>
+<td>記錄簿是能在壓縮後存活的東西。沒有它的控制器曾重新派出整段已完成任務的序列。</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Example Workflow</h2></div><div class="col-zh" lang="zh-Hant"><h2>範例工作流</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>You: I'm using Subagent-Driven Development to execute this plan.
 
 [Setup: worktree verified]
@@ -710,50 +753,7 @@ Final reviewer: All requirements met. Deferred minors triaged: none block merge.
 [Delete this plan's workspace — the record now lives in git]
 
 Done! Using superpowers:finishing-a-development-branch.
-</code></pre></div><div class="col-zh" lang="zh-Hant"><table>
-<thead>
-<tr>
-<th>藉口</th>
-<th>實情</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>「規格符合度差不多就好」</td>
-<td>審查者找到規格缺口 = 尚未完成。修正，或撞上上限並裁決——那是僅有的出口。</td>
-</tr>
-<tr>
-<td>「我自己修就好，派發是額外開銷」</td>
-<td>控制器修正會污染你的上下文並跳過審查。繼續用原實作子代理。</td>
-</tr>
-<tr>
-<td>「再多一輪就會收斂」</td>
-<td>超過上限後，輪次不會收斂——失敗是結構性的。裁決並分流。</td>
-</tr>
-<tr>
-<td>「反正審查者總會找出新的東西」</td>
-<td>限定範圍的重審只驗證修正；它無法游走。未觸及程式碼上的新發現進記錄簿，不進迴圈。</td>
-</tr>
-<tr>
-<td>「這發現顯然錯了，我丟掉它」</td>
-<td>你只在到達上限時裁決，而每一次裁決都是一條記錄簿條目。靜默丟棄是禁止的。</td>
-</tr>
-<tr>
-<td>「修正很小，跳過重審吧」</td>
-<td>未經審查的修正正是迴歸登陸的方式。每一輪都以限定範圍的重審結束。</td>
-</tr>
-<tr>
-<td>「審查拖慢了迴圈」</td>
-<td>沒有審查的迴圈只是未驗證的空轉。審查是迴圈的煞車與方向盤。</td>
-</tr>
-<tr>
-<td>「記錄簿記帳是額外開銷」</td>
-<td>記錄簿是能在壓縮後存活的東西。沒有它的控制器曾重新派出整段已完成任務的序列。</td>
-</tr>
-</tbody>
-</table></div></div>
-<div class="pair"><div class="col-en" lang="en"><p class="zh-only">（無英文對照）</p></div><div class="col-zh" lang="zh-Hant"><h2>範例工作流</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p class="zh-only">（無英文對照）</p></div><div class="col-zh" lang="zh-Hant"><pre><code>You: I'm using Subagent-Driven Development to execute this plan.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>You: I'm using Subagent-Driven Development to execute this plan.
 
 [Setup: worktree verified]
 [Read plan file once: docs/superpowers/plans/feature-plan.md]

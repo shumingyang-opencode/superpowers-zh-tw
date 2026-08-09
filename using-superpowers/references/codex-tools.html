@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>using-superpowers / codex-tools · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="../SKILL.html">← 技能主頁 using-superpowers</a> 
+</div>
+<h1>codex-tools</h1>
+<div class="subtitle">using-superpowers · references · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h2>Subagent dispatch requires multi-agent support</h2></div><div class="col-zh" lang="zh-Hant"><h2>子代理派遣需要 multi-agent 支援</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Add to your Codex config (<code>~/.codex/config.toml</code>):</p></div><div class="col-zh" lang="zh-Hant"><p>在你的 Codex 設定（<code>~/.codex/config.toml</code>）加入：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-toml">[features]
+multi_agent = true
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-toml">[features]
+multi_agent = true
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>This enables <code>spawn_agent</code>, <code>wait_agent</code>, and <code>close_agent</code> for skills like <code>dispatching-parallel-agents</code> and <code>subagent-driven-development</code>. When using subagent-driven-development, close reviewer subagents when their review returns. Keep each implementer subagent open until its task's review passes — the fix loop resumes the implementer — then close it. If your harness cannot send another message to a spawned agent, dispatch each fix round as a fresh implementer carrying the brief, the report file, and the findings.</p></div><div class="col-zh" lang="zh-Hant"><p>這會為 <code>dispatching-parallel-agents</code> 與 <code>subagent-driven-development</code> 這類技能啟用 <code>spawn_agent</code>、<code>wait_agent</code> 與 <code>close_agent</code>。使用 subagent-driven-development 時，審查子代理的回報一送回就關閉它。每個實作子代理則保持開啟，直到其任務的審查通過——修復迴圈會續用該實作子代理——然後才關閉。如果你的 harness 無法向已產生的代理再送訊息，就把每一輪修復派成一個新的實作子代理，攜帶 brief、報告檔與審查發現。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Environment Detection</h2></div><div class="col-zh" lang="zh-Hant"><h2>環境偵測</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills that create worktrees or finish branches should detect their
+environment with read-only git commands before proceeding:</p></div><div class="col-zh" lang="zh-Hant"><p>建立 worktree 或收尾分支的技能，應該先用唯讀 git 指令偵測環境再繼續：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+BRANCH=$(git branch --show-current)
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+BRANCH=$(git branch --show-current)
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><code>GIT_DIR != GIT_COMMON</code> → already in a linked worktree (skip creation)</li>
+<li><code>BRANCH</code> empty → detached HEAD (cannot branch/push/PR from sandbox)</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><code>GIT_DIR != GIT_COMMON</code> → 已在關聯的 worktree 中（跳過建立）</li>
+<li><code>BRANCH</code> 為空 → detached HEAD（無法從 sandbox 建立分支／推送／發 PR）</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>See <code>using-git-worktrees</code> Step 0 and <code>finishing-a-development-branch</code>
+Step 1 for how each skill uses these signals.</p></div><div class="col-zh" lang="zh-Hant"><p>關於各技能如何使用這些訊號，見 <code>using-git-worktrees</code> 的第 0 步與 <code>finishing-a-development-branch</code> 的第 1 步。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Codex App Finishing</h2></div><div class="col-zh" lang="zh-Hant"><h2>Codex App 收尾</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When the sandbox blocks branch/push operations (detached HEAD in an
+externally managed worktree), the agent commits all work and informs
+the user to use the App's native controls:</p></div><div class="col-zh" lang="zh-Hant"><p>當 sandbox 阻擋分支／推送操作（在外部管理的 worktree 中處於 detached HEAD），代理提交所有工作並告知使用者改用 App 的原生控制：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>"Create branch"</strong> — names the branch, then commit/push/PR via App UI</li>
+<li><strong>"Hand off to local"</strong> — transfers work to the user's local checkout</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<li><strong>「Create branch」</strong> — 命名分支，然後透過 App UI 提交／推送／發 PR</li>
+<li><strong>「Hand off to local」</strong> — 把工作轉移給使用者的本機 checkout</li>
+</ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The agent can still run tests, stage files, and output suggested branch
+names, commit messages, and PR descriptions for the user to copy.</p></div><div class="col-zh" lang="zh-Hant"><p>代理仍然可以執行測試、暫存檔案，並輸出建議的分支名稱、commit 訊息與 PR 描述供使用者複製。</p></div></div>
+
+</div>
+</body>
+</html>

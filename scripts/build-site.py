@@ -64,6 +64,12 @@ ATTACHED = {
     "writing-skills": ["anthropic-best-practices", "testing-skills-with-subagents", "persuasion-principles"],
 }
 
+# Attached docs living in a subdirectory of the skill (e.g. harness references).
+# key = skill name, value = list of subdirectories whose *.md become pages.
+REFERENCE_DOCS = {
+    "using-superpowers": ["references"],
+}
+
 # Map: the basic workflow highway
 PRECONDITION = "using-superpowers"
 MAINLINE = [
@@ -213,8 +219,8 @@ def page_close() -> str:
 """
 
 
-def breadcrumb(name: str, is_skill: bool, prefix: str) -> str:
-    parent = f'<a href="SKILL.html">← 技能主頁 {name}</a> ' if not is_skill else ""
+def breadcrumb(name: str, is_skill: bool, prefix: str, parent_href: str = "SKILL.html") -> str:
+    parent = f'<a href="{parent_href}">← 技能主頁 {name}</a> ' if not is_skill else ""
     return f"""<div class="back-link">
   <a href="{prefix}index.html">首頁</a>
   <a href="{prefix}map.html">全景圖</a>
@@ -225,18 +231,55 @@ def breadcrumb(name: str, is_skill: bool, prefix: str) -> str:
 
 
 def rewrite_links(html: str, skill: str) -> str:
-    """Rewrite same-directory relative links: .md -> .html, other files -> GitHub blob URL."""
+    """Rewrite relative links in a rendered skill page.
+
+    - `.md` / `.html` links to files that exist in this repo -> sibling `.html`
+      (site mirrors the skills/ directory, so relative paths are preserved,
+      including cross-skill `../<skill>/<doc>.md` links).
+    - `.md` links whose target does not exist (illustrative examples such as
+      FORMS.md / REFERENCE.md) -> plain text, so they never 404.
+    - other files (scripts, assets) -> GitHub blob URL of this repo.
+    """
     blob_dir = f"{BLOB_BASE}/skills/{skill}"
+    skill_root = ROOT / "skills" / skill
+    skills_root = ROOT / "skills"
+
+    def is_within_skills(path: Path) -> bool:
+        try:
+            path.relative_to(skills_root)
+            return True
+        except ValueError:
+            return False
+
+    def strip_missing(m):
+        href, inner = m.group(1), m.group(2)
+        if not href.startswith(("http", "#", "mailto", "/", "data:", "javascript:")):
+            target = (skill_root / href).resolve()
+            if is_within_skills(target) and not target.exists():
+                return inner
+        return m.group(0)
+
+    html = re.sub(r'<a\s+href="([^"]+)"[^>]*>(.*?)</a>', strip_missing, html, flags=re.S)
 
     def repl(m):
         attr, href = m.group(1), m.group(2)
-        if href.startswith(("http", "#", "mailto", "/", "../")):
+        if href.startswith(("http", "#", "mailto", "/", "data:", "javascript:")):
             return m.group(0)
-        target = href.lstrip("./")
-        if target.endswith(".md"):
-            new_href = target[:-3] + ".html"
+        if href.startswith("../"):
+            target = (skill_root / href).resolve()
+            try:
+                rel = target.relative_to(skills_root)
+            except ValueError:
+                return m.group(0)
+            new_href = os.path.relpath(str(rel.parent / rel.stem) + ".html", skill)
         else:
-            new_href = f"{blob_dir}/{target}"
+            target = href.lstrip("./")
+            if target.endswith(".md"):
+                new_href = target[:-3] + ".html"
+            elif target.endswith(".html"):
+                new_href = target
+            else:
+                new_href = f"{blob_dir}/{target}"
         return f'{attr}="{new_href}"'
 
     return re.sub(r'(href|src)="([^"]+)"', repl, html)
@@ -255,9 +298,15 @@ def fm_table(en_fm, zh_fm) -> str:
 
 def attached_links(name: str) -> str:
     docs = ATTACHED.get(name, [])
-    if not docs:
-        return ""
     links = "　·　".join(f'<a href="{d}.html">{d}</a>' for d in docs)
+    for subdir in REFERENCE_DOCS.get(name, []):
+        ref_dir = ROOT / "skills" / name / subdir
+        if not ref_dir.exists():
+            continue
+        for p in sorted(ref_dir.glob("*.md")):
+            links += (("　·　" if links else "") + f'<a href="{subdir}/{p.stem}.html">{p.stem}</a>')
+    if not links:
+        return ""
     return f'<div class="back-link" style="margin-top:-0.6rem">附屬文件：{links}</div>\n'
 
 
@@ -316,6 +365,34 @@ def attached_page(name: str, doc: str):
         html += f'<div class="pair"><div class="col-en" lang="en">{en_html}</div><div class="col-zh" lang="zh-Hant">{zh_html}</div></div>\n'
     html += page_close()
     out = ROOT / name / f"{doc}.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(html, encoding="utf-8")
+    print(f"  ✓ {out.relative_to(ROOT)}")
+
+
+def reference_page(name: str, subdir: str, doc: str):
+    """Bilingual page for an attached doc in a skill subdirectory (e.g. references/)."""
+    src_dir = f"skills/{name}/{subdir}"
+    en_full = fetch(f"{src_dir}/{doc}.md")
+    zh_full = (ROOT / src_dir / f"{doc}.md").read_text(encoding="utf-8")
+    en_fm, en_body = parse_frontmatter(en_full)
+    zh_fm, zh_body = parse_frontmatter(zh_full)
+    pairs = pair_blocks(en_body, zh_body)
+
+    html = page_open(f"{name} / {doc}", "../../")
+    html += breadcrumb(name, is_skill=False, prefix="../../", parent_href="../SKILL.html")
+    html += f"<h1>{doc}</h1>\n"
+    html += f'<div class="subtitle">{name} · {subdir} · 附屬文件</div>\n'
+    for en, zh in pairs:
+        if not en and not zh:
+            continue
+        en_html = render_md(en) if en else '<p class="zh-only">（無英文對照）</p>'
+        zh_html = render_md(zh) if zh else '<p class="en-only">（無繁中對照）</p>'
+        en_html = rewrite_links(en_html, name)
+        zh_html = rewrite_links(zh_html, name)
+        html += f'<div class="pair"><div class="col-en" lang="en">{en_html}</div><div class="col-zh" lang="zh-Hant">{zh_html}</div></div>\n'
+    html += page_close()
+    out = ROOT / name / subdir / f"{doc}.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(html, encoding="utf-8")
     print(f"  ✓ {out.relative_to(ROOT)}")
@@ -707,6 +784,14 @@ def main():
     for name, docs in ATTACHED.items():
         for d in docs:
             attached_page(name, d)
+    print("[reference pages]")
+    for name, subdirs in REFERENCE_DOCS.items():
+        for subdir in subdirs:
+            ref_dir = ROOT / "skills" / name / subdir
+            if not ref_dir.exists():
+                continue
+            for p in sorted(ref_dir.glob("*.md")):
+                reference_page(name, subdir, p.stem)
     print("[views]")
     map_page()
     learning_path_page()

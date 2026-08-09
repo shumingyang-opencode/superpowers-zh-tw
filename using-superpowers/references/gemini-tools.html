@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>using-superpowers / gemini-tools · superpowers-zh-tw</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/site.css">
+</head>
+<body>
+<div class="container">
+<div class="back-link">
+  <a href="../../index.html">首頁</a>
+  <a href="../../map.html">全景圖</a>
+  <a href="../../learning-path.html">學習路線</a>
+  <a href="../SKILL.html">← 技能主頁 using-superpowers</a> 
+</div>
+<h1>gemini-tools</h1>
+<div class="subtitle">using-superpowers · references · 附屬文件</div>
+<div class="pair"><div class="col-en" lang="en"><h1>Gemini CLI Tool Mapping</h1></div><div class="col-zh" lang="zh-Hant"><h1>Gemini CLI 工具對應</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills speak in actions ("dispatch a subagent", "create a todo", "read a file"). On Gemini CLI these resolve to the tools below.</p></div><div class="col-zh" lang="zh-Hant"><p>技能用行動來表達（「派遣子代理」、「建立 todo」、「讀取檔案」）。在 Gemini CLI 上，這些會對應到下方的工具。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Action skills request</th>
+<th>Gemini CLI equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read a file</td>
+<td><code>read_file</code></td>
+</tr>
+<tr>
+<td>Read multiple files at once</td>
+<td><code>read_many_files</code></td>
+</tr>
+<tr>
+<td>Create a new file</td>
+<td><code>write_file</code></td>
+</tr>
+<tr>
+<td>Edit a file</td>
+<td><code>replace</code></td>
+</tr>
+<tr>
+<td>Run a shell command</td>
+<td><code>run_shell_command</code></td>
+</tr>
+<tr>
+<td>Search file contents</td>
+<td><code>grep_search</code></td>
+</tr>
+<tr>
+<td>Find files by name</td>
+<td><code>glob</code></td>
+</tr>
+<tr>
+<td>List files and subdirectories</td>
+<td><code>list_directory</code></td>
+</tr>
+<tr>
+<td>Fetch a URL</td>
+<td><code>web_fetch</code></td>
+</tr>
+<tr>
+<td>Search the web</td>
+<td><code>google_web_search</code></td>
+</tr>
+<tr>
+<td>Invoke a skill</td>
+<td><code>activate_skill</code></td>
+</tr>
+<tr>
+<td>Dispatch a subagent (<code>Subagent (general-purpose):</code> template)</td>
+<td><code>invoke_agent</code> with <code>agent_name: "generalist"</code> (invocable via <code>@generalist</code> chat syntax — see <a href="#subagent-support">Subagent support</a>)</td>
+</tr>
+<tr>
+<td>Multiple parallel dispatches</td>
+<td>Multiple <code>invoke_agent</code> calls in the same response</td>
+</tr>
+<tr>
+<td>Task tracking ("create a todo", "mark complete")</td>
+<td><code>write_todos</code> (statuses: pending, in_progress, completed, cancelled, blocked)</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>技能要求的行動</th>
+<th>Gemini CLI 的對應</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>讀取檔案</td>
+<td><code>read_file</code></td>
+</tr>
+<tr>
+<td>一次讀取多個檔案</td>
+<td><code>read_many_files</code></td>
+</tr>
+<tr>
+<td>建立新檔案</td>
+<td><code>write_file</code></td>
+</tr>
+<tr>
+<td>編輯檔案</td>
+<td><code>replace</code></td>
+</tr>
+<tr>
+<td>執行 shell 指令</td>
+<td><code>run_shell_command</code></td>
+</tr>
+<tr>
+<td>搜尋檔案內容</td>
+<td><code>grep_search</code></td>
+</tr>
+<tr>
+<td>依名稱尋找檔案</td>
+<td><code>glob</code></td>
+</tr>
+<tr>
+<td>列出檔案與子目錄</td>
+<td><code>list_directory</code></td>
+</tr>
+<tr>
+<td>擷取 URL</td>
+<td><code>web_fetch</code></td>
+</tr>
+<tr>
+<td>搜尋網路</td>
+<td><code>google_web_search</code></td>
+</tr>
+<tr>
+<td>呼叫技能</td>
+<td><code>activate_skill</code></td>
+</tr>
+<tr>
+<td>派遣子代理（<code>Subagent (general-purpose):</code> 範本）</td>
+<td>使用 <code>agent_name: "generalist"</code> 的 <code>invoke_agent</code>（可經由 <code>@generalist</code> 聊天語法呼叫——見 <a href="#子代理支援">子代理支援</a>）</td>
+</tr>
+<tr>
+<td>多次平行派遣</td>
+<td>在同一個回應中多次 <code>invoke_agent</code> 呼叫</td>
+</tr>
+<tr>
+<td>任務追蹤（「建立 todo」、「標記完成」）</td>
+<td><code>write_todos</code>（狀態：pending、in_progress、completed、cancelled、blocked）</td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Instructions file</h2></div><div class="col-zh" lang="zh-Hant"><h2>指令檔</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When a skill mentions "your instructions file", on Gemini CLI this is <strong><code>GEMINI.md</code></strong>. Gemini CLI loads <code>GEMINI.md</code> hierarchically: global at <code>~/.gemini/GEMINI.md</code>, project-level files in workspace directories and their ancestors, and sub-directory <code>GEMINI.md</code> files when a tool accesses files in those directories.</p></div><div class="col-zh" lang="zh-Hant"><p>當技能提到「你的指令檔」時，在 Gemini CLI 上它是 <strong><code>GEMINI.md</code></strong>。Gemini CLI 階層式載入 <code>GEMINI.md</code>：全域在 <code>~/.gemini/GEMINI.md</code>，專案層級的檔案在 workspace 目錄及其上層，而當工具存取某目錄中的檔案時，會載入該目錄下的 <code>GEMINI.md</code>。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Personal skills directory</h2></div><div class="col-zh" lang="zh-Hant"><h2>個人技能目錄</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>User-level skills live at <strong><code>~/.gemini/skills/</code></strong>, with <strong><code>~/.agents/skills/</code></strong> as a cross-runtime alias (shared with Codex and Copilot CLI). When both directories exist at the same scope, <code>.agents/skills/</code> takes precedence. Each skill is a subdirectory containing a <code>SKILL.md</code> (with <code>name</code> and <code>description</code> frontmatter).</p></div><div class="col-zh" lang="zh-Hant"><p>使用者層級的技能位於 <strong><code>~/.gemini/skills/</code></strong>，而 <strong><code>~/.agents/skills/</code></strong> 是跨執行環境的別名（與 Codex 和 Copilot CLI 共用）。當同一個作用域同時存在兩個目錄時，<code>.agents/skills/</code> 優先。每個技能是包含 <code>SKILL.md</code>（帶有 <code>name</code> 與 <code>description</code> frontmatter）的子目錄。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Subagent support</h2></div><div class="col-zh" lang="zh-Hant"><h2>子代理支援</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Gemini CLI dispatches subagents through the <code>invoke_agent</code> tool, which takes <code>agent_name</code> and <code>prompt</code> parameters. The same dispatch is also surfaced as a chat-syntax shortcut: typing <code>@generalist &lt;prompt&gt;</code> is equivalent to calling <code>invoke_agent</code> with <code>agent_name: "generalist"</code>. Built-in agent names include <code>generalist</code>, <code>cli_help</code>, <code>codebase_investigator</code>, and (with browser tooling enabled) <code>browser_agent</code>.</p></div><div class="col-zh" lang="zh-Hant"><p>Gemini CLI 透過 <code>invoke_agent</code> 工具派遣子代理，該工具接受 <code>agent_name</code> 與 <code>prompt</code> 參數。同樣的派遣也以聊天語法捷徑呈現：輸入 <code>@generalist &lt;prompt&gt;</code> 等同於以 <code>agent_name: "generalist"</code> 呼叫 <code>invoke_agent</code>。內建代理名稱包括 <code>generalist</code>、<code>cli_help</code>、<code>codebase_investigator</code>，以及（啟用瀏覽器工具時）<code>browser_agent</code>。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills dispatch with <code>Subagent (general-purpose):</code> and either reference a prompt-template file (e.g., <code>superpowers:subagent-driven-development</code>'s <code>./implementer-prompt.md</code>) or supply an inline prompt. On Gemini CLI:</p></div><div class="col-zh" lang="zh-Hant"><p>技能以 <code>Subagent (general-purpose):</code> 派遣，並參照 prompt 範本檔（例如 <code>superpowers:subagent-driven-development</code> 的 <code>./implementer-prompt.md</code>）或提供內嵌 prompt。在 Gemini CLI 上：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Skill dispatch form</th>
+<th>Gemini CLI equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>References a <code>*-prompt.md</code> template (implementer, task-reviewer, code-reviewer, etc.)</td>
+<td>Fill the template, then <code>invoke_agent</code> with <code>agent_name: "generalist"</code> and the filled prompt</td>
+</tr>
+<tr>
+<td>References <code>superpowers:requesting-code-review</code>'s <code>./code-reviewer.md</code></td>
+<td><code>invoke_agent</code> with <code>agent_name: "generalist"</code> and the filled review template</td>
+</tr>
+<tr>
+<td>Inline prompt (no template referenced)</td>
+<td><code>invoke_agent</code> with <code>agent_name: "generalist"</code> and your inline prompt</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>技能派遣形式</th>
+<th>Gemini CLI 的對應</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>參照 <code>*-prompt.md</code> 範本（implementer、task-reviewer、code-reviewer 等）</td>
+<td>填入範本，然後以 <code>agent_name: "generalist"</code> 與填入後的 prompt 呼叫 <code>invoke_agent</code></td>
+</tr>
+<tr>
+<td>參照 <code>superpowers:requesting-code-review</code> 的 <code>./code-reviewer.md</code></td>
+<td>以 <code>agent_name: "generalist"</code> 與填入後的審查範本呼叫 <code>invoke_agent</code></td>
+</tr>
+<tr>
+<td>內嵌 prompt（未參照範本）</td>
+<td>以 <code>agent_name: "generalist"</code> 與你的內嵌 prompt 呼叫 <code>invoke_agent</code></td>
+</tr>
+</tbody>
+</table></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Prompt filling</h3></div><div class="col-zh" lang="zh-Hant"><h3>填入 prompt</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills provide prompt templates with placeholders like <code>{WHAT_WAS_IMPLEMENTED}</code> or <code>[FULL TEXT of task]</code>. Fill all placeholders before passing the complete prompt to <code>invoke_agent</code>. The prompt template itself contains the agent's role, review criteria, and expected output format — the subagent will follow it.</p></div><div class="col-zh" lang="zh-Hant"><p>技能提供帶有 <code>{WHAT_WAS_IMPLEMENTED}</code> 或 <code>[FULL TEXT of task]</code> 這類佔位符的 prompt 範本。在把完整 prompt 傳給 <code>invoke_agent</code> 之前，先填入所有佔位符。prompt 範本本身包含代理的角色、審查準則與預期輸出格式——子代理會遵循它。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3>Parallel dispatch</h3></div><div class="col-zh" lang="zh-Hant"><h3>平行派遣</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Gemini CLI supports parallel subagent dispatch. Issue multiple <code>invoke_agent</code> calls in the same response (or multiple <code>@generalist</code> invocations in one prompt) to run independent subagent work in parallel. Keep dependent tasks sequential, but do not serialize independent subagent tasks just to preserve a simpler history.</p></div><div class="col-zh" lang="zh-Hant"><p>Gemini CLI 支援平行子代理派遣。在同一個回應中發出多次 <code>invoke_agent</code> 呼叫（或在一個 prompt 中多次 <code>@generalist</code> 呼叫），即可平行執行獨立的子代理工作。相依的任務保持循序，但不要只是為了維持更簡單的歷史而把獨立的子代理任務序列化。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2>Additional Gemini CLI tools</h2></div><div class="col-zh" lang="zh-Hant"><h2>其他 Gemini CLI 工具</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>These tools are unique to Gemini CLI:</p></div><div class="col-zh" lang="zh-Hant"><p>這些工具是 Gemini CLI 獨有的：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>save_memory</code> (legacy)</td>
+<td>Persist facts across sessions when <code>experimental.memoryV2 = false</code></td>
+</tr>
+<tr>
+<td><code>get_internal_docs</code></td>
+<td>Look up Gemini CLI's bundled documentation</td>
+</tr>
+<tr>
+<td><code>ask_user</code></td>
+<td>Pose structured questions to the user (text / single-select / multi-select)</td>
+</tr>
+<tr>
+<td><code>enter_plan_mode</code> / <code>exit_plan_mode</code></td>
+<td>Switch into and out of read-only plan mode</td>
+</tr>
+<tr>
+<td><code>update_topic</code></td>
+<td>Update the current conversation's topic / strategic-intent metadata</td>
+</tr>
+<tr>
+<td><code>complete_task</code></td>
+<td>Signal that a Gemini subagent has completed and return its result to the parent agent</td>
+</tr>
+<tr>
+<td><code>tracker_create_task</code>, <code>tracker_update_task</code>, <code>tracker_get_task</code>, <code>tracker_list_tasks</code>, <code>tracker_add_dependency</code>, <code>tracker_visualize</code></td>
+<td>Rich task tracker with dependency and visualization support</td>
+</tr>
+<tr>
+<td><code>read_mcp_resource</code>, <code>list_mcp_resources</code></td>
+<td>MCP resource access</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>save_memory</code>（legacy）</td>
+<td>當 <code>experimental.memoryV2 = false</code> 時，跨 session 持久化事實</td>
+</tr>
+<tr>
+<td><code>get_internal_docs</code></td>
+<td>查閱 Gemini CLI 內建的說明文件</td>
+</tr>
+<tr>
+<td><code>ask_user</code></td>
+<td>向使用者提出結構化問題（文字／單選／多選）</td>
+</tr>
+<tr>
+<td><code>enter_plan_mode</code> / <code>exit_plan_mode</code></td>
+<td>進入與離開唯讀 plan 模式</td>
+</tr>
+<tr>
+<td><code>update_topic</code></td>
+<td>更新目前對話的主題／策略意圖中繼資料</td>
+</tr>
+<tr>
+<td><code>complete_task</code></td>
+<td>告知某個 Gemini 子代理已完成，並把結果回傳給父代理</td>
+</tr>
+<tr>
+<td><code>tracker_create_task</code>、<code>tracker_update_task</code>、<code>tracker_get_task</code>、<code>tracker_list_tasks</code>、<code>tracker_add_dependency</code>、<code>tracker_visualize</code></td>
+<td>具備相依與視覺化支援的豐富任務追蹤器</td>
+</tr>
+<tr>
+<td><code>read_mcp_resource</code>、<code>list_mcp_resources</code></td>
+<td>MCP 資源存取</td>
+</tr>
+</tbody>
+</table></div></div>
+
+</div>
+</body>
+</html>

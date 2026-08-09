@@ -36,6 +36,8 @@
 | verification-before-completion | discipline | 宣告完成前先真的驗證 |
 | writing-skills | meta | 寫技能本身也是 TDD |
 
+> `using-superpowers` 另附 4 份 harness 參考文件（`antigravity-tools` / `codex-tools` / `gemini-tools` / `pi-tools`），也已全量中文化，並為每份生成中英對照頁。
+
 ## 網站地圖
 
 ```
@@ -52,6 +54,7 @@ superpowers-zh-tw/
 ├── assets/site.css         深色×霓虹設計語言
 ├── skills/                 可安裝的翻譯後技能（14 個，保留上游目錄結構）
 ├── <skill>/SKILL.html      每個技能的中英逐段對照頁（build 產出）
+├── <skill>/<doc>.html      附屬文件逐段對照頁（prompt 範本、參考文件等）
 └── scripts/
     ├── build-site.py       生成靜態站
     └── check-upstream.py   每月上游同步檢查
