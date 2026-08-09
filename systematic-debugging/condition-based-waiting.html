@@ -19,11 +19,11 @@
 </div>
 <h1>condition-based-waiting</h1>
 <div class="subtitle">systematic-debugging · 附屬文件</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Condition-Based Waiting</h1></div><div class="col-zh" lang="zh-Hant"><h1>條件式等待</h1></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>概述</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="condition-based-waiting">Condition-Based Waiting</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="條件式等待">條件式等待</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="overview">Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="概述">概述</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Flaky tests often guess at timing with arbitrary delays. This creates race conditions where tests pass on fast machines but fail under load or in CI.</p></div><div class="col-zh" lang="zh-Hant"><p>不穩定的測試常常用任意的延遲來猜測時機。這會造成競態條件：測試在快的機器上通過，但在負載或 CI 下失敗。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Wait for the actual condition you care about, not a guess about how long it takes.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 等待你真正關心的條件，而不是猜測要花多久時間。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-use">When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="使用時機">使用時機</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph when_to_use {
     &quot;Test uses setTimeout/sleep?&quot; [shape=diamond];
     &quot;Testing timing behavior?&quot; [shape=diamond];
@@ -59,7 +59,7 @@
 - Always document WHY if using arbitrary timeout</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不適用時機：</strong>
 - 測試真正的時序行為（debounce、throttle 間隔）
 - 若使用任意逾時，一定要說明「為什麼」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Core Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2>核心模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="core-pattern">Core Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="核心模式">核心模式</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">// ❌ BEFORE: Guessing at timing
 await new Promise(r =&gt; setTimeout(r, 50));
 const result = getResult();
@@ -79,7 +79,7 @@ await waitFor(() =&gt; getResult() !== undefined);
 const result = getResult();
 expect(result).toBeDefined();
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Quick Patterns</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="quick-patterns">Quick Patterns</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="快速模式">快速模式</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -139,7 +139,7 @@ expect(result).toBeDefined();
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Implementation</h2></div><div class="col-zh" lang="zh-Hant"><h2>實作</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="implementation">Implementation</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="實作">實作</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Generic polling function:
 ```typescript
 async function waitFor<T>(
@@ -177,7 +177,7 @@ async function waitFor<T>(
 }
 ```</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>See <code>condition-based-waiting-example.ts</code> in this directory for complete implementation with domain-specific helpers (<code>waitForEvent</code>, <code>waitForEventCount</code>, <code>waitForEventMatch</code>) from actual debugging session.</p></div><div class="col-zh" lang="zh-Hant"><p>本目錄中的 <code>condition-based-waiting-example.ts</code> 提供完整實作，內含來自實際除錯 session 的領域特定輔助函式（<code>waitForEvent</code>、<code>waitForEventCount</code>、<code>waitForEventMatch</code>）。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Common Mistakes</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見錯誤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-mistakes">Common Mistakes</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="常見錯誤">常見錯誤</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>❌ Polling too fast:</strong> <code>setTimeout(check, 1)</code> - wastes CPU
 <strong>✅ Fix:</strong> Poll every 10ms</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 輪詢太快：</strong> <code>setTimeout(check, 1)</code> —— 浪費 CPU
 <strong>✅ 修正：</strong> 每 10ms 輪詢一次</p></div></div>
@@ -187,7 +187,7 @@ async function waitFor<T>(
 <div class="pair"><div class="col-en" lang="en"><p><strong>❌ Stale data:</strong> Cache state before loop
 <strong>✅ Fix:</strong> Call getter inside loop for fresh data</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 資料過期：</strong> 在迴圈前就快取狀態
 <strong>✅ 修正：</strong> 在迴圈內呼叫 getter 取得最新資料</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When Arbitrary Timeout IS Correct</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時「任意逾時」是正確的</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-arbitrary-timeout-is-correct">When Arbitrary Timeout IS Correct</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時任意逾時是正確的">何時「任意逾時」是正確的</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-typescript">// Tool ticks every 100ms - need 2 ticks to verify partial output
 await waitForEvent(manager, 'TOOL_STARTED'); // First: wait for condition
 await new Promise(r =&gt; setTimeout(r, 200));   // Then: wait for timed behavior
@@ -204,7 +204,7 @@ await new Promise(r =&gt; setTimeout(r, 200));   // Then: wait for timed behavio
 1. 先等待觸發條件
 2. 基於已知的時序（不是猜測）
 3. 加上註解說明「為什麼」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Real-World Impact</h2></div><div class="col-zh" lang="zh-Hant"><h2>實際影響</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="real-world-impact">Real-World Impact</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="實際影響">實際影響</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>From debugging session (2025-10-03):
 - Fixed 15 flaky tests across 3 files
 - Pass rate: 60% → 100%

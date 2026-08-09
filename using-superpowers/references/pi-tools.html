@@ -19,7 +19,7 @@
 </div>
 <h1>pi-tools</h1>
 <div class="subtitle">using-superpowers · references · 附屬文件</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Pi Tool Mapping</h1></div><div class="col-zh" lang="zh-Hant"><h1>Pi 工具對應</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="pi-tool-mapping">Pi Tool Mapping</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="pi-工具對應">Pi 工具對應</h1></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Skills speak in actions ("dispatch a subagent", "create a todo", "read a file"). On Pi these resolve to the tools below.</p></div><div class="col-zh" lang="zh-Hant"><p>技能用行動來表達（「派遣子代理」、「建立 todo」、「讀取檔案」）。在 Pi 上，這些會對應到下方的工具。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
@@ -56,9 +56,9 @@
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Subagents</h2></div><div class="col-zh" lang="zh-Hant"><h2>子代理</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="subagents">Subagents</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="子代理">子代理</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Pi core does not ship a standard subagent tool. The <code>pi-subagents</code> package is a strong optional companion and provides a <code>subagent</code> tool with single-agent, chain, parallel, async, forked-context, and resume/status workflows. If no subagent tool is available, do not fabricate <code>Task</code> calls; execute sequentially in the current session or explain that the optional subagent capability is not installed.</p></div><div class="col-zh" lang="zh-Hant"><p>Pi 核心未附標準子代理工具。<code>pi-subagents</code> 套件是強而有力的選用搭配，提供具備單一代理、鏈式、平行、非同步、分支上下文與 resume／status 工作流的 <code>subagent</code> 工具。如果沒有可用的子代理工具，不要捏造 <code>Task</code> 呼叫；在目前 session 中循序執行，或說明選用的子代理能力尚未安裝。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Task lists</h2></div><div class="col-zh" lang="zh-Hant"><h2>任務清單</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="task-lists">Task lists</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="任務清單">任務清單</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Pi core does not ship a standard task-list tool. If a todo/task extension is installed, use its documented tool. Otherwise use Superpowers plan files, checklists in Markdown, or a repo-local <code>TODO.md</code> for task tracking. Older Superpowers docs may refer to <code>TodoWrite</code>; treat that as the task-tracking action above.</p></div><div class="col-zh" lang="zh-Hant"><p>Pi 核心未附標準任務清單工具。如果已安裝 todo／task 擴充，就使用其文件化的工具。否則使用 Superpowers 計畫檔、Markdown 檢查清單，或 repo 本機的 <code>TODO.md</code> 來追蹤任務。較舊的 Superpowers 文件可能稱之為 <code>TodoWrite</code>；把它視為上述的任務追蹤行動即可。</p></div></div>
 
 </div>

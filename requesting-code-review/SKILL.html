@@ -25,10 +25,10 @@
 <h1>requesting-code-review</h1>
 <div class="subtitle">任務完成、發合併前，送審查確認有沒有照需求做。</div>
 <div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="code-reviewer.html">code-reviewer</a></div>
-<div class="pair"><div class="col-en" lang="en"><h1>Requesting Code Review</h1></div><div class="col-zh" lang="zh-Hant"><h1>請求程式碼審查</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="requesting-code-review">Requesting Code Review</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="請求程式碼審查">請求程式碼審查</h1></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history.</p></div><div class="col-zh" lang="zh-Hant"><p>派發一個程式碼審查子代理，在問題擴大蔓延之前捕捉問題。審查者會取得精確建構的評估上下文 —— 絕不是你 session 的歷史。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Review early, review often.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 早點審查，常常審查。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When to Request Review</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時請求審查</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-request-review">When to Request Review</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時請求審查">何時請求審查</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Mandatory:</strong>
 - After each task in subagent-driven development
 - After completing major feature
@@ -43,7 +43,7 @@
 - 卡住時（新的視角）
 - 重構之前（基線檢查）
 - 修正複雜 bug 之後</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>How to Request</h2></div><div class="col-zh" lang="zh-Hant"><h2>如何請求</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="how-to-request">How to Request</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="如何請求">如何請求</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>1. Get git SHAs:</strong></p>
 <pre><code class="language-bash">BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
 HEAD_SHA=$(git rev-parse HEAD)
@@ -71,7 +71,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 - 在繼續前修正 Important 問題
 - 記下 Minor 問題稍後處理
 - 若審查者錯了，提出異議（附上理由）</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Example</h2></div><div class="col-zh" lang="zh-Hant"><h2>範例</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="example">Example</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="範例">範例</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>[Just completed Task 2: Add verification function]
 
 You: Let me request code review before proceeding.
@@ -117,7 +117,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 You: [Fix progress indicators]
 [Continue to Task 3]
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-rationalizations">Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="常見合理化藉口">常見合理化藉口</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -153,7 +153,7 @@ You: [Fix progress indicators]
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Red Flags</h2></div><div class="col-zh" lang="zh-Hant"><h2>紅旗</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="red-flags">Red Flags</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="紅旗">紅旗</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Never:</strong>
 - Skip review because "it's simple"
 - Ignore Critical issues

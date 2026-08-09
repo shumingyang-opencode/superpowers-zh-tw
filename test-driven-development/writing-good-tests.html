@@ -19,10 +19,10 @@
 </div>
 <h1>writing-good-tests</h1>
 <div class="subtitle">test-driven-development · 附屬文件</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Writing Good Tests</h1></div><div class="col-zh" lang="zh-Hant"><h1>寫好測試</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="writing-good-tests">Writing Good Tests</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="寫好測試">寫好測試</h1></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Load this reference when:</strong> writing or changing tests, adding mocks, or
 adding cleanup/helper methods for tests.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>在這些時候載入此參考：</strong> 撰寫或變更測試、加入 mock，或為測試加入清理／輔助方法。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="overview">Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="總覽">總覽</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>A test exists to catch a specific break. Two principles govern everything
 here:</p></div><div class="col-zh" lang="zh-Hant"><p>一支測試的存在是為了抓出某個特定的破壞。這裡的一切由兩條原則主宰：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>1. Every test names the break it catches
@@ -33,7 +33,7 @@ here:</p></div><div class="col-zh" lang="zh-Hant"><p>一支測試的存在是為
 <div class="pair"><div class="col-en" lang="en"><p>Strict TDD produces both naturally: a test written first and watched
 failing against real code has already proven it can fail, and only earns
 a mock when the real dependency proves slow or external.</p></div><div class="col-zh" lang="zh-Hant"><p>嚴格的 TDD 自然而然兩者兼得：先寫、再對著真實程式碼看著它失敗的測試，已經證明它會失敗；而且只有當真實相依物件證明很慢或屬於外部時，它才值得用 mock。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Principle 1: Name the Break</h2></div><div class="col-zh" lang="zh-Hant"><h2>原則 1：說出破壞</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="principle-1-name-the-break">Principle 1: Name the Break</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="原則-1說出破壞">原則 1：說出破壞</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Before writing the test body, answer: <strong>what production change should
 make this test fail — and is that change a bug or a decision?</strong> A test
 earns its place by catching a wrong branch, missing side effect, wrong
@@ -76,7 +76,7 @@ assumption. The same boundary applies inside your code: constructors,
 getters, constants, and trivial forwarding earn tests only when they
 validate, normalize, default, derive, enforce, or cause side effects —
 otherwise assert the first consumer-visible result that depends on them.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>你的程式碼，不是框架。</strong> 測試你的程式碼在邊界上做出的契約——你註冊的路由、你發出的查詢、你產生的 payload。上游機制是其維護者該寫的測試（經典案例：斷言你的路由器呼叫了一個已註冊的 handler——那是框架的測試，不是你的）。當上游行為真的出乎你意料，寫一支命名該假設的窄特性化測試。同樣的邊界在程式碼內部也適用：建構子、getter、常數與瑣碎的轉發，只在它們驗證、正規化、預設、推導、強制或引發副作用時才值得測試——否則就斷言依賴它們的第一個消費者可見結果。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Gate Function</h3></div><div class="col-zh" lang="zh-Hant"><h3>閘門函式</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="gate-function">Gate Function</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="閘門函式">閘門函式</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>BEFORE writing the test body:
   Name the production change that would make this test fail.
 
@@ -99,7 +99,7 @@ otherwise assert the first consumer-visible result that depends on them.</p></di
   如果它重用了該程式碼的邏輯或輔助函式：
     換成字面值或手工核對的 fixture
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Principle 2: Exercise the Real Thing</h2></div><div class="col-zh" lang="zh-Hant"><h2>原則 2：操練真實的東西</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="principle-2-exercise-the-real-thing">Principle 2: Exercise the Real Thing</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="原則-2操練真實的東西">原則 2：操練真實的東西</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>The mock earns no assertions.</strong> A mock assertion passes when the mock
 is present and fails when it is absent — it says nothing about the
 component. Assert the real component's behavior; if the mock is what you
@@ -153,7 +153,7 @@ the test logic, mocks miss methods the real components have, or tests
 break when the mock changes, switch to an integration test with real
 components. <strong>your human partner's question:</strong> "Do we need to be using a
 mock here?"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>偏好真實元件勝過複雜 mock。</strong> 當 mock 設定超出測試邏輯、mock 缺少真實元件有的方法、或 mock 一變測試就壞時，改用真實元件的整合測試。<strong>你真人夥伴的問題：</strong>「我們需要用 mock 嗎？」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Gate Function</h3></div><div class="col-zh" lang="zh-Hant"><h3>閘門函式</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="gate-function">Gate Function</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="閘門函式">閘門函式</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>BEFORE adding a mock or test helper:
   List the real method's side effects; keep the ones the test
   depends on real — mock the slow/external level below them.
@@ -175,12 +175,12 @@ mock here?"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>偏好真實�
   正要對 mock 本身下斷言？
     解除 mock 或刪掉斷言。
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Tests Ship With the Implementation</h2></div><div class="col-zh" lang="zh-Hant"><h2>測試隨實作一起交付</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="tests-ship-with-the-implementation">Tests Ship With the Implementation</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="測試隨實作一起交付">測試隨實作一起交付</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The TDD cycle — failing test, minimal implementation, refactor — is what
 "complete" means. Ship the tests the behavior needs and only those:
 trivial code and human prose earn none, and a test written to satisfy
 process costs maintenance forever.</p></div><div class="col-zh" lang="zh-Hant"><p>TDD 循環——失敗的測試、最小實作、重構——就是「完成」的意義。交付行為需要的測試，而且只要那些：瑣碎的程式碼與給人讀的散文不值得任何測試，而為了應付流程寫的測試會讓維護成本永遠持續。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>The Mutation Check</h2></div><div class="col-zh" lang="zh-Hant"><h2>突變檢查</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-mutation-check">The Mutation Check</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="突變檢查">突變檢查</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Before finishing, mentally mutate the production code; at least one test
 should fail for each realistic mutation:</p></div><div class="col-zh" lang="zh-Hant"><p>在結束之前，在腦中突變正式程式碼；對每個合理的突變，至少應有一支測試失敗：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
@@ -198,7 +198,7 @@ should fail for each realistic mutation:</p></div><div class="col-zh" lang="zh-H
 </ul></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>A mutation nothing catches marks the behavior as unprotected — or the
 test as tautological.</p></div><div class="col-zh" lang="zh-Hant"><p>沒有任何測試抓得到的突變，標記該行為未受保護——或該測試是同義反覆。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速參考</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="quick-reference">Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="快速參考">快速參考</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -298,7 +298,7 @@ test as tautological.</p></div><div class="col-zh" lang="zh-Hant"><p>沒有任�
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Warning Signs</h2></div><div class="col-zh" lang="zh-Hant"><h2>警訊</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="warning-signs">Warning Signs</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="警訊">警訊</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li>Setup and assertion share the same object, guaranteeing equality</li>
 <li>The test can fail only through a panic, crash, or missing selector</li>

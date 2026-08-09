@@ -19,7 +19,7 @@
 </div>
 <h1>antigravity-tools</h1>
 <div class="subtitle">using-superpowers · references · 附屬文件</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Antigravity CLI (<code>agy</code>) Tool Mapping</h1></div><div class="col-zh" lang="zh-Hant"><h1>Antigravity CLI（<code>agy</code>）工具對應</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="antigravity-cli-agy-tool-mapping">Antigravity CLI (<code>agy</code>) Tool Mapping</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="antigravity-cliagy工具對應">Antigravity CLI（<code>agy</code>）工具對應</h1></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Skills speak in actions ("dispatch a subagent", "create a todo", "read a file"). On the Antigravity CLI (<code>agy</code>) these resolve to the tools below.</p></div><div class="col-zh" lang="zh-Hant"><p>技能用行動來表達（「派遣子代理」、「建立 todo」、「讀取檔案」）。在 Antigravity CLI（<code>agy</code>）上，這些會對應到下方的工具。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
@@ -52,11 +52,11 @@
 </tr>
 <tr>
 <td>任務追蹤（「建立 todo」、「標記完成」）</td>
-<td>一個 <strong>task artifact</strong>——以 <code>write_to_file</code> 搭配 <code>IsArtifact: true</code> 與 <code>ArtifactType: "task"</code>（見 <a href="#task-tracking">任務追蹤</a>）。<strong>不是</strong> <code>manage_task</code>，那是管理背景行程用的。</td>
+<td>一個 <strong>task artifact</strong>——以 <code>write_to_file</code> 搭配 <code>IsArtifact: true</code> 與 <code>ArtifactType: "task"</code>（見 <a href="#任務追蹤">任務追蹤</a>）。<strong>不是</strong> <code>manage_task</code>，那是管理背景行程用的。</td>
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Task tracking</h2></div><div class="col-zh" lang="zh-Hant"><h2>任務追蹤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="task-tracking">Task tracking</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="任務追蹤">任務追蹤</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Antigravity has <strong>no todo tool</strong> (<code>manage_task</code> manages background
 processes — <code>list</code>/<code>kill</code>/<code>status</code>/<code>send_input</code> — it is <em>not</em> a checklist). When a
 skill says to create a todo list or track tasks, maintain a <strong>task artifact</strong>: a

@@ -5,7 +5,7 @@
 | 技能要求的行動 | Antigravity CLI 的對應 |
 |----------------------|----------------------|
 | 派遣子代理（`Subagent (general-purpose):` 範本） | 使用內建 `TypeName` 的 `invoke_subagent`——完整能力的工作用 `self`，唯讀用 `research` |
-| 任務追蹤（「建立 todo」、「標記完成」） | 一個 **task artifact**——以 `write_to_file` 搭配 `IsArtifact: true` 與 `ArtifactType: "task"`（見 [任務追蹤](#task-tracking)）。**不是** `manage_task`，那是管理背景行程用的。 |
+| 任務追蹤（「建立 todo」、「標記完成」） | 一個 **task artifact**——以 `write_to_file` 搭配 `IsArtifact: true` 與 `ArtifactType: "task"`（見 [任務追蹤](#任務追蹤)）。**不是** `manage_task`，那是管理背景行程用的。 |
 
 ## 任務追蹤
 

@@ -24,12 +24,12 @@
 </table>
 <h1>dispatching-parallel-agents</h1>
 <div class="subtitle">面對 2+ 個互不依賴的任務，平行派子代理同時做。</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Dispatching Parallel Agents</h1></div><div class="col-zh" lang="zh-Hant"><h1>派發並行代理</h1></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="dispatching-parallel-agents">Dispatching Parallel Agents</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="派發並行代理">派發並行代理</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="overview">Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="總覽">總覽</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.</p></div><div class="col-zh" lang="zh-Hant"><p>你將任務委派給具備隔離上下文的專門代理。透過精確構思它們的指令與上下文，你確保它們能保持專注並成功完成任務。它們不應繼承你 session 的上下文或歷史 —— 你為它們建構所需的全部內容。這也為協調工作保留了你的上下文。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.</p></div><div class="col-zh" lang="zh-Hant"><p>當你有多個互不相關的失敗（不同的測試檔、不同的子系統、不同的 bug）時，逐一調查會浪費時間。每次調查都彼此獨立，可以並行進行。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Dispatch one agent per independent problem domain. Let them work concurrently.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 每個獨立的問題領域派發一個代理，讓它們並行運作。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時使用</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-use">When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時使用">何時使用</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph when_to_use {
     &quot;Multiple failures?&quot; [shape=diamond];
     &quot;Are they independent?&quot; [shape=diamond];
@@ -77,8 +77,8 @@
 - 失敗彼此相關（修好一個可能連帶修好其他）
 - 需要理解完整的系統狀態
 - 代理會互相干擾</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>The Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2>模式</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>1. Identify Independent Domains</h3></div><div class="col-zh" lang="zh-Hant"><h3>1. 識別獨立的問題領域</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-pattern">The Pattern</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="模式">模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="1-identify-independent-domains">1. Identify Independent Domains</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="1-識別獨立的問題領域">1. 識別獨立的問題領域</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Group failures by what's broken:
 - File A tests: Tool approval flow
 - File B tests: Batch completion behavior
@@ -87,7 +87,7 @@
 - 檔案 B 測試：批次完成行為
 - 檔案 C 測試：中止功能</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Each domain is independent - fixing tool approval doesn't affect abort tests.</p></div><div class="col-zh" lang="zh-Hant"><p>每個領域彼此獨立 —— 修正工具核准不會影響中止測試。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>2. Create Focused Agent Tasks</h3></div><div class="col-zh" lang="zh-Hant"><h3>2. 建立聚焦的代理任務</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="2-create-focused-agent-tasks">2. Create Focused Agent Tasks</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="2-建立聚焦的代理任務">2. 建立聚焦的代理任務</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Each agent gets:
 - <strong>Specific scope:</strong> One test file or subsystem
 - <strong>Clear goal:</strong> Make these tests pass
@@ -97,7 +97,7 @@
 - <strong>清楚目標：</strong> 讓這些測試通過
 - <strong>限制：</strong> 不要更動其他程式碼
 - <strong>預期輸出：</strong> 你發現與修正內容的摘要</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>3. Dispatch in Parallel</h3></div><div class="col-zh" lang="zh-Hant"><h3>3. 並行派發</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="3-dispatch-in-parallel">3. Dispatch in Parallel</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="3-並行派發">3. 並行派發</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Issue all three subagent dispatches in the same response — they run in parallel:</p></div><div class="col-zh" lang="zh-Hant"><p>在同一則回應中發出全部三個子代理派發 —— 它們會並行執行：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-text">Subagent (general-purpose): &quot;Fix agent-tool-abort.test.ts failures&quot;
 Subagent (general-purpose): &quot;Fix batch-completion-behavior.test.ts failures&quot;
@@ -109,7 +109,7 @@ Subagent (general-purpose): &quot;Fix tool-approval-race-conditions.test.ts fail
 # All three run concurrently.
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Multiple dispatch calls in one response = parallel execution. One per response = sequential.</p></div><div class="col-zh" lang="zh-Hant"><p>一則回應中多次派發呼叫 = 並行執行。每則回應一次 = 循序執行。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>4. Review and Integrate</h3></div><div class="col-zh" lang="zh-Hant"><h3>4. 審查與整合</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="4-review-and-integrate">4. Review and Integrate</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="4-審查與整合">4. 審查與整合</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>When agents return:
 - Read each summary
 - Verify fixes don't conflict
@@ -119,7 +119,7 @@ Subagent (general-purpose): &quot;Fix tool-approval-race-conditions.test.ts fail
 - 確認修正彼此不衝突
 - 執行完整的測試套件
 - 整合所有變更</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Agent Prompt Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2>代理 Prompt 結構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="agent-prompt-structure">Agent Prompt Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="代理-prompt-結構">代理 Prompt 結構</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Good agent prompts are:
 1. <strong>Focused</strong> - One clear problem domain
 2. <strong>Self-contained</strong> - All context needed to understand the problem
@@ -164,7 +164,7 @@ Do NOT just increase timeouts - find the real issue.
 
 Return: Summary of what you found and what you fixed.
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Common Mistakes</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見錯誤</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-mistakes">Common Mistakes</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="常見錯誤">常見錯誤</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>❌ Too broad:</strong> "Fix all the tests" - agent gets lost
 <strong>✅ Specific:</strong> "Fix agent-tool-abort.test.ts" - focused scope</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 範圍過大：</strong> 「修好所有測試」- 代理會迷失方向
 <strong>✅ 具體明確：</strong> 「修好 agent-tool-abort.test.ts」- 範圍聚焦</p></div></div>
@@ -177,7 +177,7 @@ Return: Summary of what you found and what you fixed.
 <div class="pair"><div class="col-en" lang="en"><p><strong>❌ Vague output:</strong> "Fix it" - you don't know what changed
 <strong>✅ Specific:</strong> "Return summary of root cause and changes"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>❌ 輸出含糊：</strong> 「修好它」- 你不知道改了什麼
 <strong>✅ 具體明確：</strong> 「回傳根因與變更的摘要」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When NOT to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時不該使用</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-not-to-use">When NOT to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時不該使用">何時不該使用</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Related failures:</strong> Fixing one might fix others - investigate together first
 <strong>Need full context:</strong> Understanding requires seeing entire system
 <strong>Exploratory debugging:</strong> You don't know what's broken yet
@@ -185,7 +185,7 @@ Return: Summary of what you found and what you fixed.
 <strong>需要完整上下文：</strong> 必須檢視整個系統才能理解
 <strong>探索式除錯：</strong> 你尚不知道哪裡壞了
 <strong>共享狀態：</strong> 代理會互相干擾（編輯相同檔案、使用相同資源）</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Real Example from Session</h2></div><div class="col-zh" lang="zh-Hant"><h2>實際會話範例</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="real-example-from-session">Real Example from Session</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="實際會話範例">實際會話範例</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Scenario:</strong> 6 test failures across 3 files after major refactoring</p></div><div class="col-zh" lang="zh-Hant"><p><strong>情境：</strong> 大型重構後 3 個檔案共 6 個測試失敗</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Failures:</strong>
 - agent-tool-abort.test.ts: 3 failures (timing issues)
@@ -212,7 +212,7 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 - Agent 2：修正事件結構 bug（threadId 放錯位置）
 - Agent 3：新增等待非同步工具執行完成</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Integration:</strong> All fixes independent, no conflicts, full suite green</p></div><div class="col-zh" lang="zh-Hant"><p><strong>整合：</strong> 所有修正彼此獨立、無衝突，完整測試套件全綠</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Verification</h2></div><div class="col-zh" lang="zh-Hant"><h2>驗證</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="verification">Verification</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="驗證">驗證</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>After agents return:
 1. <strong>Review each summary</strong> - Understand what changed
 2. <strong>Check for conflicts</strong> - Did agents edit same code?

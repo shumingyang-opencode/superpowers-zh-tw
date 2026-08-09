@@ -19,9 +19,9 @@
 </div>
 <h1>visual-companion</h1>
 <div class="subtitle">brainstorming · 附屬文件</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Visual Companion Guide</h1></div><div class="col-zh" lang="zh-Hant"><h1>視覺夥伴指南</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="visual-companion-guide">Visual Companion Guide</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="視覺夥伴指南">視覺夥伴指南</h1></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Browser-based visual brainstorming companion for showing mockups, diagrams, and options.</p></div><div class="col-zh" lang="zh-Hant"><p>以瀏覽器為基礎的視覺腦力激盪夥伴，用於展示 mockups、圖表與選項。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2>使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-use">When to Use</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="使用時機">使用時機</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Decide per-question, not per-session. The test: <strong>would the user understand this better by seeing it than reading it?</strong></p></div><div class="col-zh" lang="zh-Hant"><p>逐問題決定，而非逐 session。判斷標準：<strong>使用者「看」會比「讀」更容易理解嗎？</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Use the browser</strong> when the content itself is visual:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>內容本身是視覺的，使用瀏覽器：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
@@ -52,10 +52,10 @@
 <li><strong>釐清問題</strong> ——任何答案是一段文字、而非視覺偏好的事物</li>
 </ul></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>A question <em>about</em> a UI topic is not automatically a visual question. "What kind of wizard do you want?" is conceptual — use the terminal. "Which of these wizard layouts feels right?" is visual — use the browser.</p></div><div class="col-zh" lang="zh-Hant"><p>一個<em>關於</em> UI 主題的問題不自動是視覺問題。「你想要哪種精靈？」是概念問題——使用終端機。「這些精靈佈局哪個感覺對？」是視覺問題——使用瀏覽器。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>How It Works</h2></div><div class="col-zh" lang="zh-Hant"><h2>運作方式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="how-it-works">How It Works</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="運作方式">運作方式</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The server watches a directory for HTML files and serves the newest one to the browser. You write HTML content to <code>screen_dir</code>, the user sees it in their browser and can click to select options. Selections are recorded to <code>state_dir/events</code> that you read on your next turn.</p></div><div class="col-zh" lang="zh-Hant"><p>伺服器監看一個目錄中的 HTML 檔案，並把最新的那份提供給瀏覽器。你把 HTML 內容寫到 <code>screen_dir</code>，使用者在其瀏覽器中看到它，並能點擊以選取選項。選取會被記錄到 <code>state_dir/events</code>，你可以在下一個回合讀取。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Content fragments vs full documents:</strong> If your HTML file starts with <code>&lt;!DOCTYPE</code> or <code>&lt;html</code>, the server serves it as-is (just injects the helper script). Otherwise, the server automatically wraps your content in the frame template — adding the header, CSS theme, connection status, and all interactive infrastructure. <strong>Write content fragments by default.</strong> Only write full documents when you need complete control over the page.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>內容片段 vs 完整文件：</strong> 若你的 HTML 檔案以 <code>&lt;!DOCTYPE</code> 或 <code>&lt;html</code> 開頭，伺服器會原樣提供它（只注入 helper 腳本）。否則，伺服器會自動把你的內容包進 frame 範本——加上頁首、CSS 主題、連線狀態與所有互動基礎設施。<strong>預設撰寫內容片段。</strong> 只有在你需要完全掌控頁面時才撰寫完整文件。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Starting a Session</h2></div><div class="col-zh" lang="zh-Hant"><h2>啟動一個 session</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="starting-a-session">Starting a Session</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="啟動一個-session">啟動一個 session</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Start AFTER the user approves the companion. --open auto-opens their browser on
 # the first screen; --project-dir persists mockups and enables same-port restart.
 scripts/start-server.sh --project-dir /path/to/project --open
@@ -133,7 +133,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
   --url-host localhost
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Use <code>--url-host</code> to control what hostname is printed in the returned URL JSON.</p></div><div class="col-zh" lang="zh-Hant"><p>使用 <code>--url-host</code> 控制回傳的 URL JSON 中印出哪個主機名稱。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>The Loop</h2></div><div class="col-zh" lang="zh-Hant"><h2>迴圈</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-loop">The Loop</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="迴圈">迴圈</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><ol>
 <li><strong>Check server is alive</strong>, then <strong>write HTML</strong> to a new file in <code>screen_dir</code>:
    - <strong>Required: confirm the server is alive before referring to the URL or pushing a screen.</strong> Check that <code>$STATE_DIR/server-info</code> exists and <code>$STATE_DIR/server-stopped</code> does not. If it has shut down, restart it with <code>start-server.sh</code> using the <strong>same <code>--project-dir</code></strong> — it reuses the same port, so the user's open tab reconnects on its own (it shows a "paused" overlay while the server is down) and you don't need to send a new URL. The server auto-exits after 4 hours idle (configurable with <code>--idle-timeout-minutes</code>).
@@ -198,7 +198,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 </ol></div><div class="col-zh" lang="zh-Hant"><ol start="6">
 <li>重複直到完成。</li>
 </ol></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Writing Content Fragments</h2></div><div class="col-zh" lang="zh-Hant"><h2>撰寫內容片段</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="writing-content-fragments">Writing Content Fragments</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="撰寫內容片段">撰寫內容片段</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Write just the content that goes inside the page. The server wraps it in the frame template automatically (header, theme CSS, connection status, and all interactive infrastructure).</p></div><div class="col-zh" lang="zh-Hant"><p>只撰寫會放進頁面內的內容。伺服器會自動把它包進 frame 範本（頁首、主題 CSS、連線狀態與所有互動基礎設施）。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Minimal example:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>最小範例：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;h2&gt;Which layout works better?&lt;/h2&gt;
@@ -241,9 +241,9 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 &lt;/div&gt;
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>That's it. No <code>&lt;html&gt;</code>, no CSS, no <code>&lt;script&gt;</code> tags needed. The server provides all of that.</p></div><div class="col-zh" lang="zh-Hant"><p>就是這樣。不需要 <code>&lt;html&gt;</code>、CSS 或 <code>&lt;script&gt;</code> 標籤。伺服器會提供所有這些。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>CSS Classes Available</h2></div><div class="col-zh" lang="zh-Hant"><h2>可用的 CSS 類別</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="css-classes-available">CSS Classes Available</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="可用的-css-類別">可用的 CSS 類別</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The frame template provides these CSS classes for your content:</p></div><div class="col-zh" lang="zh-Hant"><p>frame 範本為你的內容提供這些 CSS 類別：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Options (A/B/C choices)</h3></div><div class="col-zh" lang="zh-Hant"><h3>選項（A/B/C 選擇）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="options-abc-choices">Options (A/B/C choices)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="選項abc-選擇">選項（A/B/C 選擇）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;options&quot;&gt;
   &lt;div class=&quot;option&quot; data-choice=&quot;a&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
     &lt;div class=&quot;letter&quot;&gt;A&lt;/div&gt;
@@ -271,7 +271,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
   &lt;!-- same option markup — users can select/deselect multiple --&gt;
 &lt;/div&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Cards (visual designs)</h3></div><div class="col-zh" lang="zh-Hant"><h3>卡片（視覺設計）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="cards-visual-designs">Cards (visual designs)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="卡片視覺設計">卡片（視覺設計）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;cards&quot;&gt;
   &lt;div class=&quot;card&quot; data-choice=&quot;design1&quot; onclick=&quot;toggleSelect(this)&quot;&gt;
     &lt;div class=&quot;card-image&quot;&gt;&lt;!-- mockup content --&gt;&lt;/div&gt;
@@ -291,7 +291,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
   &lt;/div&gt;
 &lt;/div&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Mockup container</h3></div><div class="col-zh" lang="zh-Hant"><h3>Mockup 容器</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="mockup-container">Mockup container</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="mockup-容器">Mockup 容器</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;mockup&quot;&gt;
   &lt;div class=&quot;mockup-header&quot;&gt;Preview: Dashboard Layout&lt;/div&gt;
   &lt;div class=&quot;mockup-body&quot;&gt;&lt;!-- your mockup HTML --&gt;&lt;/div&gt;
@@ -301,7 +301,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
   &lt;div class=&quot;mockup-body&quot;&gt;&lt;!-- your mockup HTML --&gt;&lt;/div&gt;
 &lt;/div&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Split view (side-by-side)</h3></div><div class="col-zh" lang="zh-Hant"><h3>分割檢視（並排）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="split-view-side-by-side">Split view (side-by-side)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="分割檢視並排">分割檢視（並排）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;split&quot;&gt;
   &lt;div class=&quot;mockup&quot;&gt;&lt;!-- left --&gt;&lt;/div&gt;
   &lt;div class=&quot;mockup&quot;&gt;&lt;!-- right --&gt;&lt;/div&gt;
@@ -311,7 +311,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
   &lt;div class=&quot;mockup&quot;&gt;&lt;!-- right --&gt;&lt;/div&gt;
 &lt;/div&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Pros/Cons</h3></div><div class="col-zh" lang="zh-Hant"><h3>優點／缺點</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="proscons">Pros/Cons</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="優點缺點">優點／缺點</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;pros-cons&quot;&gt;
   &lt;div class=&quot;pros&quot;&gt;&lt;h4&gt;Pros&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Benefit&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
   &lt;div class=&quot;cons&quot;&gt;&lt;h4&gt;Cons&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Drawback&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
@@ -321,7 +321,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
   &lt;div class=&quot;cons&quot;&gt;&lt;h4&gt;Cons&lt;/h4&gt;&lt;ul&gt;&lt;li&gt;Drawback&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
 &lt;/div&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Mock elements (wireframe building blocks)</h3></div><div class="col-zh" lang="zh-Hant"><h3>Mock 元素（線框圖建構積木）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="mock-elements-wireframe-building-blocks">Mock elements (wireframe building blocks)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="mock-元素線框圖建構積木">Mock 元素（線框圖建構積木）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-html">&lt;div class=&quot;mock-nav&quot;&gt;Logo | Home | About | Contact&lt;/div&gt;
 &lt;div style=&quot;display: flex;&quot;&gt;
   &lt;div class=&quot;mock-sidebar&quot;&gt;Navigation&lt;/div&gt;
@@ -339,7 +339,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 &lt;input class=&quot;mock-input&quot; placeholder=&quot;Input field&quot;&gt;
 &lt;div class=&quot;placeholder&quot;&gt;Placeholder area&lt;/div&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Typography and sections</h3></div><div class="col-zh" lang="zh-Hant"><h3>排版與區段</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="typography-and-sections">Typography and sections</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="排版與區段">排版與區段</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li><code>h2</code> — page title</li>
 <li><code>h3</code> — section heading</li>
@@ -353,7 +353,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 <li><code>.section</code> ——含底部邊距的內容區塊</li>
 <li><code>.label</code> ——小號大寫標籤文字</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Browser Events Format</h2></div><div class="col-zh" lang="zh-Hant"><h2>瀏覽器事件格式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="browser-events-format">Browser Events Format</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="瀏覽器事件格式">瀏覽器事件格式</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>When the user clicks options in the browser, their interactions are recorded to <code>$STATE_DIR/events</code> (one JSON object per line). The file is cleared automatically when you push a new screen.</p></div><div class="col-zh" lang="zh-Hant"><p>當使用者在瀏覽器中點擊選項時，他們的互動會被記錄到 <code>$STATE_DIR/events</code>（每行一個 JSON 物件）。當你推送新畫面時，檔案會自動清空。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-jsonl">{&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;a&quot;,&quot;text&quot;:&quot;Option A - Simple Layout&quot;,&quot;timestamp&quot;:1706000101}
 {&quot;type&quot;:&quot;click&quot;,&quot;choice&quot;:&quot;c&quot;,&quot;text&quot;:&quot;Option C - Complex Grid&quot;,&quot;timestamp&quot;:1706000108}
@@ -364,7 +364,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The full event stream shows the user's exploration path — they may click multiple options before settling. The last <code>choice</code> event is typically the final selection, but the pattern of clicks can reveal hesitation or preferences worth asking about.</p></div><div class="col-zh" lang="zh-Hant"><p>完整的事件串流顯示使用者的探索路徑——他們可能先點擊多個選項才定案。最後的 <code>choice</code> 事件通常是最終選取，但點擊模式可以透露出值得追問的猶豫或偏好。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>If <code>$STATE_DIR/events</code> doesn't exist, the user didn't interact with the browser — use only their terminal text.</p></div><div class="col-zh" lang="zh-Hant"><p>若 <code>$STATE_DIR/events</code> 不存在，表示使用者沒有與瀏覽器互動——只使用他們的終端機文字。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Design Tips</h2></div><div class="col-zh" lang="zh-Hant"><h2>設計提示</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="design-tips">Design Tips</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="設計提示">設計提示</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li><strong>Scale fidelity to the question</strong> — wireframes for layout, polish for polish questions</li>
 <li><strong>Explain the question on each page</strong> — "Which layout feels more professional?" not just "Pick one"</li>
@@ -380,7 +380,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 <li><strong>在重要時使用真實內容</strong> ——對攝影作品集，使用真實的圖片（Unsplash）。佔位內容會掩蓋設計問題。</li>
 <li><strong>保持 mockups 簡單</strong> ——聚焦於佈局與結構，而非像素完美的設計</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>File Naming</h2></div><div class="col-zh" lang="zh-Hant"><h2>檔名</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="file-naming">File Naming</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="檔名">檔名</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li>Use semantic names: <code>platform.html</code>, <code>visual-style.html</code>, <code>layout.html</code></li>
 <li>Never reuse filenames — each screen must be a new file</li>
@@ -392,12 +392,12 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 <li>迭代時：加上版本後綴，例如 <code>layout-v2.html</code>、<code>layout-v3.html</code></li>
 <li>伺服器依修改時間提供最新的檔案</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Cleaning Up</h2></div><div class="col-zh" lang="zh-Hant"><h2>清理</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="cleaning-up">Cleaning Up</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="清理">清理</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">scripts/stop-server.sh $SESSION_DIR
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">scripts/stop-server.sh $SESSION_DIR
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>If the session used <code>--project-dir</code>, mockup files persist in <code>.superpowers/brainstorm/</code> for later reference. Only <code>/tmp</code> sessions get deleted on stop.</p></div><div class="col-zh" lang="zh-Hant"><p>若 session 使用了 <code>--project-dir</code>，mockup 檔案會保存在 <code>.superpowers/brainstorm/</code> 中供日後參照。只有 <code>/tmp</code> session 會在停止時被刪除。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>參考文件</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="reference">Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="參考文件">參考文件</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li>Frame template (CSS reference): <code>scripts/frame-template.html</code></li>
 <li>Helper script (client-side): <code>scripts/helper.js</code></li>

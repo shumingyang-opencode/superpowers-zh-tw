@@ -24,11 +24,11 @@
 </table>
 <h1>finishing-a-development-branch</h1>
 <div class="subtitle">全部測過、都綠了之後，決定要合併、發 PR 還是留著。</div>
-<div class="pair"><div class="col-en" lang="en"><h1>Finishing a Development Branch</h1></div><div class="col-zh" lang="zh-Hant"><h1>完成開發分支</h1></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="finishing-a-development-branch">Finishing a Development Branch</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="完成開發分支">完成開發分支</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="overview">Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="總覽">總覽</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> Verify tests → Detect environment → Present options → Execute choice → Clean up.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong> 驗證測試 → 偵測環境 → 呈現選項 → 執行選擇 → 清理。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Announce at start:</strong> "I'm using the finishing-a-development-branch skill to complete this work."</p></div><div class="col-zh" lang="zh-Hant"><p><strong>開始時宣告：</strong> 「我正使用 finishing-a-development-branch 技能來完成這份工作。」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Step 1: Verify Tests</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 1 步：驗證測試</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="step-1-verify-tests">Step 1: Verify Tests</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="第-1-步驗證測試">第 1 步：驗證測試</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Run the project's full test suite (<code>npm test</code> / <code>cargo test</code> / <code>pytest</code> / <code>go test ./...</code>).</p></div><div class="col-zh" lang="zh-Hant"><p>執行專案的完整測試套件（<code>npm test</code> / <code>cargo test</code> / <code>pytest</code> / <code>go test ./...</code>）。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>If tests fail</strong>, report the failures and stop — the menu comes after a green suite:</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果測試失敗</strong>，回報失敗並停止 —— 選單要在測試全綠之後才會出現：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>Tests failing (&lt;N&gt; failures). Must fix before completing:
@@ -39,7 +39,7 @@
 [Show failures]
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>If tests pass:</strong> continue to Step 2.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>如果測試通過：</strong> 繼續到第 2 步。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Step 2: Detect Environment</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 2 步：偵測環境</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="step-2-detect-environment">Step 2: Detect Environment</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="第-2-步偵測環境">第 2 步：偵測環境</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
 GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
 # Capture now, while still inside the workspace — Step 5 changes directory
@@ -103,12 +103,12 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Step 3: Determine Base Branch</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 3 步：決定基礎分支</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="step-3-determine-base-branch">Step 3: Determine Base Branch</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="第-3-步決定基礎分支">第 3 步：決定基礎分支</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The base branch is whatever this work forked from — usually named in the
 plan, the conversation, or the branch's upstream. If it is not already
 known, ask: "This branch split from <your best guess> - is that correct?"
 Confirm before merging: merging into the wrong base is expensive to undo.</p></div><div class="col-zh" lang="zh-Hant"><p>基礎分支是這份工作從中分支出來的來源 —— 通常在計畫、對話或分支的上游中提及。如果尚未得知，請詢問：「這個分支是從 &lt;你的最佳猜測&gt; 分出來的 - 正確嗎？」合併前先確認：合併到錯誤的基礎分支要復原的成本很高。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Step 4: Present Options</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 4 步：呈現選項</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="step-4-present-options">Step 4: Present Options</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="第-4-步呈現選項">第 4 步：呈現選項</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Normal repo and named-branch worktree — present exactly these 3 options:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>一般 repo 與具名分支 worktree —— 呈現恰好這 3 個選項：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>Implementation complete. What would you like to do?
 
@@ -144,8 +144,8 @@ from the list above. Discarding the work happens only in response to your
 human partner explicitly asking for it (see "If your human partner asks to
 discard the work" below). Wait for their answer; the integration decision
 is theirs.</p></div><div class="col-zh" lang="zh-Hant"><p>照原樣呈現選單 —— 精簡，且每個選項都來自上述清單。唯有當你的人工夥伴明確要求時，才會捨棄這份工作成果（見下方「如果你的人工夥伴要求捨棄工作成果」）。等待他們回答；整合的決定權在他們。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Step 5: Execute Choice</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 5 步：執行選擇</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Option 1: Merge Locally</h3></div><div class="col-zh" lang="zh-Hant"><h3>選項 1：在本機合併</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="step-5-execute-choice">Step 5: Execute Choice</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="第-5-步執行選擇">第 5 步：執行選擇</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="option-1-merge-locally">Option 1: Merge Locally</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="選項-1在本機合併">選項 1：在本機合併</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Get main repo root for CWD safety
 MAIN_ROOT=$(git -C &quot;$(git rev-parse --git-common-dir)/..&quot; rev-parse --show-toplevel)
 cd &quot;$MAIN_ROOT&quot;
@@ -177,7 +177,7 @@ delete the branch:</p></div><div class="col-zh" lang="zh-Hant"><p>一旦合併�
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">git branch -d &lt;feature-branch&gt;
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">git branch -d &lt;feature-branch&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Option 2: Push and Create PR</h3></div><div class="col-zh" lang="zh-Hant"><h3>選項 2：Push 並建立 PR</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="option-2-push-and-create-pr">Option 2: Push and Create PR</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="選項-2push-並建立-pr">選項 2：Push 並建立 PR</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">git push -u origin &lt;feature-branch&gt;
 # From a detached HEAD, name the new branch on the remote:
 # git push origin HEAD:refs/heads/&lt;new-branch&gt;
@@ -190,9 +190,9 @@ tooling — its CLI if one is available, or the creation URL most forges
 print when you push — following the repo's PR template and conventions if
 present, and report the URL to your human partner.</p></div><div class="col-zh" lang="zh-Hant"><p>接著對 <base-branch> 建立 pull/merge request，使用 forge 的工具 —— 若有 CLI 就用 CLI，否則用多數 forge 在 push 時列印的建立 URL —— 遵循 repo 的 PR 範本與慣例（若有的話），並把 URL 回報給你的人工夥伴。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Keep the worktree — your human partner iterates on PR feedback there.</p></div><div class="col-zh" lang="zh-Hant"><p>保留 worktree —— 你的人工夥伴會在那裡處理 PR 回饋。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Option 3: Keep As-Is</h3></div><div class="col-zh" lang="zh-Hant"><h3>選項 3：維持原狀</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="option-3-keep-as-is">Option 3: Keep As-Is</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="選項-3維持原狀">選項 3：維持原狀</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Report: "Keeping branch <name>. Worktree preserved at <path>."</p></div><div class="col-zh" lang="zh-Hant"><p>回報：「保留分支 <name>。Worktree 保留於 <path>。」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>If your human partner asks to discard the work</h3></div><div class="col-zh" lang="zh-Hant"><h3>如果你的人工夥伴要求捨棄工作成果</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="if-your-human-partner-asks-to-discard-the-work">If your human partner asks to discard the work</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="如果你的人工夥伴要求捨棄工作成果">如果你的人工夥伴要求捨棄工作成果</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>This path exists only as a response to an explicit request to throw the
 work away. Confirm first:</p></div><div class="col-zh" lang="zh-Hant"><p>這條路徑只存在於對「丟掉這份工作」的明確請求的回應。先確認：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>This will permanently delete:
@@ -218,7 +218,7 @@ cd &quot;$MAIN_ROOT&quot;
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">git branch -D &lt;feature-branch&gt;
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">git branch -D &lt;feature-branch&gt;
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Step 6: Cleanup Workspace</h2></div><div class="col-zh" lang="zh-Hant"><h2>第 6 步：清理工作區</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="step-6-cleanup-workspace">Step 6: Cleanup Workspace</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="第-6-步清理工作區">第 6 步：清理工作區</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Runs for Option 1 and confirmed discards.</strong> Options 2 and 3 always
 preserve the worktree. Both callers have already changed directory to the
 main repo root — worktree removal must run from outside the worktree —
@@ -234,7 +234,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Otherwise:</strong> The host environment owns this workspace — leave it in
 place. If your platform provides a workspace-exit tool, use it.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>否則：</strong> 主環境擁有這個工作區 —— 保留原位。如果你的平台提供 workspace-exit 工具，請使用它。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2>快速參考</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="quick-reference">Quick Reference</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="快速參考">快速參考</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -316,7 +316,7 @@ place. If your platform provides a workspace-exit tool, use it.</p></div><div cl
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2>常見合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-rationalizations">Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="常見合理化藉口">常見合理化藉口</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>

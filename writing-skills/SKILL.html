@@ -25,19 +25,19 @@
 <h1>writing-skills</h1>
 <div class="subtitle">怎麼寫、怎麼測、怎麼部署一個技能——寫技能本身也是 TDD。</div>
 <div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="anthropic-best-practices.html">anthropic-best-practices</a>　·　<a href="testing-skills-with-subagents.html">testing-skills-with-subagents</a>　·　<a href="persuasion-principles.html">persuasion-principles</a></div>
-<div class="pair"><div class="col-en" lang="en"><h1>Writing Skills</h1></div><div class="col-zh" lang="zh-Hant"><h1>撰寫技能</h1></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2>總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="writing-skills">Writing Skills</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="撰寫技能">撰寫技能</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="overview">Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="總覽">總覽</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Writing skills IS Test-Driven Development applied to process documentation.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>撰寫技能，就是將測試驅動開發應用於流程文件。</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Personal skills live in your runtime's skills directory</strong> (<code>~/.claude/skills/</code> on Claude Code) — see <a href="../using-superpowers/references/codex-tools.html">codex-tools.md</a> or <a href="../using-superpowers/references/gemini-tools.html">gemini-tools.md</a> for the path on those runtimes. Codex, Copilot CLI, and Gemini CLI all also recognize <code>~/.agents/skills/</code> as a cross-runtime alias.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>個人技能存放於你執行環境的 skills 目錄</strong>（Claude Code 是 <code>~/.claude/skills/</code>）——其他執行環境的路徑請見 <a href="../using-superpowers/references/codex-tools.html">codex-tools.md</a> 或 <a href="../using-superpowers/references/gemini-tools.html">gemini-tools.md</a>。Codex、Copilot CLI 與 Gemini CLI 也都能辨識 <code>~/.agents/skills/</code> 作為跨執行環境的別名。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>You write test cases (pressure scenarios with subagents), watch them fail (baseline behavior), write the skill (documentation), watch tests pass (agents comply), and refactor (close loopholes).</p></div><div class="col-zh" lang="zh-Hant"><p>你撰寫測試案例（搭配子代理的壓力情境）、觀察其失敗（基線行為）、撰寫技能（文件）、觀察測試通過（代理遵從），然後重構（關閉漏洞）。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>核心原則：</strong>如果你沒有看過代理在沒有技能時失敗，你就不會知道該技能是否教對了事情。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>REQUIRED BACKGROUND:</strong> You MUST understand superpowers:test-driven-development before using this skill. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill adapts TDD to documentation.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>必備背景：</strong>使用本技能前，你必須先理解 superpowers:test-driven-development。該技能定義了根本的紅 → 綠 → 重構循環。本技能將 TDD 應用於文件撰寫。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Official guidance:</strong> For Anthropic's official skill authoring best practices, see anthropic-best-practices.md. This document provides additional patterns and guidelines that complement the TDD-focused approach in this skill.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>官方指引：</strong>關於 Anthropic 官方的技能撰寫最佳實務，請見 anthropic-best-practices.md。該文件提供與本技能 TDD 導向方法互補的額外模式與準則。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>What is a Skill?</h2></div><div class="col-zh" lang="zh-Hant"><h2>什麼是技能？</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="what-is-a-skill">What is a Skill?</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="什麼是技能">什麼是技能？</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>A <strong>skill</strong> is a reference guide for proven techniques, patterns, or tools. Skills help future agents find and apply effective approaches.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>技能</strong>是針對經過驗證的技術、模式或工具的參考指南。技能幫助未來的代理找到並套用有效的方法。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Skills are:</strong> Reusable techniques, patterns, tools, reference guides</p></div><div class="col-zh" lang="zh-Hant"><p><strong>技能是：</strong>可重用的技術、模式、工具、參考指南</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Skills are NOT:</strong> Narratives about how you solved a problem once</p></div><div class="col-zh" lang="zh-Hant"><p><strong>技能不是：</strong>關於你曾如何解決某個問題的敘事</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>TDD Mapping for Skills</h2></div><div class="col-zh" lang="zh-Hant"><h2>技能的 TDD 對應</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="tdd-mapping-for-skills">TDD Mapping for Skills</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="技能的-tdd-對應">技能的 TDD 對應</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -138,7 +138,7 @@
 </tbody>
 </table></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The entire skill creation process follows RED-GREEN-REFACTOR.</p></div><div class="col-zh" lang="zh-Hant"><p>整個技能建立流程都遵循紅 → 綠 → 重構。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>When to Create a Skill</h2></div><div class="col-zh" lang="zh-Hant"><h2>何時建立技能</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-create-a-skill">When to Create a Skill</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時建立技能">何時建立技能</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Create when:</strong>
 - Technique wasn't intuitively obvious to you
 - You'd reference this again across projects
@@ -157,17 +157,17 @@
 - 其他地方已有良好文件記載的標準做法
 - 專案特定的慣例（放進你的 instructions 檔案）
 - 機械性限制（若能用 regex／驗證強制執行，就自動化它——把文件留給需要判斷的情境）</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Skill Types</h2></div><div class="col-zh" lang="zh-Hant"><h2>技能類型</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Technique</h3>
-<p>Concrete method with steps to follow (condition-based-waiting, root-cause-tracing)</p></div><div class="col-zh" lang="zh-Hant"><h3>技術</h3>
+<div class="pair"><div class="col-en" lang="en"><h2 id="skill-types">Skill Types</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="技能類型">技能類型</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="technique">Technique</h3>
+<p>Concrete method with steps to follow (condition-based-waiting, root-cause-tracing)</p></div><div class="col-zh" lang="zh-Hant"><h3 id="技術">技術</h3>
 <p>有步驟可循的具體方法（condition-based-waiting、root-cause-tracing）</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Pattern</h3>
-<p>Way of thinking about problems (flatten-with-flags, test-invariants)</p></div><div class="col-zh" lang="zh-Hant"><h3>模式</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="pattern">Pattern</h3>
+<p>Way of thinking about problems (flatten-with-flags, test-invariants)</p></div><div class="col-zh" lang="zh-Hant"><h3 id="模式">模式</h3>
 <p>思考問題的方式（flatten-with-flags、test-invariants）</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Reference</h3>
-<p>API docs, syntax guides, tool documentation (office docs)</p></div><div class="col-zh" lang="zh-Hant"><h3>參考文件</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="reference">Reference</h3>
+<p>API docs, syntax guides, tool documentation (office docs)</p></div><div class="col-zh" lang="zh-Hant"><h3 id="參考文件">參考文件</h3>
 <p>API 文件、語法指南、工具文件（office docs）</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Directory Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2>目錄結構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="directory-structure">Directory Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="目錄結構">目錄結構</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>skills/
   skill-name/
     SKILL.md              # Main reference (required)
@@ -190,7 +190,7 @@
 - 原則與概念
 - 程式碼模式（50 行以內）
 - 其他所有內容</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>SKILL.md Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2>SKILL.md 結構</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="skillmd-structure">SKILL.md Structure</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="skillmd-結構">SKILL.md 結構</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Frontmatter (YAML):</strong>
 - Two required fields: <code>name</code> and <code>description</code> (see <a href="https://agentskills.io/specification">agentskills.io/specification</a> for all supported fields)
 - Max 1024 characters total
@@ -271,9 +271,9 @@ What goes wrong + fixes
 ## Real-World Impact (optional)
 Concrete results
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Skill Discovery Optimization (SDO)</h2></div><div class="col-zh" lang="zh-Hant"><h2>技能探索最佳化（SDO）</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="skill-discovery-optimization-sdo">Skill Discovery Optimization (SDO)</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="技能探索最佳化sdo">技能探索最佳化（SDO）</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Critical for discovery:</strong> Future agents need to FIND your skill</p></div><div class="col-zh" lang="zh-Hant"><p><strong>對探索至關重要：</strong>未來的代理需要「找到」你的技能</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>1. Rich Description Field</h3></div><div class="col-zh" lang="zh-Hant"><h3>1. 豐富的 description 欄位</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="1-rich-description-field">1. Rich Description Field</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="1-豐富的-description-欄位">1. 豐富的 description 欄位</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Purpose:</strong> Your agent reads the description to decide which skills to load for a given task. Make it answer: "Should I read this skill right now?"</p></div><div class="col-zh" lang="zh-Hant"><p><strong>目的：</strong>你的代理會閱讀 description 來決定要為某個任務載入哪些技能。讓它能回答：「我現在該讀這個技能嗎？」</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Format:</strong> Start with "Use when..." to focus on triggering conditions</p></div><div class="col-zh" lang="zh-Hant"><p><strong>格式：</strong>以「Use when...」開頭，聚焦於觸發條件</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>CRITICAL: Description = When to Use, NOT What the Skill Does</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>關鍵：Description 是「何時使用」，不是「技能做什麼」</strong></p></div></div>
@@ -346,7 +346,7 @@ description: Use when tests have race conditions, timing dependencies, or pass/f
 # ✅ GOOD: Technology-specific skill with explicit trigger
 description: Use when using React Router and handling authentication redirects
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>2. Keyword Coverage</h3></div><div class="col-zh" lang="zh-Hant"><h3>2. 關鍵字涵蓋</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="2-keyword-coverage">2. Keyword Coverage</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="2-關鍵字涵蓋">2. 關鍵字涵蓋</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Use words an agent would search for:
 - Error messages: "Hook timed out", "ENOTEMPTY", "race condition"
 - Symptoms: "flaky", "hanging", "zombie", "pollution"
@@ -356,13 +356,13 @@ description: Use when using React Router and handling authentication redirects
 - 症狀：「flaky」、「hanging」、「zombie」、「pollution」
 - 同義詞：「timeout/hang/freeze」、「cleanup/teardown/afterEach」
 - 工具：實際指令、函式庫名稱、檔案類型</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>3. Descriptive Naming</h3></div><div class="col-zh" lang="zh-Hant"><h3>3. 具描述性的命名</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="3-descriptive-naming">3. Descriptive Naming</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="3-具描述性的命名">3. 具描述性的命名</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Use active voice, verb-first:</strong>
 - ✅ <code>creating-skills</code> not <code>skill-creation</code>
 - ✅ <code>condition-based-waiting</code> not <code>async-test-helpers</code></p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用主動語氣、動詞開頭：</strong>
 - ✅ <code>creating-skills</code> 而非 <code>skill-creation</code>
 - ✅ <code>condition-based-waiting</code> 而非 <code>async-test-helpers</code></p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>4. Token Efficiency (Critical)</h3></div><div class="col-zh" lang="zh-Hant"><h3>4. Tokens 效率（關鍵）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="4-token-efficiency-critical">4. Token Efficiency (Critical)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="4-tokens-效率關鍵">4. Tokens 效率（關鍵）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Problem:</strong> getting-started and frequently-referenced skills load into EVERY conversation. Every token counts.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>問題：</strong>getting-started 與常被參考的技能會載入到每一段對話中。每個 tokens 都很重要。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Target word counts:</strong>
 - getting-started workflows: &lt;150 words each
@@ -374,46 +374,46 @@ description: Use when using React Router and handling authentication redirects
 <div class="pair"><div class="col-en" lang="en"><p><strong>Techniques:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>技巧：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Move details to tool help:</strong>
 ```bash</p>
-<h1>❌ BAD: Document all flags in SKILL.md</h1>
+<h1 id="bad-document-all-flags-in-skillmd">❌ BAD: Document all flags in SKILL.md</h1>
 <p>search-conversations supports --text, --both, --after DATE, --before DATE, --limit N</p></div><div class="col-zh" lang="zh-Hant"><p><strong>把細節移到工具說明（--help）：</strong>
 ```bash</p>
-<h1>❌ BAD: Document all flags in SKILL.md</h1>
+<h1 id="bad-document-all-flags-in-skillmd">❌ BAD: Document all flags in SKILL.md</h1>
 <p>search-conversations supports --text, --both, --after DATE, --before DATE, --limit N</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h1>✅ GOOD: Reference --help</h1>
+<div class="pair"><div class="col-en" lang="en"><h1 id="good-reference-help">✅ GOOD: Reference --help</h1>
 <p>search-conversations supports multiple modes and filters. Run --help for details.
-```</p></div><div class="col-zh" lang="zh-Hant"><h1>✅ GOOD: Reference --help</h1>
+```</p></div><div class="col-zh" lang="zh-Hant"><h1 id="good-reference-help">✅ GOOD: Reference --help</h1>
 <p>search-conversations supports multiple modes and filters. Run --help for details.
 ```</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Use cross-references:</strong>
 ```markdown</p>
-<h1>❌ BAD: Repeat workflow details</h1>
+<h1 id="bad-repeat-workflow-details">❌ BAD: Repeat workflow details</h1>
 <p>When searching, dispatch subagent with template...
 [20 lines of repeated instructions]</p></div><div class="col-zh" lang="zh-Hant"><p><strong>使用交叉參考：</strong>
 ```markdown</p>
-<h1>❌ BAD: Repeat workflow details</h1>
+<h1 id="bad-repeat-workflow-details">❌ BAD: Repeat workflow details</h1>
 <p>When searching, dispatch subagent with template...
 [20 lines of repeated instructions]</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h1>✅ GOOD: Reference other skill</h1>
+<div class="pair"><div class="col-en" lang="en"><h1 id="good-reference-other-skill">✅ GOOD: Reference other skill</h1>
 <p>Always use subagents (50-100x context savings). REQUIRED: Use [other-skill-name] for workflow.
-```</p></div><div class="col-zh" lang="zh-Hant"><h1>✅ GOOD: Reference other skill</h1>
+```</p></div><div class="col-zh" lang="zh-Hant"><h1 id="good-reference-other-skill">✅ GOOD: Reference other skill</h1>
 <p>Always use subagents (50-100x context savings). REQUIRED: Use [other-skill-name] for workflow.
 ```</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Compress examples:</strong>
 ```markdown</p>
-<h1>❌ BAD: Verbose example (42 words)</h1>
+<h1 id="bad-verbose-example-42-words">❌ BAD: Verbose example (42 words)</h1>
 <p>your human partner: "How did we handle authentication errors in React Router before?"
 You: I'll search past conversations for React Router authentication patterns.
 [Dispatch subagent with search query: "React Router authentication error handling 401"]</p></div><div class="col-zh" lang="zh-Hant"><p><strong>壓縮範例：</strong>
 ```markdown</p>
-<h1>❌ BAD: Verbose example (42 words)</h1>
+<h1 id="bad-verbose-example-42-words">❌ BAD: Verbose example (42 words)</h1>
 <p>your human partner: "How did we handle authentication errors in React Router before?"
 You: I'll search past conversations for React Router authentication patterns.
 [Dispatch subagent with search query: "React Router authentication error handling 401"]</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h1>✅ GOOD: Minimal example (20 words)</h1>
+<div class="pair"><div class="col-en" lang="en"><h1 id="good-minimal-example-20-words">✅ GOOD: Minimal example (20 words)</h1>
 <p>Partner: "How did we handle auth errors in React Router?"
 You: Searching...
 [Dispatch subagent → synthesis]
-```</p></div><div class="col-zh" lang="zh-Hant"><h1>✅ GOOD: Minimal example (20 words)</h1>
+```</p></div><div class="col-zh" lang="zh-Hant"><h1 id="good-minimal-example-20-words">✅ GOOD: Minimal example (20 words)</h1>
 <p>Partner: "How did we handle auth errors in React Router?"
 You: Searching...
 [Dispatch subagent → synthesis]
@@ -448,7 +448,7 @@ You: Searching...
 - Active, describes the action you're taking</p></div><div class="col-zh" lang="zh-Hant"><p><strong>動名詞（-ing）很適合流程：</strong>
 - <code>creating-skills</code>、<code>testing-skills</code>、<code>debugging-with-logs</code>
 - 主動，描述你正在採取的行動</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>5. Cross-Referencing Other Skills</h3></div><div class="col-zh" lang="zh-Hant"><h3>5. 交叉參考其他技能</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="5-cross-referencing-other-skills">5. Cross-Referencing Other Skills</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="5-交叉參考其他技能">5. 交叉參考其他技能</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>When writing documentation that references other skills:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>當撰寫會參考其他技能的文件時：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Use skill name only, with explicit requirement markers:
 - ✅ Good: <code>**REQUIRED SUB-SKILL:** Use superpowers:test-driven-development</code>
@@ -460,7 +460,7 @@ You: Searching...
 - ❌ 差：<code>See skills/testing/test-driven-development</code>（不清楚是否必備）
 - ❌ 差：<code>@skills/testing/test-driven-development/SKILL.md</code>（強制載入，消耗上下文）</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Why no @ links:</strong> <code>@</code> syntax force-loads files immediately, consuming 200k+ context before you need them.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>為什麼不用 @ 連結：</strong><code>@</code> 語法會立即強制載入檔案，在你真正需要之前就消耗 200k+ 的上下文。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Flowchart Usage</h2></div><div class="col-zh" lang="zh-Hant"><h2>流程圖的使用時機</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="flowchart-usage">Flowchart Usage</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="流程圖的使用時機">流程圖的使用時機</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph when_flowchart {
     &quot;Need to show information?&quot; [shape=diamond];
     &quot;Decision where I might go wrong?&quot; [shape=diamond];
@@ -506,7 +506,7 @@ You: Searching...
 <pre><code class="language-bash">./render-graphs.js ../some-skill           # Each diagram separately
 ./render-graphs.js ../some-skill --combine # All diagrams in one SVG
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Code Examples</h2></div><div class="col-zh" lang="zh-Hant"><h2>程式碼範例</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="code-examples">Code Examples</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="程式碼範例">程式碼範例</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>One excellent example beats many mediocre ones</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>一個優質範例勝過多個平庸範例</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Choose most relevant language:
 - Testing techniques → TypeScript/JavaScript
@@ -534,35 +534,35 @@ You: Searching...
 - 建立填空式範本
 - 寫刻意造作的範例</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>You're good at porting - one great example is enough.</p></div><div class="col-zh" lang="zh-Hant"><p>你擅長移植——一個好範例就夠了。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>File Organization</h2></div><div class="col-zh" lang="zh-Hant"><h2>檔案組織</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Self-Contained Skill</h3>
+<div class="pair"><div class="col-en" lang="en"><h2 id="file-organization">File Organization</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="檔案組織">檔案組織</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="self-contained-skill">Self-Contained Skill</h3>
 <pre><code>defense-in-depth/
   SKILL.md    # Everything inline
 </code></pre>
-<p>When: All content fits, no heavy reference needed</p></div><div class="col-zh" lang="zh-Hant"><h3>自足的技能</h3>
+<p>When: All content fits, no heavy reference needed</p></div><div class="col-zh" lang="zh-Hant"><h3 id="自足的技能">自足的技能</h3>
 <pre><code>defense-in-depth/
   SKILL.md    # Everything inline
 </code></pre>
 <p>適用時機：所有內容都能容納，不需要重量級參考文件</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Skill with Reusable Tool</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="skill-with-reusable-tool">Skill with Reusable Tool</h3>
 <pre><code>condition-based-waiting/
   SKILL.md    # Overview + patterns
   example.ts  # Working helpers to adapt
 </code></pre>
-<p>When: Tool is reusable code, not just narrative</p></div><div class="col-zh" lang="zh-Hant"><h3>含可重用工具的技能</h3>
+<p>When: Tool is reusable code, not just narrative</p></div><div class="col-zh" lang="zh-Hant"><h3 id="含可重用工具的技能">含可重用工具的技能</h3>
 <pre><code>condition-based-waiting/
   SKILL.md    # Overview + patterns
   example.ts  # Working helpers to adapt
 </code></pre>
 <p>適用時機：工具是可重用的程式碼，而不只是敘述</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Skill with Heavy Reference</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="skill-with-heavy-reference">Skill with Heavy Reference</h3>
 <pre><code>pptx/
   SKILL.md       # Overview + workflows
   pptxgenjs.md   # 600 lines API reference
   ooxml.md       # 500 lines XML structure
   scripts/       # Executable tools
 </code></pre>
-<p>When: Reference material too large for inline</p></div><div class="col-zh" lang="zh-Hant"><h3>含重量級參考文件的技能</h3>
+<p>When: Reference material too large for inline</p></div><div class="col-zh" lang="zh-Hant"><h3 id="含重量級參考文件的技能">含重量級參考文件的技能</h3>
 <pre><code>pptx/
   SKILL.md       # Overview + workflows
   pptxgenjs.md   # 600 lines API reference
@@ -570,7 +570,7 @@ You: Searching...
   scripts/       # Executable tools
 </code></pre>
 <p>適用時機：參考資料太大無法內嵌</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>The Iron Law (Same as TDD)</h2></div><div class="col-zh" lang="zh-Hant"><h2>鐵則（與 TDD 相同）</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-iron-law-same-as-tdd">The Iron Law (Same as TDD)</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="鐵則與-tdd-相同">鐵則（與 TDD 相同）</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>NO SKILL WITHOUT A FAILING TEST FIRST
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>NO SKILL WITHOUT A FAILING TEST FIRST
 </code></pre></div></div>
@@ -592,9 +592,9 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 不要在跑測試時「順便調整」
 - 刪除就是刪除</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>REQUIRED BACKGROUND:</strong> The superpowers:test-driven-development skill explains why this matters. Same principles apply to documentation.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>必備背景：</strong>superpowers:test-driven-development 技能解釋了這為何重要。同樣的原則也適用於文件。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Testing All Skill Types</h2></div><div class="col-zh" lang="zh-Hant"><h2>測試所有技能類型</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="testing-all-skill-types">Testing All Skill Types</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="測試所有技能類型">測試所有技能類型</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Different skill types need different test approaches:</p></div><div class="col-zh" lang="zh-Hant"><p>不同類型的技能需要不同的測試方法：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Discipline-Enforcing Skills (rules/requirements)</h3></div><div class="col-zh" lang="zh-Hant"><h3>紀律執行類技能（規則／需求）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="discipline-enforcing-skills-rulesrequirements">Discipline-Enforcing Skills (rules/requirements)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="紀律執行類技能規則需求">紀律執行類技能（規則／需求）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Examples:</strong> TDD, verification-before-completion, designing-before-coding</p></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong>TDD、verification-before-completion、designing-before-coding</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Test with:</strong>
 - Academic questions: Do they understand the rules?
@@ -606,7 +606,7 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 多重壓力組合：時間 + 沉沒成本 + 疲勞
 - 找出合理化藉口並加入明確的反制</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Success criteria:</strong> Agent follows rule under maximum pressure</p></div><div class="col-zh" lang="zh-Hant"><p><strong>成功準則：</strong>代理在最大壓力下遵循規則</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Technique Skills (how-to guides)</h3></div><div class="col-zh" lang="zh-Hant"><h3>技術類技能（how-to 指南）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="technique-skills-how-to-guides">Technique Skills (how-to guides)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="技術類技能how-to-指南">技術類技能（how-to 指南）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Examples:</strong> condition-based-waiting, root-cause-tracing, defensive-programming</p></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong>condition-based-waiting、root-cause-tracing、defensive-programming</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Test with:</strong>
 - Application scenarios: Can they apply the technique correctly?
@@ -616,7 +616,7 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 變異情境：他們能處理邊界情況嗎？
 - 資訊缺漏測試：指令有缺口嗎？</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Success criteria:</strong> Agent successfully applies technique to new scenario</p></div><div class="col-zh" lang="zh-Hant"><p><strong>成功準則：</strong>代理能成功將技術套用在新情境</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Pattern Skills (mental models)</h3></div><div class="col-zh" lang="zh-Hant"><h3>模式類技能（心智模型）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="pattern-skills-mental-models">Pattern Skills (mental models)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="模式類技能心智模型">模式類技能（心智模型）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Examples:</strong> reducing-complexity, information-hiding concepts</p></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong>reducing-complexity、information-hiding 概念</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Test with:</strong>
 - Recognition scenarios: Do they recognize when pattern applies?
@@ -626,7 +626,7 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 應用情境：他們能使用這個心智模型嗎？
 - 反例：他們知道何時「不該」套用嗎？</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Success criteria:</strong> Agent correctly identifies when/how to apply pattern</p></div><div class="col-zh" lang="zh-Hant"><p><strong>成功準則：</strong>代理能正確判斷何時／如何套用模式</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Reference Skills (documentation/APIs)</h3></div><div class="col-zh" lang="zh-Hant"><h3>參考文件類技能（文件／API）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="reference-skills-documentationapis">Reference Skills (documentation/APIs)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="參考文件類技能文件api">參考文件類技能（文件／API）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Examples:</strong> API documentation, command references, library guides</p></div><div class="col-zh" lang="zh-Hant"><p><strong>範例：</strong>API 文件、指令參考、函式庫指南</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Test with:</strong>
 - Retrieval scenarios: Can they find the right information?
@@ -636,7 +636,7 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 應用情境：他們能正確使用找到的資訊嗎？
 - 缺口測試：常見使用案例都有涵蓋嗎？</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Success criteria:</strong> Agent finds and correctly applies reference information</p></div><div class="col-zh" lang="zh-Hant"><p><strong>成功準則：</strong>代理能找到並正確套用參考資訊</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Common Rationalizations for Skipping Testing</h2></div><div class="col-zh" lang="zh-Hant"><h2>跳過測試的常見合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-rationalizations-for-skipping-testing">Common Rationalizations for Skipping Testing</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="跳過測試的常見合理化藉口">跳過測試的常見合理化藉口</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
@@ -721,7 +721,7 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 </tbody>
 </table></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>All of these mean: Test before deploying. No exceptions.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>這些全都意味著：部署前先測試。沒有例外。</strong></p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Match the Form to the Failure</h2></div><div class="col-zh" lang="zh-Hant"><h2>讓形式對應失敗類型</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="match-the-form-to-the-failure">Match the Form to the Failure</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="讓形式對應失敗類型">讓形式對應失敗類型</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Before writing guidance, classify the baseline failure. The form that bulletproofs one failure type measurably backfires on another.</p></div><div class="col-zh" lang="zh-Hant"><p>在撰寫指引之前，先分類基線失敗。能讓某一種失敗類型防彈的形式，在另一種失敗上會明顯反噬。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
@@ -790,11 +790,11 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - <strong>Exemption clauses don't scope.</strong> "This limit doesn't apply to code blocks" still suppresses code blocks. If part of the output must be exempt, restructure so the rule can't reach it.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>無論你選擇哪種形式，都要遵守這些規則：</strong>
 - <strong>不要加入細微差異條款。</strong>「除非事關重大，否則不要做 X」會重新開啟討價還價——在同樣的措辭測試中，在一個勝出的配方後加上一條細微差異條款，就把它從穩定退化為雜訊。真正的例外要表達成一個以可觀察謂詞為條件的獨立條件式。
 - <strong>豁免條款不會限縮範圍。</strong>「這個限制不適用於程式碼區塊」仍然會壓抑程式碼區塊。如果輸出的某部分必須被豁免，就重新結構，讓規則碰不到它。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Bulletproofing Skills Against Rationalization</h2></div><div class="col-zh" lang="zh-Hant"><h2>讓技能對抗合理化藉口（防彈化）</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="bulletproofing-skills-against-rationalization">Bulletproofing Skills Against Rationalization</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="讓技能對抗合理化藉口防彈化">讓技能對抗合理化藉口（防彈化）</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Skills that enforce discipline (like TDD) need to resist rationalization. Agents are smart and will find loopholes when under pressure.</p></div><div class="col-zh" lang="zh-Hant"><p>執行紀律的技能（如 TDD）必須抵禦合理化藉口。代理很聰明，在壓力下會找出漏洞。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Scope:</strong> this toolkit is for discipline failures — an agent that knows the rule and skips it under pressure. For wrong-shaped output or omitted elements, prohibition-based bulletproofing backfires; use the forms in Match the Form to the Failure instead.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>適用範圍：</strong>這套工具是針對紀律失敗——代理知道規則卻在壓力下跳過它。若是形狀錯誤的輸出或缺漏元素，以禁令為基礎的防彈化會反噬；請改用「讓形式對應失敗類型」中的形式。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Psychology note:</strong> Understanding WHY persuasion techniques work helps you apply them systematically. See persuasion-principles.md for research foundation (Cialdini, 2021; Meincke et al., 2025) on authority, commitment, scarcity, social proof, and unity principles.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>心理學備註：</strong>理解說服技巧為何有效，有助於你系統化地應用它們。權威、承諾、稀缺、社會認同與團結原則的研究基礎（Cialdini, 2021；Meincke 等人, 2025），請見 persuasion-principles.md。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Close Every Loophole Explicitly</h3></div><div class="col-zh" lang="zh-Hant"><h3>明確關閉每個漏洞</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="close-every-loophole-explicitly">Close Every Loophole Explicitly</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="明確關閉每個漏洞">明確關閉每個漏洞</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Don't just state the rule - forbid specific workarounds:</p></div><div class="col-zh" lang="zh-Hant"><p>不要只是陳述規則——要禁止特定的變通做法：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><Bad></p>
 <pre><code class="language-markdown">Write code before test? Delete it.
@@ -822,13 +822,13 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - Delete means delete
 </code></pre>
 <p></Good></p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Address "Spirit vs Letter" Arguments</h3></div><div class="col-zh" lang="zh-Hant"><h3>處理「精神 vs 字面」的辯解</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="address-spirit-vs-letter-arguments">Address "Spirit vs Letter" Arguments</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="處理精神-vs-字面的辯解">處理「精神 vs 字面」的辯解</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Add foundational principle early:</p></div><div class="col-zh" lang="zh-Hant"><p>及早加入基本原則：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-markdown">**Violating the letter of the rules is violating the spirit of the rules.**
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-markdown">**Violating the letter of the rules is violating the spirit of the rules.**
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>This cuts off entire class of "I'm following the spirit" rationalizations.</p></div><div class="col-zh" lang="zh-Hant"><p>這會切斷一整類「我遵循的是精神」的合理化藉口。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Build Rationalization Table</h3></div><div class="col-zh" lang="zh-Hant"><h3>建立合理化藉口表</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="build-rationalization-table">Build Rationalization Table</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="建立合理化藉口表">建立合理化藉口表</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Capture rationalizations from baseline testing (see Testing section below). Every excuse agents make goes in the table:</p></div><div class="col-zh" lang="zh-Hant"><p>捕捉基線測試中的合理化藉口（見下方測試小節）。代理說的每個藉口都要進到這張表：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-markdown">| Excuse | Reality |
 |--------|---------|
@@ -841,7 +841,7 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 | &quot;I'll test after&quot; | Tests passing immediately prove nothing. |
 | &quot;Tests after achieve same goals&quot; | Tests-after = &quot;what does this do?&quot; Tests-first = &quot;what should this do?&quot; |
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Create Red Flags List</h3></div><div class="col-zh" lang="zh-Hant"><h3>建立紅旗清單</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="create-red-flags-list">Create Red Flags List</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="建立紅旗清單">建立紅旗清單</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Make it easy for agents to self-check when rationalizing:</p></div><div class="col-zh" lang="zh-Hant"><p>讓代理在合理化時能輕鬆自我檢查：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-markdown">## Red Flags - STOP and Start Over
 
@@ -862,14 +862,14 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 
 **All of these mean: Delete code. Start over with TDD.**
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Update SDO for Violation Symptoms</h3></div><div class="col-zh" lang="zh-Hant"><h3>為違規症狀更新 SDO</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="update-sdo-for-violation-symptoms">Update SDO for Violation Symptoms</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="為違規症狀更新-sdo">為違規症狀更新 SDO</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Add to description: symptoms of when you're ABOUT to violate the rule:</p></div><div class="col-zh" lang="zh-Hant"><p>在 description 中加入：你「即將」違規時的症狀：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-yaml">description: use when implementing any feature or bugfix, before writing implementation code
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-yaml">description: use when implementing any feature or bugfix, before writing implementation code
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>RED-GREEN-REFACTOR for Skills</h2></div><div class="col-zh" lang="zh-Hant"><h2>紅 → 綠 → 重構：適用於技能</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="red-green-refactor-for-skills">RED-GREEN-REFACTOR for Skills</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="紅-綠-重構適用於技能">紅 → 綠 → 重構：適用於技能</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Follow the TDD cycle:</p></div><div class="col-zh" lang="zh-Hant"><p>遵循 TDD 循環：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>RED: Write Failing Test (Baseline)</h3></div><div class="col-zh" lang="zh-Hant"><h3>紅：撰寫失敗的測試（基線）</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="red-write-failing-test-baseline">RED: Write Failing Test (Baseline)</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="紅撰寫失敗的測試基線">紅：撰寫失敗的測試（基線）</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Run pressure scenario with subagent WITHOUT the skill. Document exact behavior:
 - What choices did they make?
 - What rationalizations did they use (verbatim)?
@@ -878,12 +878,12 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 他們用了什麼合理化藉口（逐字）？
 - 哪些壓力觸發了違規？</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>This is "watch the test fail" - you must see what agents naturally do before writing the skill.</p></div><div class="col-zh" lang="zh-Hant"><p>這就是「觀察測試失敗」——你必須在撰寫技能前，先看到代理自然會怎麼做。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>GREEN: Write Minimal Skill</h3></div><div class="col-zh" lang="zh-Hant"><h3>綠：撰寫最小技能</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="green-write-minimal-skill">GREEN: Write Minimal Skill</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="綠撰寫最小技能">綠：撰寫最小技能</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Write skill that addresses those specific rationalizations. Don't add extra content for hypothetical cases.</p></div><div class="col-zh" lang="zh-Hant"><p>撰寫能處理那些特定合理化藉口的技能。不要為假設性情境加入額外內容。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Run same scenarios WITH skill. Agent should now comply.</p></div><div class="col-zh" lang="zh-Hant"><p>在有技能的情況下重新執行同樣的情境。代理現在應該會遵從。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>REFACTOR: Close Loopholes</h3></div><div class="col-zh" lang="zh-Hant"><h3>重構：關閉漏洞</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="refactor-close-loopholes">REFACTOR: Close Loopholes</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="重構關閉漏洞">重構：關閉漏洞</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Agent found new rationalization? Add explicit counter. Re-test until bulletproof.</p></div><div class="col-zh" lang="zh-Hant"><p>代理找到新的合理化藉口？加入明確的反制。重新測試直到防彈。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>Micro-Test Wording Before Full Scenarios</h3></div><div class="col-zh" lang="zh-Hant"><h3>在完整情境前先用微型測試驗證措辭</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="micro-test-wording-before-full-scenarios">Micro-Test Wording Before Full Scenarios</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="在完整情境前先用微型測試驗證措辭">在完整情境前先用微型測試驗證措辭</h3></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Full pressure-scenario runs are the final gate, but they are slow and expensive per iteration. Verify the wording itself first with micro-tests:</p></div><div class="col-zh" lang="zh-Hant"><p>完整的壓力情境測試是最終關卡，但每次疊代都很慢又昂貴。先用微型測試驗證措辭本身：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ol>
 <li><strong>One fresh-context sample per call</strong> — a raw API call, or a single-shot subagent if you don't have API access. System prompt = the realistic context the guidance will live in (the full skill or prompt template, not the guidance in isolation); user message = a task that tempts the failure.</li>
@@ -908,32 +908,32 @@ Edit skill without testing? Same violation.</p></div><div class="col-zh" lang="z
 - 壓力類型（時間、沉沒成本、權威、疲勞）
 - 系統化堵漏洞
 - 元測試技巧</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Anti-Patterns</h2></div><div class="col-zh" lang="zh-Hant"><h2>反模式</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>❌ Narrative Example</h3>
+<div class="pair"><div class="col-en" lang="en"><h2 id="anti-patterns">Anti-Patterns</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="反模式">反模式</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="narrative-example">❌ Narrative Example</h3>
 <p>"In session 2025-10-03, we found empty projectDir caused..."
-<strong>Why bad:</strong> Too specific, not reusable</p></div><div class="col-zh" lang="zh-Hant"><h3>❌ 敘事式範例</h3>
+<strong>Why bad:</strong> Too specific, not reusable</p></div><div class="col-zh" lang="zh-Hant"><h3 id="敘事式範例">❌ 敘事式範例</h3>
 <p>「在 2025-10-03 的 session 中，我們發現空的 projectDir 導致……」
 <strong>為什麼不好：</strong>過於特定，無法重用</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>❌ Multi-Language Dilution</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="multi-language-dilution">❌ Multi-Language Dilution</h3>
 <p>example-js.js, example-py.py, example-go.go
-<strong>Why bad:</strong> Mediocre quality, maintenance burden</p></div><div class="col-zh" lang="zh-Hant"><h3>❌ 多語言稀釋</h3>
+<strong>Why bad:</strong> Mediocre quality, maintenance burden</p></div><div class="col-zh" lang="zh-Hant"><h3 id="多語言稀釋">❌ 多語言稀釋</h3>
 <p>example-js.js、example-py.py、example-go.go
 <strong>為什麼不好：</strong>品質平庸，維護負擔</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>❌ Code in Flowcharts</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="code-in-flowcharts">❌ Code in Flowcharts</h3>
 <pre><code class="language-dot">step1 [label=&quot;import fs&quot;];
 step2 [label=&quot;read file&quot;];
 </code></pre>
-<p><strong>Why bad:</strong> Can't copy-paste, hard to read</p></div><div class="col-zh" lang="zh-Hant"><h3>❌ 流程圖中的程式碼</h3>
+<p><strong>Why bad:</strong> Can't copy-paste, hard to read</p></div><div class="col-zh" lang="zh-Hant"><h3 id="流程圖中的程式碼">❌ 流程圖中的程式碼</h3>
 <pre><code class="language-dot">step1 [label=&quot;import fs&quot;];
 step2 [label=&quot;read file&quot;];
 </code></pre>
 <p><strong>為什麼不好：</strong>無法複製貼上，難以閱讀</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3>❌ Generic Labels</h3>
+<div class="pair"><div class="col-en" lang="en"><h3 id="generic-labels">❌ Generic Labels</h3>
 <p>helper1, helper2, step3, pattern4
-<strong>Why bad:</strong> Labels should have semantic meaning</p></div><div class="col-zh" lang="zh-Hant"><h3>❌ 泛用標籤</h3>
+<strong>Why bad:</strong> Labels should have semantic meaning</p></div><div class="col-zh" lang="zh-Hant"><h3 id="泛用標籤">❌ 泛用標籤</h3>
 <p>helper1、helper2、step3、pattern4
 <strong>為什麼不好：</strong>標籤應該具有語意意義</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>STOP: Before Moving to Next Skill</h2></div><div class="col-zh" lang="zh-Hant"><h2>停下：在進入下一個技能之前</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="stop-before-moving-to-next-skill">STOP: Before Moving to Next Skill</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="停下在進入下一個技能之前">停下：在進入下一個技能之前</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>After writing ANY skill, you MUST STOP and complete the deployment process.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>撰寫任何技能之後，你必須停下，完成部署流程。</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Do NOT:</strong>
 - Create multiple skills in batch without testing each
@@ -944,7 +944,7 @@ step2 [label=&quot;read file&quot;];
 - 因為「批次更有效率」而跳過測試</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>The deployment checklist below is MANDATORY for EACH skill.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>下方每個技能都必須執行部署檢查清單。</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Deploying untested skills = deploying untested code. It's a violation of quality standards.</p></div><div class="col-zh" lang="zh-Hant"><p>部署未測試的技能 = 部署未測試的程式碼。這是違反品質標準的行為。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Skill Creation Checklist (TDD Adapted)</h2></div><div class="col-zh" lang="zh-Hant"><h2>技能建立檢查清單（TDD 改編版）</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="skill-creation-checklist-tdd-adapted">Skill Creation Checklist (TDD Adapted)</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="技能建立檢查清單tdd-改編版">技能建立檢查清單（TDD 改編版）</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>IMPORTANT: Create a todo for EACH checklist item below.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>重要：為下方每個檢查項目建立一個待辦事項。</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>RED Phase - Write Failing Test:</strong>
 - [ ] Create pressure scenarios (3+ combined pressures for discipline skills)
@@ -1005,7 +1005,7 @@ step2 [label=&quot;read file&quot;];
 - [ ] Consider contributing back via PR (if broadly useful)</p></div><div class="col-zh" lang="zh-Hant"><p><strong>部署：</strong>
 - [ ] 將技能 commit 到 git 並推送到你的 fork（若已設定）
 - [ ] 若具有普遍價值，考慮透過 PR 回饋上游</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Discovery Workflow</h2></div><div class="col-zh" lang="zh-Hant"><h2>探索工作流</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="discovery-workflow">Discovery Workflow</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="探索工作流">探索工作流</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>How future agents find your skill:</p></div><div class="col-zh" lang="zh-Hant"><p>未來的代理如何找到你的技能：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ol>
 <li><strong>Encounters problem</strong> ("tests are flaky")</li>

@@ -25,7 +25,7 @@
 <h1>brainstorming</h1>
 <div class="subtitle">動工前的第一站：把你的點子敲成具體設計，問到你講清楚為止。</div>
 <div class="back-link" style="margin-top:-0.6rem">附屬文件：<a href="spec-document-reviewer-prompt.html">spec-document-reviewer-prompt</a>　·　<a href="visual-companion.html">visual-companion</a></div>
-<div class="pair"><div class="col-en" lang="en"><h1>Brainstorming Ideas Into Designs</h1></div><div class="col-zh" lang="zh-Hant"><h1>把點子腦力激盪成設計</h1></div></div>
+<div class="pair"><div class="col-en" lang="en"><h1 id="brainstorming-ideas-into-designs">Brainstorming Ideas Into Designs</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="把點子腦力激盪成設計">把點子腦力激盪成設計</h1></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Help turn ideas into fully formed designs and specs through natural collaborative dialogue.</p></div><div class="col-zh" lang="zh-Hant"><p>透過自然的協作對話，幫助把點子變成完整的設計與規格。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.</p></div><div class="col-zh" lang="zh-Hant"><p>先理解目前的專案上下文，然後一次一個問題地提問，逐步精煉點子。一旦你了解要建構什麼，就呈現設計並取得使用者核准。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><HARD-GATE>
@@ -33,9 +33,9 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 </HARD-GATE></p></div><div class="col-zh" lang="zh-Hant"><p><HARD-GATE>
 在你呈現設計且使用者核准之前，不要呼叫任何實作技能、撰寫任何程式碼、搭建任何專案、或採取任何實作行動。這適用於每個專案，無論它看似多麼簡單。
 </HARD-GATE></p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Anti-Pattern: "This Is Too Simple To Need A Design"</h2></div><div class="col-zh" lang="zh-Hant"><h2>反模式：「這太簡單了，不需要設計」</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="anti-pattern-this-is-too-simple-to-need-a-design">Anti-Pattern: "This Is Too Simple To Need A Design"</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="反模式這太簡單了不需要設計">反模式：「這太簡單了，不需要設計」</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.</p></div><div class="col-zh" lang="zh-Hant"><p>每個專案都要走過這個流程。待辦清單、單一函式的工具、設定變更——全部都是。「簡單」的專案正是未經檢視的假設造成最多浪費工作的地方。設計可以很短（對真正簡單的專案而言，幾句話就夠），但你必須呈現它並取得核准。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Checklist</h2></div><div class="col-zh" lang="zh-Hant"><h2>檢查清單</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="checklist">Checklist</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="檢查清單">檢查清單</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>You MUST create a task for each of these items and complete them in order:</p></div><div class="col-zh" lang="zh-Hant"><p>你必須為以下每一項建立一個任務，並依序完成它們：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ol>
 <li><strong>Explore project context</strong> — check files, docs, recent commits</li>
@@ -58,7 +58,7 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 <li><strong>使用者審查書面規格</strong> ——繼續前請使用者審查規格檔案</li>
 <li><strong>轉入實作</strong> ——呼叫 writing-plans 技能以建立實作計畫</li>
 </ol></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Process Flow</h2></div><div class="col-zh" lang="zh-Hant"><h2>流程圖</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="process-flow">Process Flow</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="流程圖">流程圖</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph brainstorming {
     &quot;Explore project context&quot; [shape=box];
     &quot;Ask clarifying questions&quot; [shape=box];
@@ -105,7 +105,7 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 }
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>The terminal state is invoking writing-plans.</strong> Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>終點狀態是呼叫 writing-plans。</strong> 不要呼叫 frontend-design、mcp-builder 或任何其他實作技能。brainstorming 之後你唯一會呼叫的技能是 writing-plans。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>The Process</h2></div><div class="col-zh" lang="zh-Hant"><h2>流程</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-process">The Process</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="流程">流程</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Understanding the idea:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>理解點子：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li>Check out the current project state first (files, docs, recent commits)</li>
@@ -172,7 +172,7 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 <li>在既有程式碼有影響此工作的問題處（例如檔案成長過大、邊界不明確、職責纏繞），把有針對性的改善納入設計——以一位優秀開發者改善其所處程式碼的方式。</li>
 <li>不要提出無關的重構。保持聚焦於服務目前目標的事物。</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>After the Design</h2></div><div class="col-zh" lang="zh-Hant"><h2>設計之後</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="after-the-design">After the Design</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="設計之後">設計之後</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Documentation:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>文件：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
 <li>Write the validated design (spec) to <code>docs/superpowers/specs/YYYY-MM-DD-&lt;topic&gt;-design.md</code></li>
@@ -217,7 +217,7 @@ After the spec review loop passes, ask the user to review the written spec befor
 <li>呼叫 writing-plans 技能以建立詳細的實作計畫</li>
 <li>不要呼叫任何其他技能。writing-plans 是下一步。</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2>Visual Companion</h2></div><div class="col-zh" lang="zh-Hant"><h2>視覺夥伴</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="visual-companion">Visual Companion</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="視覺夥伴">視覺夥伴</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>A browser-based companion for showing mockups, diagrams, and visual options during brainstorming. Available as a tool — not a mode. Accepting the companion means it's available for questions that benefit from visual treatment; it does NOT mean every question goes through the browser.</p></div><div class="col-zh" lang="zh-Hant"><p>一個以瀏覽器為基礎的夥伴，用於在腦力激盪期間展示 mockups、圖表與視覺選項。它以工具的形式提供——不是一種模式。接受這個夥伴表示它可用於受益於視覺化處理的問題；並不代表每個問題都要透過瀏覽器。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Offering the companion (just-in-time):</strong> Do NOT offer it upfront. Wait until a question would genuinely be clearer shown than told — a real mockup / layout / diagram question, not merely a UI <em>topic</em>. The first time that happens, offer it then, as its own message:</p>
 <blockquote>

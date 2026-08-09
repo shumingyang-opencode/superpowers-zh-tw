@@ -155,7 +155,12 @@ def split_blocks(body: str):
 
 def render_md(md_text: str) -> str:
     import markdown
-    return markdown.markdown(md_text, extensions=["fenced_code", "tables", "sane_lists"])
+    from markdown.extensions.toc import slugify_unicode
+    return markdown.markdown(
+        md_text,
+        extensions=["fenced_code", "tables", "sane_lists", "toc"],
+        extension_configs={"toc": {"slugify": slugify_unicode}},
+    )
 
 
 def pair_blocks(en_body, zh_body):
