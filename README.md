@@ -100,3 +100,4 @@ python3 -m http.server 8000
 - 作者：[Jesse Vincent](https://blog.fsck.com) · [Prime Radiant](https://primeradiant.com)
 - 本站 repo：[shumingyang-opencode/superpowers-zh-tw](https://github.com/shumingyang-opencode/superpowers-zh-tw)
 - 本站上線：[shumingyang-opencode.github.io/superpowers-zh-tw](https://shumingyang-opencode.github.io/superpowers-zh-tw/)
+- 學習路徑建議服務：[learning-path-advisor](https://shuming-yang.github.io/learning-path-advisor/) — 依角色推薦教學網站學習路徑
