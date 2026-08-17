@@ -1063,6 +1063,49 @@ step2 [label=&quot;read file&quot;];
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：撰寫「PR 回覆禮儀」紀律技能——先抓代理的失敗模式</strong></p>
+<ol>
+<li><strong>RED：建立壓力情境</strong>——「審查者在你 PR 下留言：『為何這裡要用自訂 sorting？』」跑 3 個子代理、無技能，逐字記錄基線行為</li>
+<li><strong>觀察失敗模式</strong>——3 個代理全部回覆「好問題！因為……」（見證式開場）；其中 2 個順便道歉「抱歉說明不足」；1 個未回答技術問題就直接說「我會改進」</li>
+<li><strong>歸納合理化藉口</strong>——「禮貌性附和」「防禦性道歉」「承諾改進但不解釋」三種模式</li>
+<li><strong>GREEN：寫最小技能</strong>——description 用「Use when 收到 PR 評論」開頭；正文針對三種模式：禁令（「絕不『好問題！』開場」）+ 正向配方（「先用一句話複述技術問題，再回答」）+ 合理化藉口表</li>
+<li><strong>跑壓力情境（有技能）</strong>——3 個代理都改成「技術複述 → 回答」的形狀，但仍抓到 1 個新藉口：「回覆太長，把結論藏在第三段」——記入重構階段</li>
+<li><strong>REFACTOR：堵漏洞</strong>——加「結論前置：第一段第一句就要給答案」的輸出配方，再測到打不穿</li>
+<li><strong>部署</strong>——commit 技能、依檢查清單逐項打勾，才進入下一個技能</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>技能是先有「會失敗的測試」才誕生的——如果沒先看過代理在無技能時的實際失敗，你寫出來的技能就是在「猜代理會犯什麼錯」，而不是「修正你實際觀察到的錯」。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>writing-skills 把 TDD 映射到文件，等於承認了「<strong>技能文本本身就是一層會影響模型行為的程式碼</strong>」。技能檔案的真正作用不是「儲存知識」，而是<strong>佔據上下文權重、調整生成分佈</strong>——一句禁令會提高「禁止行為」被抑制的機率，一段輸出配方會塑造生成形狀。因此技能必須像程式一樣被測試：你不知道這一行字會不會讓代理走偏。</p>
+<p>「description 只描述何時用、不總結工作流」這條規則對應的是模型的<strong>惰性讀取</strong>：模型傾向於用「最省 token 的資訊」行事。若 description 總結了工作流，代理會把 description 當成技能全部，而不去讀正文——技能正文變成被跳過的文件，行為由一段 200 字的摘要決定。這是「資訊經濟」的陷阱：把最重要的行為資訊放在會優先被讀取的位置，模型就會停在那裡。</p>
+<p><strong>陷阱案例：把技能寫成「你上次怎麼做」的敘事。</strong>「上次我遇到 flaky test，我改成 polling……」這種故事式的技能，模型會模仿敘事中的場景匹配——「我的情境跟故事相似嗎？」——而不是執行規則。技能明確定義「技能不是敘事」，因為敘事依賴「相似性」觸發，規則依賴「條件」觸發；相似性在真實場景中誤判率高，規則才能在壓力下成立。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>技能寫了，代理從不觸發</td><td>description 沒用具體觸發詞或只總結流程</td><td>改成「Use when…」＋具體症狀；不總結工作流</td></tr>
+<tr><td>代理照 description 做、不讀正文</td><td>description 載入了行為資訊</td><td>把 description 砍到只剩「何時觸發」，行為全放正文</td></tr>
+<tr><td>技能在壓力下失效</td><td>軟性建議（「盡量…」）而非禁令＋紅旗</td><td>對紀律類失敗改用「絕不」禁令＋合理化藉口表</td></tr>
+<tr><td>測試抓到新藉口，技能沒防</td><td>重構階段沒關閉漏洞</td><td>把新藉口寫進反制清單，重測直到打不穿</td></tr>
+<tr><td>一次寫了五個技能沒測任何一個</td><td>違反「逐一測試」部署規則</td><td>停下：每個技能獨立走完 RED-GREEN-REFACTOR 再進下一個</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「技能的成本是永久的」——為什麼一個 500 字的技能在每個 session 都要付 token？這對技能長度決策有什麼含義？</li>
+<li>你的技能測試中，代理「有技能時」依然失敗。除了技能文字無效，還有什麼可能原因？你如何設計實驗來區分？</li>
+<li>description 一旦總結工作流，代理就不讀正文。試解釋：這對「把技能寫短」的直覺構成什麼反直覺的壓力？</li>
+</ol>
+
 </div>
 </body>
 </html>

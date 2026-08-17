@@ -258,6 +258,48 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：大型重構後，CI 在三個完全不同模組各掛了數個測試</strong></p>
+<ol>
+<li><strong>分組判斷獨立性</strong>——失敗分佈在 <code>auth</code>（OAuth 換發 token）、<code>search</code>（索引查詢）、<code>notifications</code>（推播排程）三個模組，diff 顯示重構動的檔案互不重疊</li>
+<li><strong>確認「修 A 不會修到 B」</strong>——比對三個模組的共用函式清單，確認各自只依賴穩定基礎層，才判定為獨立領域</li>
+<li><strong>同一則回應中並行派發三個子代理</strong>——每個 prompt 都自足：包含該模組的失敗測試名稱、錯誤訊息、以及「不要更動其他模組」的硬性限制</li>
+<li><strong>各自回報摘要</strong>——auth：發現 refresh token 的 exp 欄位解析型別錯誤；search：索引版本號沒遞增；notifications：時區換算少了 UTC 偏移</li>
+<li><strong>整合驗證</strong>——三個 fix 不相衝突，合併後跑完整 CI，全綠</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>三個失敗的根因彼此無關，逐一調查要串三個回合、且每一回合都重載同一個大 context。並行派發把三個獨立的調查同時丟出去，主代理的上下文只留下三份摘要，而不是三份調查過程。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>「一則回應中多次派發 = 並行；每則回應一次 = 循序」——這背後是 agent harness 對工具呼叫的執行模型：<strong>同一則 assistant message 裡的多個 tool call 會被排入平行佇列</strong>，各自擁有獨立的子代理上下文與 token 預算。這正是 superpowers 刻意利用的機制：子代理「不繼承你的 session 歷史」不是缺點，而是並行安全的前提——三個子代理各自讀同一份 repo 但不共享可變狀態。</p>
+<p>陷阱藏在「獨立性」的判斷上：<strong>「測試檔不同」不代表「根因獨立」。</strong>兩支測試可能都失敗在同一個 shared helper 的型別錯誤上——這類失敗修好一個就會連帶修好另一個，並行派發反而讓三個子代理同時改同一份 helper，製造 merge conflict。技能流程圖裡的「Are they independent?」這顆菱形，就是要求你在派發前先查共用依賴。</p>
+
+<p><strong>陷阱案例：只憑目錄名判斷獨立。</strong>把 <code>tests/auth.test.ts</code> 與 <code>tests/auth-integration.test.ts</code> 當成兩個獨立領域派發，結果兩支測試其實都在打同一支 <code>refreshToken()</code>，而它是唯一的 bug 來源。兩個子代理各自「修好」自己那支測試，實作互相矛盾，整合時才爆發。判斷獨立性的正確動作是：先看兩個領域的<strong>共同依賴集合</strong>是否為空。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>並行派發後合併時出現同檔衝突</td><td>兩領域共享可變狀態或共同 helper</td><td>派發前檢查共同依賴；有共享就改循序執行</td></tr>
+<tr><td>子代理回報「我發現它其實是另個模組的 bug」</td><td>獨立性判斷失準，領域界線與程式碼不符</td><td>停下收集回報，重新分組後再派一輪，不要硬拼</td></tr>
+<tr><td>三個摘要都「修好了」，但完整測試還是紅</td><td>修復彼此互相覆蓋，或漏了整合面</td><td>以完整套件為準重新定位失敗，縮回單一子代理調查</td></tr>
+<tr><td>只有一個子代理在動、其他兩個沒反應</td><td>harness 不支援同則訊息多工具並行</td><td>確認平台能力；若不支援，退回逐則派發</td></tr>
+<tr><td>子代理都在改同一支共用函式</td><td>該函式其實是根因共享點</td><td>視為「相關失敗」：合併成單一調查領域</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>兩個測試檔分別失敗，但它們都 import 同一支 <code>formatDate()</code>。你如何用一行指令判斷它們是否屬於獨立領域？</li>
+<li>並行派發的三個子代理各回報了「修復完成」，但整合時 CI 仍掛。除了子代理謊報，還有什麼系統性原因？你要如何防禦？</li>
+<li>某個子代理的 prompt 寫了「不要更動其他模組」，它卻改了。這代表 prompt 結構的哪個環節失效？應該在 prompt 裡加什麼來補強？</li>
+</ol>
+
 </div>
 </body>
 </html>

@@ -219,6 +219,46 @@ If you think there is even a 1% chance a skill might apply to what you are doing
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：使用者回報「API 在星期一早上特別慢」——這是一次多技能觸發的會話</strong></p>
+<ol>
+<li><strong>對話開始</strong>——using-superpowers 先啟動：檢查技能清單，發現「效能問題」符合 systematic-debugging 的觸發情境（非預期行為），優先於任何回應</li>
+<li><strong>宣告並進入流程技能</strong>——「正在使用 systematic-debugging 以找出根因」，先走四階段根因調查，而不是直接提「加 cache」這種修復方案</li>
+<li><strong>調查到一半發現需要動設計</strong>——根因指向「查詢大量資料」，解決方案會改變 API 行為——此時流程技能讓位，補上 brainstorming 確認變更範圍與成功準則</li>
+<li><strong>設計核准後</strong>——進入 using-git-worktrees 開隔離工作區 → writing-plans 寫計畫 → subagent-driven-development 執行（內部每步由 TDD 把關）→ requesting-code-review 送審 → finishing-a-development-branch 收尾</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>技能的優先序不是裝飾——「流程型技能先定調，實作型技能再執行」。效能問題若直接進入「寫 cache」，會跳過「為什麼慢」的根因調查；而改變行為前若沒有 brainstorming，會做出使用者不想要的變更。每一步都「先確認再做」，是這條管線自動運作的結果。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>using-superpowers 的「1% 規則」聽起來極端，但它精準描述了 agent 技能觸發的真實機制：<strong>技能觸發不是精確的函式比對，而是語意近似</strong>。模型在生成第一個 token 之前，會把「使用者的請求」與「技能清單中的 description」做語意匹配。若門檻設太低，該用沒用；設太高，無關技能亂觸發。「即使只有 1% 可能也必須呼叫」之所以正確，是因為「呼叫後發現不適用，可以不用它」的失敗成本，遠低於「該用沒用，讓錯誤流程默默進行」的成本。</p>
+<p>技能優先序的規則「流程型技能先於實作型技能」建立在另一個觀察上：<strong>流程技能改變的是「你怎麼行動」，實作技能改變的是「你做出什麼」</strong>。先有流程，才能保證實作是在正確的前提下進行。若你先套用實作型技能再回頭想流程，通常會發現前半段的工作白做了——因為流程技能（如 brainstorming）會重新定義需求本身。</p>
+<p><strong>陷阱案例：只靠 description 觸發，卻沒讀技能正文。</strong>「我看到 description 寫著 'Use when fixing bugs'，於是我確認呼叫了 systematic-debugging」——但呼叫之後沒有讀完整技能內容，只憑「我懂這個技能」就開始照常除錯。技能的實際效益來自正文的細節（四階段、合理化藉口表、檢查清單），description 只是觸發器。跳過正文等於「觸發了技能，卻沒有執行技能」——比完全沒觸發更糟，因為它給你虛假的流程保障。技能清單裡的每條「紅旗」都在防這件事。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>技能裝了，但從沒被觸發</td><td>description 與實際請求語意不匹配</td><td>檢查 description 是否只描述「何時用」、是否用了具體觸發詞與症狀</td></tr>
+<tr><td>同時觸發多個技能、不知選誰</td><td>流程與實作型技能混在一起</td><td>流程型優先：brainstorming / systematic-debugging 先定調，再套實作技能</td></tr>
+<tr><td>呼叫了技能但行為跟沒呼叫一樣</td><td>只讀了 description，沒讀技能正文</td><td>逐字讀完整技能，為檢查清單每個項目建 todo</td></tr>
+<tr><td>被使用者指示跳過技能</td><td>使用者指示優先於技能</td><td>遵守使用者指示（僅限明確要求），否則技能優先於預設行為</td></tr>
+<tr><td>一直觸發技能拖慢節奏</td><td>誤把「呼叫」當「執行」，或門檻設太低</td><td>呼叫後發現不適用可不用它；真正的成本在「該用沒用」</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「1% 規則」為什麼在成本結構上是正確的？用「錯誤方向」的成本解釋它。</li>
+<li>你被派為子代理執行特定任務。根據 SUBAGENT-STOP，你該怎麼做？這與「任何回應前先檢查技能」的規則衝突嗎？為什麼不衝突？</li>
+<li>使用者說「幫我建一個登入頁面」。若代理跳過 brainstorming 直接寫頁面，最可能錯在哪裡？舉一個 concrete 的需求誤判例子。</li>
+</ol>
+
 </div>
 </body>
 </html>

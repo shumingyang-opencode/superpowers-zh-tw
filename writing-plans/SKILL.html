@@ -282,6 +282,49 @@ git commit -m &quot;feat: add specific feature&quot;
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：為「訂單匯出 CSV」撰寫計畫——跨三個檔案、需要介面契約</strong></p>
+<ol>
+<li><strong>讀規格</strong>——spec 說「匯出目前篩選結果、含標頭、UTF-8 BOM、欄位順序固定」</li>
+<li><strong>檔案結構</strong>——<code>src/export/csv.ts</code>（新建：CSV 序列化）、<code>src/export/orders.ts</code>（新建：查詢＋組裝）、<code>src/api/routes.ts</code>（修改：掛端點）、測試各一</li>
+<li><strong>任務切分</strong>——Task 1：CSV 序列化（純函式，可單獨測）；Task 2：訂單查詢與組裝；Task 3：路由掛接</li>
+<li><strong>關鍵：Interfaces 區塊</strong>——Task 1 的 Produces 寫明 <code>serializeCsv(rows: Row[], opts): string</code> 的完整簽名，Task 2 的 Consumes 引用它——因為執行每個任務的子代理只看自己的任務，介面契約是它們之間唯一的溝通橋</li>
+<li><strong>Global Constraints</strong>——從 spec 逐字複製：「欄位順序：id, created_at, amount, currency」「UTF-8 含 BOM」「不匯出已刪除訂單」</li>
+<li><strong>每個步驟 2-5 分鐘</strong>——Task 1 含「寫失敗測試 → 跑失敗 → 最小實作 → 跑通過 → commit」五步，每步配實際程式碼</li>
+<li><strong>自我審查</strong>——逐段掃描規格，確認每條需求都有任務；搜尋「TBD／加錯誤處理／類似 Task N」這類占位符；檢查 Task 2 的型別名與 Task 1 的 Produces 一致</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>計畫不是寫給自己看的筆記，而是寫給「零上下文、品味存疑」的執行者的契約。Interfaces 區塊的存在，是為了讓「只看 Task 3 的子代理」也能寫出與 Task 1 相容的程式碼——型別不一致是計畫最貴的 bug，因為它在執行中期才會爆炸。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>writing-plans 的設計假設是「<strong>執行者不是寫計畫的 session</strong>」——無論是 subagent-driven-development 的全新子代理，還是 executing-plans 的另開 session，他們都沒有寫計畫者的上下文。因此計畫必須是<strong>自足的溝通載體</strong>：所有需求、值、簽名、驗證方式都要在計畫內完成閉環，不能依賴「執行者應該知道」。這解釋了「No Placeholders」的嚴格程度——「加適當的錯誤處理」對有上下文的人是真話，對零上下文的執行者就是一道無法兌現的指示。</p>
+<p>「步驟小到 2-5 分鐘」是刻意對齊 agent 的<strong>錯誤半徑</strong>：任務越短，執行者偏離預期的機會越小，驗證點越密，錯誤被捕捉得越早。把「驗證」寫成每個任務的固定步驟（跑失敗 → 看失敗 → 實作 → 看通過），是讓「證據導向」滲透進計畫本身的文法。</p>
+<p><strong>陷阱案例：「類似 Task N」的偷懶寫法。</strong>計畫作者為了省字數寫「同上，改成列表版」，假設執行者會依序讀任務。但技能明說「工程師可能不依順序閱讀任務」——Task 7 的子代理只看 Task 7。省略的上下文不是「省字」，是「製造執行錯誤」。正確做法是重複必要程式碼：計畫的冗長是它的可靠性的代價。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>執行時才發現 Task 7 用了 Task 3 沒定義的型別</td><td>Interfaces 區塊缺失或前後不一致</td><td>寫計畫時做「型別一致性」自我審查，跨任務對照簽名</td></tr>
+<tr><td>子代理問「錯誤處理怎麼做？」</td><td>計畫有「加適當的錯誤處理」類占位符</td><td>把每個「處理」寫成具體行為＋測試；計畫內無法推導的決策一律寫死</td></tr>
+<tr><td>任務大到執行者迷失方向</td><td>任務切分太粗</td><td>每個任務收斂到「可獨立測試的產物」，步驟小到 2-5 分鐘</td></tr>
+<tr><td>spec 的某條需求在計畫中找不到任務</td><td>規格涵蓋檢查被跳過</td><td>自我審查第一步：逐段掃描 spec，為每條需求找到對應任務</td></tr>
+<tr><td>計畫寫得超長但執行者只看了其中一半</td><td>計畫結構沒有引導性</td><td>用標頭＋每個任務的 Files／Interfaces 區塊，讓單一任務可獨立閱讀</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「Interfaces」區塊的存在是為了讓任務可被獨立執行。如果省略它，任務之間的溝通靠什麼？這會在哪個時機點爆炸？</li>
+<li>「把設定、配置、脚手架步驟併入需要它們的任務」與「只在審查者可獨立否決處拆分」——用這兩個準則判斷：一個「安裝相依＋建資料夾」的任務該不該獨立存在？</li>
+<li>你的計畫有 Task 3 定義 <code>clearLayers()</code>、Task 7 卻寫 <code>clearFullLayers()</code>。這是哪一類計畫失敗？為什麼自我審查能抓到你而執行者抓不到？</li>
+</ol>
+
 </div>
 </body>
 </html>

@@ -145,6 +145,49 @@
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：隔天早上另開 session 執行昨晚寫好的部署計畫</strong></p>
+<ol>
+<li><strong>載入計畫</strong>——<code>docs/superpowers/plans/2026-08-16-rolling-deploy.md</code>，先唸出計畫標頭，確認 <code>For agentic workers</code> 行要求走 subagent-driven-development 還是 executing-plans</li>
+<li><strong>批判性審查</strong>——逐任務檢查：任務 3 要求「在 staging 建立 rate limiter」，但 staging 的環境變數檔在計畫中完全沒被提及；把這列為疑慮</li>
+<li><strong>與人工夥伴確認</strong>——「計畫假設 staging 已設定 <code>RATE_LIMIT_TOKEN</code>，但我沒在 repo 找到。要我沿用 production 的設定方式，還是先停下來補環境？」</li>
+<li><strong>取得更新後的計畫</strong>——夥伴在計畫中補上環境變數設定步驟，重新載入</li>
+<li><strong>建立 todos</strong>——每個任務一個 todo，用 checkbox 語法對應計畫步驟</li>
+<li><strong>依序執行</strong>——每步標記 in_progress → 依計畫執行 → 跑指定驗證 → 標記 completed</li>
+<li><strong>所有任務完成後</strong>——呼叫 finishing-a-development-branch 呈現整合選項</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>執行計畫技能把「計畫」當成跨 session 的交接文件。計畫不是寫給「寫計畫的那個 session」看的——隔天的 session 對昨晚的思考一無所知。所以批判性審查不是禮貌，而是必要：你必須假設計畫有錯，才有機會在動手前攔下它。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>executing-plans 之所以存在，是因為 agent session 之間<strong>不存在共享記憶</strong>。同一個 repo、同一支分支，但對話歷史不同——這是它與 subagent-driven-development 的分水嶺：後者在「同一 session」用全新子代理隔離上下文；這裡則連主代理本身都是新的。因此「計畫」成了唯一可靠的交接載體，它的品質直接決定執行品質。</p>
+<p>這也解釋了「卡住就停下、不要硬闖」的鐵律。對 LLM 而言，硬闖的代價不是「浪費十分鐘」，而是<strong>在沒有回饋迴圈的情況下越走越偏</strong>——每往前一步，你離「可驗證的中間狀態」更遠，事後要回溯的成本指數上升。停下發問是把成本固定在當下，而不是把它滾進未來。</p>
+<p><strong>陷阱案例：因為計畫是「自己人」寫的，就跳過批判性審查。</strong>常見心態是「這計畫是我昨晚寫的，我知道它的意圖」。但執行 session 是全新上下文——你「記得」的意圖並不在此 session 中。跳過審查直接執行，等於把「昨晚的假設」未經驗證地帶進「今天的事實」。技能設計者刻意要求<strong>每個執行 session 都重做 Step 1</strong>，正是為了對抗這種虛假的熟悉感。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>做到任務 4 才發現任務 2 的介面名字不存在</td><td>計畫的 Interfaces 區塊不完整，或型別前後不一致</td><td>停下回報計畫缺口，要求更新計畫後從任務 4 重跑驗證，不要自行改名硬接</td></tr>
+<tr><td>驗證指令跑出來的結果與計畫預期不符</td><td>環境差異（依賴版本、路徑）或計畫假設過時</td><td>把實際輸出貼給夥伴，由夥伴決定是環境問題還是計畫問題</td></tr>
+<tr><td>在 main 分支上被要求直接執行</td><td>未先建立隔離工作區</td><td>回到 using-git-worktrees 建立 worktree；未經同意不在 main 上開始</td></tr>
+<tr><td>執行到一半發現計畫與現況差太遠、任務全要改</td><td>計畫寫作時假設的程式碼現況已變</td><td>停止執行並回到 Step 1 重新審查；必要時回 writing-plans 重寫計畫</td></tr>
+<tr><td>卡在重複失敗的驗證，子代理一直重試</td><td>用重試代替停下列出真正問題</td><td>第三次失敗就停：貼上三次失敗的完整輸出，詢問夥伴</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>你載入計畫後發現它的任務 5 與任務 6 相依順序寫反了（任務 6 使用了任務 5 才建立的檔案）。你該直接調整順序再執行，還是先問？為什麼？</li>
+<li>計畫要求「在本機安裝 Redis」，但 repo 用 Docker Compose。你如何在「不亂猜」與「不打斷流程」之間選擇正確的做法？</li>
+<li>執行完所有任務、全綠之後，你發現自己漏看了計畫的 Global Constraints 一節。這會造成什麼後果？現在該怎麼補救？</li>
+</ol>
+
 </div>
 </body>
 </html>

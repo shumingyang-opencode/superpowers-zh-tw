@@ -83,6 +83,48 @@
 <li>□ 已走完至少一篇深度解說</li>
 </ul>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：一支五人團隊的 onboarding——第一週只靠這個教學中心＋一張全景圖</strong></p>
+<ol>
+<li><strong>Day 1 建立全貌</strong>——每人先讀<a href="methodology.html">方法論總覽</a>與<a href="../../map.html">全景圖</a>，理解「14 個技能是一條管線」而非一袋工具；用一張投影片講七個階段，不進任何細節</li>
+<li><strong>Day 2 工作流</strong>——讀<a href="workflow.html">基本工作流拆解</a>，然後由資深者實機示範「我們來做 X」讓 using-superpowers 自動觸發，邊跑邊指著流程圖講「現在走到第幾步」</li>
+<li><strong>Day 3 原則內化</strong>——讀<a href="philosophy.html">哲學四原則</a>，開一場「違反字面＝違反精神」的實例討論：昨天誰在沒有失敗測試時寫了程式碼？誰宣稱完成卻沒貼輸出？</li>
+<li><strong>Day 4 核心執行模式</strong>——讀<a href="subagent-driven.html">SDD 深度探討</a>，讓每人各自跑一個兩任務的小計畫，親身體驗「全新子代理只能照計畫行事」</li>
+<li><strong>Day 5 進階</strong>——有興趣者讀<a href="skill-authoring.html">如何寫 Skill</a>，用自己的專案寫一支小技能並用子代理測它</li>
+<li><strong>之後遇到問題時</strong>——回來查教學中心；把實戰中踩到的坑貼進團隊 wiki，累積成第二輪的教材</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>教學中心設計成「先全貌、再細節、最後動手」的順序，是因為 Superpowers 的價值在「整套一起運作」，單獨學一支技能容易落入「只用一半流水線」的陷阱。先讓 everyone 看到管線，之後學單一技能時才知道它在管線中的位置。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>教學中心的存在本身示範了 Superpowers 的元原則：<strong>「講解法」與「可執行指令」是兩種不同的媒介。</strong>技能頁刻意保持「原文翻譯＋逐段對照」，因為技能文件在被 agent 讀取時是<strong>可執行文件</strong>——每一句都是指令，不能有解釋性的歧義。而教學中心則是完全的解釋性文件——它存在的目的就是「讓人不照做、先理解」。兩者混用會互相污染：把解釋塞進技能，agent 會把散文當指令；把指令塞進教學，學習者會被流程細節淹沒。</p>
+<p>「學習順序」建議（方法論→工作流→哲學→SDD→寫技能）對應著人類學習的<strong>認知負荷</strong>結構：先建立骨架（管線）、再裝血肉（流程）、再講價值觀（原則）、再上最抽象的執行模式（SDD）、最後才做創作（寫技能）。跳過骨架直接學細節，是新手最常見的迷失來源。</p>
+<p><strong>陷阱案例：把教學中心當成技能文件的「更淺版本」來讀。</strong>有人看到教學中心「講得比較白話」，就只讀它、不碰技能頁。但教學中心的說明是「為了理解」，技能頁的條文是「為了執行」——真正要讓 agent 照做的流程，細節都在技能頁。只讀教學中心，你理解了為什麼，卻不知道每個技能的完整檢查清單；一旦要自己帶 agent 走流程，缺的正是那些細節。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>團隊照著教學做，但 agent 行為跟預期不符</td><td>教學中心只給了「理解」，執行細節要回到技能頁</td><td>把技能頁的檢查清單當成唯一執行標準，教學中心只當背景知識</td></tr>
+<tr><td>新人「讀完」教學卻不會用</td><td>缺乏動手環節</td><td>每個模組配一個實機演練（跑一個最小計畫）再進下一個</td></tr>
+<tr><td>學了 SDD 但不敢用，覺得太抽象</td><td>跳過了方法論與工作流的鋪陳</td><td>先回去建立管線全貌，理解 SDD 只是管線中「執行」一環</td></tr>
+<tr><td>團隊各自學、用的技能組合不一致</td><td>沒有共用的學習基準</td><td>以教學中心建議的順序為標準 onboarding 路線</td></tr>
+<tr><td>教學內容與技能頁矛盾，不知信誰</td><td>教學是詮釋、技能頁才是原始規則</td><td>以技能頁為準；矛盾處回報修正教學說明</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>技能頁與教學中心「不可混用」的界線在哪裡？如果要在技能頁加一段「為什麼要這樣做」的解釋，會有什麼風險？</li>
+<li>某團隊只教「執行」技能（TDD、debugging），跳過 brainstorming 與 writing-plans。用「管線」概念預測三個月後他們最可能的失敗模式。</li>
+<li>這個教學中心缺哪一種內容，會讓「資深工程師想自己寫技能」的使用者卡住？你怎麼補？</li>
+</ol>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

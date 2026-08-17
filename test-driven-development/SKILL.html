@@ -636,6 +636,47 @@ Otherwise → not TDD
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：在既有收銀系統修一個「特價商品折扣重複套用」的 bug</strong></p>
+<ol>
+<li><strong>先寫重現失敗的測試</strong>——<code>assert checkout([promo_item, promo_item]) == 單件折扣 ×1</code>，不是 ×2。寫完跑一次，看到它紅（這證明測試真的捕捉到 bug）</li>
+<li><strong>確認測試失敗的理由對</strong>——失敗訊息顯示「兩件都套用全額折扣」，確認它測的就是你要修的規則，而不是別的問題</li>
+<li><strong>寫最小修復</strong>——在折扣計算處加入「同一個 promo 在單筆訂單只套用一次」的判別式，恰好讓測試轉綠</li>
+<li><strong>重構</strong>——把「可否套用折扣」的規則抽成 <code>eligibleForDiscount(line)</code>，讓它可單獨測試</li>
+<li><strong>跑完整套件</strong>——確認舊行為（不同 promo 各算一次）沒有被破壞</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>這是「修 bug」的標準 TDD 形狀——測試先於修復。核心不是「有測試」，而是「測試先失敗過」：如果沒看過它紅，你就不知道這支測試到底測到 bug 沒有。事後補的測試永遠會過，證明不了任何事。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>TDD 的「紅 → 綠 → 重構」對 agent 而言是一套<strong>可驗證的回饋迴圈</strong>，它的價值不在儀式，而在於把「模型是否做對了」從<strong>信心問題</strong>變成<strong>可觀察問題</strong>。LLM 最大的弱點是無法自我評判——它生成一段程式碼後「覺得」它是對的。測試把「對不對」外包給一個確定性的執行器：紅燈 = 假的，綠燈 = 至少這支測試是對的。</p>
+<p>「絕不在測試前寫程式碼，寫了就刪」的鐵律對應的是模型的一個具體偏差：<strong>生成的內容具有固著性</strong>。一旦模型看過「正確答案」（先寫的實作），它在寫測試時會不自覺地朝那個答案倒推——測試變成「驗證我寫的實作」而非「描述想要的行為」。刪掉實作，是為了讓測試在「不知道答案」的狀態下誕生。</p>
+<p><strong>陷阱案例：測試通過了，但什麼都沒斷言。</strong>「空斷言測試」是 TDD 最隱晦的作弊：<code>def test_discount(): checkout(100, 'gold')</code> 沒有 assert，它永遠通過，給你一種「在寫測試」的錯覺。這在技能文件裡被明確列為「計畫明確要求、但審查標準視為缺陷」的例子——測試存在 ≠ 測試有承載。檢查方式是：刪掉實作，測試必須紅；如果測試不紅，它就沒有證明任何行為。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>測試「從沒紅過」就轉綠</td><td>測試斷言了錯誤行為，或根本沒斷言</td><td>回檔實作，確認測試真的失敗；沒紅過就當作沒測試</td></tr>
+<tr><td>測試一寫就過、不用寫實作</td><td>測試其實測的是別的功能（或實作早已存在）</td><td>縮小範圍，確認測試目標是「你要的新行為」</td></tr>
+<tr><td>測試要 mock 一大堆才能寫</td><td>程式碼過度耦合</td><td>用依賴注入拆開依賴，而不是堆更多 mock</td></tr>
+<tr><td>重構後測試還是過，但行為其實壞了</td><td>測試沒有涵蓋那個行為</td><td>補上缺失行為的測試（先紅），再修正</td></tr>
+<tr><td>邊界案例爆出但測試全綠</td><td>測試只覆蓋 happy path</td><td>針對邊界（空值、極值、並發）補測試再修實作</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>你寫了一支測試，跑了發現它直接通過，而你明明還沒寫實作。這支測試「證明」了什麼？它為什麼是危險的？</li>
+<li>寫技能（writing-skills）把 TDD 的「測試」對應成「壓力情境」。解釋「看過代理在沒有技能時失敗」對應到 TDD 的哪一個環節，為什麼兩者缺一不可。</li>
+<li>「測試太複雜」被技能當成「設計太複雜」的訊號。為什麼簡化介面通常比增加測試基礎設施更正確？</li>
+</ol>
+
 </div>
 </body>
 </html>

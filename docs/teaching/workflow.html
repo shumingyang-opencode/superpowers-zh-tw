@@ -99,6 +99,48 @@
 <li>□ 已理解支線技能（debugging、verification）的使用時機</li>
 </ul>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：執行到一半，使用者說「我想改需求」——工作流如何回應中途變更</strong></p>
+<ol>
+<li><strong>中斷</strong>——匯出 CSV 功能已跑到 Task 2，使用者忽然說：「等等，匯出之前要先能選欄位，能改嗎？」</li>
+<li><strong>不要硬闖</strong>——執行中的子代理立刻停下（executing-plans 的「卡住就停」規則），把「需求變更」當成 BLOCKED 事件回報，而不是試圖「順手加一下」</li>
+<li><strong>回到正確的階段</strong>——「改需求」的定義是「改設計」，而設計的管線入口是 brainstorming。整個執行管線暫停，回到 brainstorming 重新確認：欄位選擇是 filter 還是新的 UI 元件？影響匯出格式嗎？</li>
+<li><strong>更新設計文件</strong>——brainstorming 產出更新版的 spec，再回到 writing-plans 更新計畫（新增 Task：欄位選擇 UI），而不是在舊計畫上硬改</li>
+<li><strong>重新執行</strong>——用更新後的計畫續跑；已完成且不受影響的 Task 1 保留，新增/受影響的任務重跑審查</li>
+<li><strong>全綠收尾</strong>——finishing-a-development-branch 呈現選項</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>工作流把「階段之間有明確交接點」當成防護線。需求變更若直接在執行中「順手改」，就會同時污染設計、計畫與實作三個層次，且沒人知道該以哪個版本為準。回退到 brainstorming 是「用一次流程成本，換取所有下游文件的一致性」。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>工作流拆解反覆強調「<strong>階段之間不能跳來跳去</strong>」，這背後是<strong>單向資料流</strong>的設計：設計文件 → 計畫 → 執行，每一層都依賴上一層的輸出。允許往回跳等於允許「後寫的文件反過來覆寫先寫的決策」——而反覆寫的來源不明，是最難除錯的 bug 類型。技能用「交接點」概念把這條規則具體化：要改設計，就回到設計層重跑，而不是在執行層打補丁。</p>
+<p>「子代理沒有你的對話上下文」是執行階段能穩定運作的關鍵機制：子代理只能看到任務簡報，而簡報源自計畫。這意味著<strong>管線的每一個下游節點都只信任上游的文件，不信任上游的記憶</strong>。文件一旦被更新（spec、plan），下游立即以新版本為準——這種「以文件為真相來源」的設計，正是「階段不可跳」的技術基礎。</p>
+<p><strong>陷阱案例：在執行中途「順手」調整計畫。</strong>「任務 3 的子代理做完了，我直接幫它把任務 4 的參數改一下，反正我知道任務 5 需要」——這個「順手」把協調者的判斷偷偷寫進計畫，卻沒有經過 writing-plans 的自我審查，也沒通知審查流程。三個月後回看，沒人知道任務 4 的參數為什麼跟 spec 不一致。改計畫的唯一正確入口是 writing-plans（或更新 spec），而不是執行途中的「舉手之勞」。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>需求變更後，執行成果與 spec 對不上</td><td>變更被「順手」實作，沒回寫文件</td><td>回 brainstorming 更新 spec，再同步計畫，重跑受影響任務</td></tr>
+<tr><td>執行到一半發現計畫任務順序錯誤</td><td>計畫寫作時依賴沒排清</td><td>停下回報，回 writing-plans 修正；不要在執行中重排</td></tr>
+<tr><td>子代理回報的結果與使用者預期不同</td><td>brainstorming 的需求捕捉不完整</td><td>回到第 1 步補問成功準則，不要用「再改一版」硬調</td></tr>
+<tr><td>兩支功能並行開發，其中一支改到共享檔案</td><td>隔離沒做或 worktree 被繞過</td><td>確認各功能有自己的 worktree；共享檔案以 merge 時機整合</td></tr>
+<tr><td>「這個階段看起來不重要，跳過」</td><td>誤把階段的順序成本當成多餘成本</td><td>每個階段都產出下游需要的輸入；跳過＝斷管線</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>需求變更若「順手」加在執行中，哪些文件會失去一致性？列出至少三個層次，並說明各自會被誰信賴、誰誤導。</li>
+<li>為什麼「子代理只能看到任務簡報」是執行穩定性的關鍵？如果子代理能看到完整對話，會出現什麼風險？</li>
+<li>假設你在任務 4 發現 Task 2 的實作有 bug（不是計畫問題）。這該走工作流的哪條路？它與「需求變更」的路徑有何不同？</li>
+</ol>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

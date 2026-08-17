@@ -862,6 +862,49 @@ Done! Using superpowers:finishing-a-development-branch.
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：五任務計畫，第二個任務卡進修正迴圈直到第 4 輪才過</strong></p>
+<ol>
+<li><strong>Setup</strong>——建立 worktree、執行 <code>scripts/sdd-workspace</code> 拿到本計畫的 git-ignored 工作區、確認 <code>progress.md</code> 不存在（首輪）、建立以計畫檔名為首行的 ledger</li>
+<li><strong>讀計畫＋前飛審查</strong>——掃描一次，發現任務 3 的測試範例沒有斷言（a test that asserts nothing），列為「計畫要求 vs 審查標準」衝突，批次問夥伴「何者為準」</li>
+<li><strong>Task 1 通過</strong>——派實作子代理（機械式、用便宜模型）→ 產生 review package → 任務審查兩階段全過 → 記入 ledger</li>
+<li><strong>Task 2 進入修正迴圈</strong>——實作完成，審查回報「規格 ❌：忽略了錯誤處理分支」。R1-R3 把發現逐字送回原實作子代理，仍舊不穩；R4 換全新子代理＋高一階模型，並加上「前一位實作者試了 N 次，現在你接手」的 framing → 這次通過</li>
+<li><strong>其餘任務依序完成</strong>——Task 3 依前飛裁決修正範本後照常執行；Task 4 回報 DONE_WITH_CONCERNS，讀完疑慮判斷為觀察性意見，記下後進入審查</li>
+<li><strong>最終整支分支審查</strong>——用現有最強模型派發 code reviewer；把 ledger 中的 Minor（deferred）清單指給它分流</li>
+<li><strong>審查乾淨後</strong>——呼叫 finishing-a-development-branch</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>R4 換人不是認輸，而是技能對「agent 看不見自己的問題」的結構性回應——三次重啟後，問題多半在於原實作者對自己的盲點沒有認知，換一個全新上下文＋更強模型，是同時做「換視角」與「加能力」兩件事。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>SDD 最容易被低估的設計是 <strong>ledger（progress.md）</strong>。它的存在理由是「對話記憶在壓縮後不存活」——真實 session 曾發生控制器失去進度、把已完成的任務序列整段重派的災難。Ledger 把進度狀態放在<strong>檔案系統</strong>而非上下文：<code>Task &lt;N&gt;: complete</code> 行、修正輪次行、Minor（deferred）行，都是壓縮後仍可靠的復原地圖。技能甚至規定「信任 ledger 與 git log，勝過你自己的記憶」。</p>
+<p>模型選擇一節是更細微的經濟學：<strong>回合數勝過 token 價格</strong>。最便宜的模型在多步驟任務上常花 2-3 倍回合，總成本反而更高。因此「機械轉錄」（計畫已含完整程式碼）用最便宜層、以文字描述為依據的實作至少用中階、最終整支審查用最強模型。關鍵陷阱是「未指定模型 = 繼承 session 預設」——通常是最強最貴的模型，靜默地燒掉全部成本優化。</p>
+<p><strong>陷阱案例：把「狀態摘要」貼進後續派發。</strong>「任務 1-3 之後的狀態：⋯⋯」這類文字看似貼心，實際是把你的上下文污染灌進子代理——真實 session 的派發曾達 42k 字元、其中 99% 是貼上的歷史。全新子代理需要的只有：它的任務、它觸及的介面、全域約束。多餘的上下文不是「幫助」，是雜訊——它稀釋了任務簡報的權重，讓子代理更容易偏離。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>壓縮後控制器重派已完成任務</td><td>進度只記在 todos / 記憶，未記入 ledger</td><td>以 <code>&lt;workspace&gt;/progress.md</code> 為唯一進度來源，重啟後從第一個「無 complete 行」的任務續跑</td></tr>
+<tr><td>修正迴圈超過 3 輪仍失敗</td><td>原實作者看不見自己的盲點</td><td>R4 起換全新子代理＋更強模型，並告知「前一位嘗試 N 次」</td></tr>
+<tr><td>子代理問的問題在簡報裡已有答案</td><td>派發 prompt 塞了過多無關歷史，稀釋了簡報權重</td><td>砍掉摘要式內容，讓 task brief 成為需求的單一來源</td></tr>
+<tr><td>任務審查者說「⚠️ 無法從 diff 驗證」</td><td>需求位於未變更程式碼或橫跨任務</td><td>自行依計畫與跨任務上下文確認；確認是缺口就送進修正迴圈</td></tr>
+<tr><td>整支審查用 session 預設模型</td><td>未在派發時明確指定 model</td><td>最終審查與架構判斷任務一律用現有最強模型，並在派發中寫明</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>為何「實作子代理的報告」要寫進檔案而不是讓它直接回傳全文？這與「以檔案移交產物」的規則有什麼關係？</li>
+<li>Task 的 review package 的 BASE 為什麼「絕不能是 HEAD~1」？如果用了，多 commit 任務的審查會漏掉什麼？</li>
+<li>某任務進入修正迴圈第 5 輪，breaker 觸發。你逐一裁決剩餘發現後，發現其中一個是 load-bearing。技能要你做什麼？與「把 Minor 記進 ledger」差在哪？</li>
+</ol>
+
 </div>
 </body>
 </html>

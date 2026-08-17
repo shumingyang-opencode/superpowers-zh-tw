@@ -213,6 +213,47 @@ You: [Fix progress indicators]
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：部署計畫的 Task 4「加入健康檢查端點」完成後送審</strong></p>
+<ol>
+<li><strong>取得正確的 SHA 範圍</strong>——<code>BASE_SHA=$(git rev-parse HEAD~3)</code>（Task 4 開始前的 commit），<code>HEAD_SHA=$(git rev-parse HEAD)</code>。注意：這個任務實作了三次 commit（端點、測試、文件），BASE 必須是派發前記錄的那個 commit，而不是 <code>HEAD~1</code>——後者會把 diff 範圍縮到只剩最後一個 commit</li>
+<li><strong>組合審查 prompt</strong>——DESCRIPTION：「新增 /healthz 端點回傳 200」；PLAN_OR_REQUIREMENTS：「Task 4 from docs/superpowers/plans/deployment-plan.md」；BASE/HEAD 如上</li>
+<li><strong>派發審查子代理</strong>——只有 diff 與需求進入它的上下文，你的 session 歷史完全隔離</li>
+<li><strong>依回饋行動</strong>——子代理回報 Critical：0；Important：健康檢查沒檢查資料庫連線（應是失敗時回傳 503）；Minor：<code>/healthz</code> 與既有 <code>/health</code> 重複</li>
+<li><strong>先修 Important</strong>——補上資料庫連線探測與 503 回應、跑測試，再進入 Task 5</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>審查者必須看「Task 4 造成什麼改變」，所以 SHA 範圍精確是前提。更重要的是「你是協調者不是審查者」——自己 inline 看 diff 會把整段 diff 載入你的上下文，而那些 token 你留著是為了持續推動計畫；把審查外包給子代理，你的上下文只收到「結論」而不是「過程」。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>這支技能建立在「<strong>新鮮視角必須物理隔離</strong>」的假設上。審查子代理若是繼承你的 session 歷史，它會帶進你的所有偏見——你對「這支程式碼該怎麼寫」的既有判斷、你繞過某個問題的決定、你的疲勞。技能刻意讓審查者「精確地知道工作成果、完全不知道你的思考過程」，這是把<a href="https://en.wikipedia.org/wiki/Blind_review">盲審</a>的優點移植進 agent harness。</p>
+<p>SHA 範圍的設計細節藏在「為什麼 BASE 不是 HEAD~1」：agent 任務常產生多個 commit（實作＋測試＋文件）。<code>HEAD~1</code> 會把 diff 縮成最後一筆 commit，前面兩筆的內容在審查中消失——被審查的範圍與被實作的範圍不一致，是審查失效的最常見形式。技能用「派發前記錄 BASE」這個動作，把「範圍正確性」變成流程的一部分，而不是靠記性。</p>
+<p><strong>陷阱案例：為了「省事」自己看 diff。</strong>「我直接看 diff 就好，不用派審查者」是最常見的合理化——它把審查的 token 成本從子代理轉移回你自己的上下文，而你的上下文是你推動整個計畫的唯一資源。技能甚至把這條寫成「常見合理化藉口」的第一條，因為它精準命中了 LLM 對「效率」的錯誤直覺：省下的是子代理成本，賠上的是協調頻寬。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>審查者看不到某個 commit 的變更</td><td><code>BASE_SHA</code> 用了 <code>HEAD~1</code> 而非派發前記錄的 commit</td><td>用「派發前記錄的 BASE」重新產生 review package</td></tr>
+<tr><td>審查者問「這個介面哪裡來的？」</td><td>審查 prompt 缺少跨任務上下文</td><td>在 prompt 中附上先前任務定義的介面簽名，不要附整段歷史</td></tr>
+<tr><td>審查者說「無法從 diff 驗證」</td><td>需求存在於未變更的程式碼中</td><td>審查者標 ⚠️ 項目；你依計畫與跨任務上下文逐一確認後再標記完成</td></tr>
+<tr><td>審查回報一堆「你早該知道」的意見</td><td>你把自己 session 的記憶預設給了審查者</td><td>檢查 prompt：審查者只能知道你給它的東西，缺上下文就補文件路徑</td></tr>
+<tr><td>Critical 問題被你擱置繼續下個任務</td><td>嚴重度分類被忽略</td><td>Critical 立即修、Important 繼續前修、Minor 記下來稍後處理</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>為什麼審查子代理「絕不能拿到你整個 session 的歷史」？寫出兩條具體後果，並解釋它們如何讓審查失效。</li>
+<li>你的任務派發了 5 次 commit。若你用 <code>HEAD~1</code> 當 BASE，審查者會看到什麼？這個「範圍錯位」會隱藏哪一類問題？</li>
+<li>審查者回報了一條你確定是誤判的意見。技能要求你怎麼處理——是直接不理會，還是讓它進審查迴圈？請引用規則說明。</li>
+</ol>
+
 </div>
 </body>
 </html>

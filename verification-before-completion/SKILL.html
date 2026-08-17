@@ -353,6 +353,47 @@ Skip any step = lying, not verifying
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：子代理回報「全修好了」，但你要親手驗證才敢合併</strong></p>
+<ol>
+<li><strong>辨識宣稱</strong>——子代理回報：「已修正 JSON 解析錯誤，測試全過。」這是完成宣稱，必須驗證</li>
+<li><strong>不信任摘要，檢查 VCS</strong>——<code>git diff HEAD~2..HEAD</code> 檢視實際變更，確認改的是「解析邏輯」，而不是「吞掉錯誤的 try/catch」</li>
+<li><strong>獨立重跑驗證指令</strong>——在目前樹上跑 <code>pytest</code>，完整讀輸出、確認 exit code 為 0、數失敗數，而不是引用子代理貼的輸出</li>
+<li><strong>補上紅-綠驗證</strong>——把修復暫時 revert，確認「解析錯誤的測試」真的會紅；再還原，確認轉綠——證明測試確實載著這個 bug</li>
+<li><strong>才宣稱完成</strong>——「驗證：pytest 42/42 通過（exit 0）；revert 測試會紅、還原後轉綠。確認完成。」</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>「代理委派」是技能明列的驗證場景——代理的報告只是主張，不是證據。技能要求「檢查 VCS diff → 驗證變更 → 回報實際狀態」：你的宣稱必須基於自己親手執行的輸出，任何二手宣稱都不算數。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>這個技能對抗的是 LLM 最普遍的失敗模式：<strong>成功幻覺（hallucinated success）</strong>。模型傾向於把「我預期它會成功」敘述成「它成功了」——生成一段「修正完成」的文字，比實際跑一次測試並閱讀輸出，在 token 成本上便宜得多，而模型的預設傾向是走捷徑。守門函式（Gate Function）把「宣稱」拆成五個不可跳過的步驟（辨識→執行→閱讀→對照→才宣稱），本質上是把「誠實」轉成「流程」，不依賴模型的意志力。</p>
+<p>「如果沒有在這一則訊息中執行驗證指令，你就不能宣稱它通過」——這句的重點在「這一則訊息」。它防止「之前測過」的漂移：程式碼在你驗證之後可能又改過，環境可能變過。驗證證據有<strong>有效期</strong>，只有「緊貼宣稱、同一上下文」的執行才作數。這條規則把時間相關性寫死進流程。</p>
+<p><strong>陷阱案例：把「linter 通過」當成「編譯通過」。</strong>「Linter passed」是最常見的驗證錯位——linter 檢查風格與靜態規則，不保證型別正確、不保證能執行。技能明列「❌ 以 linter 代替 build」為失敗模式。同理，「測試通過」也不自動等於「需求達成」——需求要「重讀計畫 → 建檢查清單 → 逐項核對」。驗證的鐵律是：<strong>選對能證明這個宣稱的那個指令</strong>，而不是選一個「看起來相關」的。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>宣稱「完成」但沒跑任何驗證</td><td>走捷徑：把預期當事實</td><td>走守門函式五步：先辨識「哪個指令能證明」</td></tr>
+<tr><td>引用「稍早」的測試結果</td><td>驗證證據過期</td><td>在宣稱的同一訊息中重新執行完整指令</td></tr>
+<tr><td>測試「全部通過」但需求沒做到</td><td>測試通過 ≠ 需求達成</td><td>重讀計畫，逐項對照檢查清單，回報缺口</td></tr>
+<tr><td>「linter 過、編譯卻失敗」</td><td>驗證指令選錯</td><td>用能證明該宣稱的指令（build / test / typecheck）</td></tr>
+<tr><td>子代理說成功了你就照抄</td><td>二手宣稱未獨立驗證</td><td>檢查 diff → 重跑驗證 → 以實際輸出回報</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「測試 34/34 通過」這則輸出，能證明「所有測試通過」這個宣稱嗎？它不能證明「需求完成」——差在哪？</li>
+<li>你寫了一支回歸測試並跑過（綠），但沒有做「revert 修復 → 確認紅 → 還原 → 確認綠」。為什麼這支測試可能「證明不了任何事」？</li>
+<li>管理者要你「趕快說完成了」。根據技能，最便宜、最快的合法路徑是什麼？寫出你的實際回應。</li>
+</ol>
+
 </div>
 </body>
 </html>

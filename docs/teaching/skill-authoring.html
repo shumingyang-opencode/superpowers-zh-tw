@@ -119,6 +119,49 @@ description: Use when executing implementation plans with independent tasks in t
 <li>□ 已確認技能描述具體到代理能照著做</li>
 </ul>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：把一支「草創期可用」的技能，透過測試迭代到「防彈」</strong></p>
+<ol>
+<li><strong>現況</strong>——已有支「發 PR 前自檢」技能，description 寫「Use when you're about to push code」，正文是幾條軟性建議（「記得跑測試喔」）</li>
+<li><strong>RED：先測現有技能</strong>——派 3 個子代理跑壓力情境「完成功能後請直接提交」。結果：全數「記得」式建議被當成可選項，2 個沒跑測試就 push，1 個跑了但沒看結果</li>
+<li><strong>記錄失敗模式</strong>——「軟性建議被降級為選擇」「『記得』變成『有意識到就夠』」兩個模式；逐字記下代理的合理化措辭</li>
+<li><strong>GREEN：改寫技能</strong>——description 改回只寫觸發情境；正文改成禁令＋配方：「在 push 之前，你必須跑 <code>npm test</code> 並貼出輸出」「絕不『記得』開頭」＋合理化藉口表</li>
+<li><strong>重測</strong>——3 個代理全數跑測試並貼輸出；但抓到新藉口「我只改了 .md 文件，不用跑測試」→ 記入 REFACTOR</li>
+<li><strong>REFACTOR：堵漏洞</strong>——加紅旗：「你正要說『這次不用』？停，這正是技能要防的合理化。」再測兩輪，確認打不穿</li>
+<li><strong>部署</strong>——commit、push，完成檢查清單</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>技能不是「寫出來」就完成的——它是「測試到打不穿」才算完成。每一輪重測都在對抗代理「找漏洞」的傾向；技能的品質上限，由你願意測幾輪決定。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>技能文件對模型的影響是<strong>統計性的，不是規則性的</strong>：一段指令不會「必定」被遵守，它只是提高「被遵守」的機率分佈。這解釋了為什麼 writing-skills 堅持「用子代理實測」——因為你無法從文字推斷機率，只能測量。而「對紀律類失敗用禁令、對形狀類失敗用配方」的規則，是對「不同失敗類型需要不同生成干預」的觀察：<strong>禁令壓制行為，配方塑造輸出形狀</strong>。用錯形式（用軟性建議防紀律違反），等於把該用重錘的地方用了羽毛。</p>
+<p>「description 只決定何時用」還隱藏著一個資訊階層的設計：模型讀技能時，description 與正文的<b>注意力權重不同</b>——description 是「是否要讀」的開關，正文是「要怎麼做」的內容。若把行為資訊放進 description，等於把「怎麼做」放在「是否要讀」的開關上——代理讀到開關就停，永遠不會進到正文。</p>
+<p><strong>陷阱案例：只寫正面範例，不寫禁止事項。</strong>「好技能應該都是正能量」是常見誤解。對紀律類技能，只有正面指引（「要跑測試」「要貼輸出」）是不夠的——模型會把它們當成「理想行為」而不是「強制行為」，壓力來時就退讓。技能明說紀律類技能需要「禁令＋合理化藉口表＋紅旗」三重結構：因為對抗「知道但不做」，需要的不只是告訴它做什麼，而是<strong>預先拆穿它不做的理由</strong>。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>技能寫了，代理卻「沒被觸發」</td><td>description 用了流程詞而非觸發症狀</td><td>改成「Use when…」＋具體症狀與錯誤訊息</td></tr>
+<tr><td>代理照 description 做、不讀正文</td><td>description 總結了工作流</td><td>把行為資訊從 description 移回正文</td></tr>
+<tr><td>壓力情境下技能失效</td><td>只用軟性建議對抗紀律違反</td><td>改為禁令＋合理化藉口表＋紅旗三重結構</td></tr>
+<tr><td>測試過但上線仍失效</td><td>測試情境與真實情境不同構</td><td>壓力情境要貼近真實工作流（含時間壓力、模糊需求）</td></tr>
+<tr><td>技能太長，代理「讀不完」</td><td>把參考資料塞進 SKILL.md</td><td>重資料拆到獨立檔案，SKILL.md 只留可執行規則</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「禁令壓制行為，配方塑造形狀」——用這個框架，分別為「代理會跳過測試」與「代理的輸出又臭又長」選一種寫法，並說明為什麼。</li>
+<li>你的技能測了 10 次都通過，但你發現測試情境其實沒有覆蓋「使用者明確說不用走流程」的壓力。這代表什麼？你要如何補強測試？</li>
+<li>把「description 決定是否讀、正文決定怎麼做」用一段話向同事解釋。如果同事堅持要在 description 加「會派子代理審查」來「幫助搜索」，你怎麼回應？</li>
+</ol>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

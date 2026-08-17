@@ -456,6 +456,48 @@ place. If your platform provides a workspace-exit tool, use it.</p></div><div cl
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：worktree 中的功能開發完成，但要先確認基礎分支才敢收尾</strong></p>
+<ol>
+<li><strong>驗證測試</strong>——在 worktree 內跑完整套件，全綠</li>
+<li><strong>偵測環境</strong>——<code>GIT_DIR != GIT_COMMON</code> 且 <code>git branch --show-current</code> 回傳 <code>feature/pricing-v2</code>，判定為具名分支 worktree</li>
+<li><strong>決定基礎分支</strong>——計畫與對話都沒寫這支分支從哪分出來；不猜 main，直接問：「這個分支是從 main 分出來的，對嗎？」</li>
+<li><strong>呈現 3 個選項</strong>——按技能原文逐字呈現，等使用者選擇</li>
+<li><strong>使用者選 1（本機合併）</strong>——先捕捉 <code>WORKTREE_PATH</code>，切到主 repo 根目錄，checkout main、pull、merge、再跑一次測試確認合併結果全綠</li>
+<li><strong>清理</strong>——<code>git worktree remove</code> 該 worktree、<code>git worktree prune</code>、<code>git branch -d feature/pricing-v2</code></li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>「測試在分支上全綠」與「測試在合併後全綠」是兩件事——merge 可能帶進 base 上的新衝突。技能把「先合併、再對合併結果驗證」寫成固定順序，是為了讓「整合錯誤」在任何 push 之前就被抓到。而先確認基礎分支，是因為合併到錯誤 base 要復原的成本遠高於多問一句。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>Step 2 的環境偵測指令背後的設計很值得拆解：<code>GIT_DIR</code> 指向實際的 .git 目錄，<code>GIT_COMMON</code> 指向 shared 的 common dir。一般 repo 兩者相同；linked worktree 或子模組則不同。技能用這兩個變數區分「三種世界」，並分別定義選單與清理規則——這是<strong>把 git 內部機制映射成安全決策</strong>的典型：偵測結果直接決定「可不可以合併」（detached HEAD 時縮成 2 選項）與「要不要我清理」（只有 <code>.worktrees/</code> 與 <code>worktrees/</code> 下的才是你的）。</p>
+<p>同樣細緻的是 <code>WORKTREE_PATH</code> 的捕捉時機：在 Step 2 捕捉、Step 5 切走目錄後才使用。這是一個極度貼近真實 harness 行為的設計——<code>git worktree remove</code> 必須從 worktree 外部執行，而一旦 cd 出去，<code>git rev-parse --show-toplevel</code> 就回傳錯的值了。文件甚至把「為什麼要先捕捉」寫成註解。</p>
+<p><strong>陷阱案例：合併結果測試全綠就以為完工。</strong>很多人把「合併後全綠」當成終點。但技能只說「合併結果全綠 → 清理 worktree → 刪分支」。若你在合併後、清理前又擅自對 <code>git branch -d</code> 動手、或連合併結果測試都跳過，就製造了「看似完成、實際未知」的狀態。合併後測試是唯一能證明「這棵要被留下來的樹」健康的證據，跳過它等於把證據換成信心。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td><code>git branch -d</code> 被拒（不是 fully merged）</td><td>合併沒成功或選了 detach 分支</td><td>停下來檢查 merge 是否真的完成；只在明確捨棄時才用 <code>-D</code></td></tr>
+<tr><td>合併後測試失敗</td><td>base 分支有新變更，或合併引入衝突未解決</td><td>停止、保留 worktree 與分支原位、調查；尚未 push，本機可復原</td></tr>
+<tr><td>push 被拒絕</td><td>遠端分支已移動</td><td>調查遠端變化；force-push 僅在夥伴明確要求時執行</td></tr>
+<tr><td>使用者說「把它弄掉」</td><td>口語 ≠ 確認詞</td><td>只有輸入 <code>discard</code> 才執行刪除；否則呈現選單並等待</td></tr>
+<tr><td>清理時把別人的 worktree 也移除了</td><td>誤判所有權：非 <code>.worktrees/</code>、<code>worktrees/</code> 下的路徑</td><td>只清理自有 worktree；其餘歸主環境所有，保留原位</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>你發現自己位於 detached HEAD 的 worktree。技能此時呈現哪幾個選項？「合併回 main」為什麼被排除？</li>
+<li>Step 2 為什麼要把 <code>WORKTREE_PATH</code> 在切換目錄「之前」就捕捉？如果延後捕捉，程式會錯在哪一步？</li>
+<li>使用者選了「本機合併」後，你發現合併結果測試紅。列出你此刻「絕對不能做」的三件事，並說明每件為什麼危險。</li>
+</ol>
+
 </div>
 </body>
 </html>

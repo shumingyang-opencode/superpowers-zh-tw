@@ -369,6 +369,47 @@ Ready to implement &lt;feature-name&gt;
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：在 monorepo 裡開新功能，卻先踩到「子模組偽裝成 worktree」的陷阱</strong></p>
+<ol>
+<li><strong>偵測現有隔離狀態</strong>——<code>git rev-parse --git-dir</code> 與 <code>--git-common-dir</code> 不同，第一個念頭是「我已經在 worktree 裡了」。但先跑子模組防護：<code>git rev-parse --show-superproject-working-tree</code> 回傳了路徑——這是 submodule，不是 worktree</li>
+<li><strong>判定為一般 repo</strong>——依技能規則把子模組當作一般 repo 處理，回到主目錄執行偵測，確認主 repo 也是 <code>GIT_DIR == GIT_COMMON</code></li>
+<li><strong>徵求同意</strong>——檢查指令中沒有宣告 worktree 偏好，於是詢問：「你要我設定隔離的 worktree 嗎？它會保護你目前的 branch 不被變更影響。」</li>
+<li><strong>確認無原生工具後走 git 備援</strong>——檢查是否已有 <code>.worktrees/</code>，沒有，預設使用 <code>.worktrees/</code>；先跑 <code>git check-ignore .worktrees</code> 確認被忽略，若沒有就先加進 .gitignore 並 commit</li>
+<li><strong>建立 worktree</strong>——<code>git worktree add .worktrees/feature/reporting -b feature/reporting main</code>，切過去跑 <code>npm install</code>，再跑基線測試確認乾淨起點</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>偵測不是「可選的禮貌」，而是安全的第一步。子模組的 <code>GIT_DIR != GIT_COMMON</code> 會騙過肉眼，若直接結論「已在 worktree」，你會在錯誤的隔離假設上開始工作；同理，未驗證 <code>.worktrees/</code> 被忽略就建立，等於把整棵 worktree 暴露給「不小心 commit 進 repo」的風險。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>這支技能的核心洞察是「<strong>優先使用 harness 的原生工具</strong>」——原因藏在「幽靈狀態」這個詞裡：原生 worktree 工具（如 <code>EnterWorktree</code>、<code>WorktreeCreate</code>）在 harness 的狀態模型裡是有「身分」的，它知道 worktree 存在、它管理分支與清理。你用 <code>git worktree add</code> 繞過它，建立的 worktree 對 harness 而言<strong>不可見</strong>——之後的清理、退出、狀態追蹤全部失靈，這份「幽靈」狀態會殘留在 repo 裡直到某天手動清除。</p>
+<p><code>GIT_DIR vs GIT_COMMON</code> 的機制也值得深入：git 用 <code>commondir</code> 讓多個 worktree 共享同一份 objects、refs 與 config，而每個 worktree 有自己的 index 與 HEAD。技能用「兩者是否相等」當成「是否已隔離」的探針，是因為這是唯一不依賴路徑猜測的判準——你在子模組裡、在 CI 的裸 repo 裡、在 harness 的臨時目錄裡，都能用同一對指令得到正確答案。</p>
+<p><strong>陷阱案例：有原生工具卻用 git 指令。</strong>「<code>git worktree add</code> 比較快」是技能明列的錯誤 #1。它不只是在「建立」這一步繞過 harness，而是從建立那一刻起，整個 worktree 的生命週期（開、管、關）都脫離了 harness 的掌控——之後每個依賴 harness 狀態的步驟都建立在一個它看不見的錯誤前提上。省下的 10 秒，換來的是後續所有自動化的失明。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>偵測顯示「已在 worktree」但你想確認</td><td>子模組也會觸發 <code>GIT_DIR != GIT_COMMON</code></td><td>跑 <code>git rev-parse --show-superproject-working-tree</code>；回傳路徑就是子模組</td></tr>
+<tr><td>建立 worktree 後 git status 顯示整個目錄未追蹤</td><td>worktree 目錄未被 .gitignore 忽略</td><td>先 <code>git check-ignore</code> 驗證，未忽略就加入 .gitignore 並 commit</td></tr>
+<tr><td>sandbox 拒絕建立 worktree</td><td>權限或沙箱限制</td><td>告知使用者後原地工作，照常跑設定與基線測試</td></tr>
+<tr><td>基線測試在全新 worktree 就失敗</td><td>依賴未安裝或環境差異</td><td>先跑依賴安裝；仍失敗就回報並詢問「要調查還是繼續」</td></tr>
+<tr><td>找不到該用哪個目錄</td><td>指令、既有目錄、預設三者歧義</td><td>依優先序：明確指令 &gt; 既有 <code>.worktrees/</code>（或 <code>worktrees/</code>）&gt; 專案根目錄預設</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>為什麼技能要你先「偵測既有隔離」再「建立」？直接建立會有什麼實際風險？</li>
+<li>「子模組防護」為什麼存在？<code>GIT_DIR != GIT_COMMON</code> 在子模組裡也成立，這對「判斷是否已隔離」造成什麼混淆？</li>
+<li>你的專案沒有 .gitignore。請列出在建立 worktree 之前你必須先做的動作，並說明如果不做，最糟會發生什麼。</li>
+</ol>
+
 </div>
 </body>
 </html>

@@ -289,6 +289,51 @@ After the spec review loop passes, ask the user to review the written spec befor
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：替既有訂單模組加入「換貨流程」（大型既有程式庫）</strong></p>
+<ol>
+<li><strong>探索專案上下文</strong>——先讀 <code>orders/</code> 目錄、既有的 <code>specs/</code>、最近 10 個 commits，發現已有 <code>Order.status</code> 與退貨 API，但沒有狀態機抽象</li>
+<li><strong>評估範圍</strong>——「換貨」橫跨訂單、庫存、物流三個子系統；先向使用者指出「這需要拆成三個子專案」，取得同意後把「訂單狀態機」列為第一個子專案</li>
+<li><strong>一次一題</strong>——Q1：「換貨允許部分商品嗎？」Q2：「換貨期間原訂單顯示什麼狀態？」Q3：「庫存不足時可否預購？」每一題都先給出你從程式碼裡推得的預設答案，再讓使用者確認或否決</li>
+<li><strong>提出 2-3 種做法</strong>——(A) 擴充既有 status enum 加多個 if（最省事，但每次流程變動都要改判別式）(B) 引入 <code>OrderStateMachine</code> 物件（初期成本高，但換貨／退貨／取消共用同一套規則）(C) 用資料庫流程表驅動。建議 B，因為既有 <code>orderService</code> 已出現 status 判別式蔓延的臭味</li>
+<li><strong>分段呈現設計</strong>——先講狀態機核心規則（取得核准），再講資料遷移（既有 status 值如何映射），最後講測試策略</li>
+<li><strong>撰寫設計文件</strong>到 <code>docs/superpowers/specs/2026-08-17-exchange-flow-design.md</code> 並 commit</li>
+<li><strong>規格自我審查</strong>——掃描到「TBD：換貨期限」，補上具體天數</li>
+<li><strong>使用者審查書面規格</strong>——等核准後才進入下一步</li>
+<li><strong>轉入 writing-plans</strong>，並在派發時把「既有退貨 API 的介面」寫進計畫的 Interfaces 區塊，因為換貨任務的子代理沒有你的上下文</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>這不是新專案，而是長進既有程式庫的功能。直接改 status 判別式會讓「換貨」變成又一個 if——三個月後退貨流程要改，沒人知道這裡的隱含相依。拆子專案＋狀態機是為了把「流程規則」集中成單一可獨立測試的單元，也讓每個子專案都有自己的 spec → plan → 實作循環。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>brainstorming 的 <code>&lt;HARD-GATE&gt;</code> 在 OpenCode 這類 agent harness 裡是怎麼生效的？它其實不是「技術上的封鎖」，而是<strong>寫在技能文件裡的指令，靠模型對指令的遵守來達成</strong>。技能文字會佔據上下文的一塊固定權重，「HARD-GATE」「反模式」「鐵律」這類字眼是設計來對抗模型在<strong>生成回應時的慣性</strong>——沒有明確禁止時，模型傾向於直接往下做下一步（產生程式碼），而不是停下來問問題、等核准。</p>
+<p>這也解釋了為什麼技能要求「每個段落後問『目前看起來正確嗎』」：<strong>提問本身會重置模型的輸出傾向</strong>，防止它從「呈現設計」直接滑進「實作」。對 agent 而言，這兩者在 token 層面上相鄰；沒有強制關卡，它們會被併成一段輸出，HARD-GATE 就形同虛設。</p>
+<p><strong>陷阱案例：先問問題、再探索專案。</strong>很多人以為 brainstorming 的「一次一題」就是開始問。但清單第一步是「探索專案上下文」——看檔案、文件、最近 commits。若你先問「你希望支援多語系嗎？」而專案其實早已 i18n-ready，你就白問一個問題、浪費使用者注意力，甚至可能據此設計出不存在的新需求。先讀程式碼再問問題，是讓問題本身有根據的前提。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>問到第三題使用者開始不耐煩</td><td>問題超出「理解需求」，變成細節追問</td><td>回到 YAGNI：只問會改變設計方向的問題，其餘寫成假設讓使用者否決</td></tr>
+<tr><td>使用者說「你決定就好」</td><td>代理把決策責任推回去，使用者其實不懂自己在被問什麼</td><td>先給你的建議與理由，把問題變成「確認 vs 否決」的二選一</td></tr>
+<tr><td>設計呈現後使用者說「其實我要的是別的東西」</td><td>成功準則沒在提問階段鎖定</td><td>回到釐清問題階段補問成功準則；必要時重寫設計文件</td></tr>
+<tr><td>規格寫完發現計畫階段要改設計</td><td>規格自我審查或使用者審查被跳過</td><td>不可直接改——回 brainstorming 更新設計文件，再重走 writing-plans</td></tr>
+<tr><td>使用者核准後代理直接實作、沒呼叫 writing-plans</td><td>流程跳關：核准設計 ≠ 核准實作</td><td>嚴格遵守「brainstorming 後唯一技能是 writing-plans」的終點規則</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>使用者要求「把整個購物車系統重寫成微服務」。在第一次提問之前，你應該先做哪一步？為什麼這一步不能省略？</li>
+<li>你核准了設計，但寫設計文件時發現既有程式碼根本沒有文件假設的抽象（例如假設有 <code>NotificationService</code>）。你該直接改文件，還是停下來回報？依據技能的哪一條規則？</li>
+<li>「視覺夥伴」何時該提供？設計一個「看似視覺問題、其實用終端機更好」的情境，並說明你的判斷依據。</li>
+</ol>
+
 </div>
 </body>
 </html>

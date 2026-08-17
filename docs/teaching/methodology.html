@@ -105,6 +105,47 @@
 <li>□ 已理解七個階段各自的角色</li>
 </ul>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：從「GSD 式接管流程」遷移到 Superpowers 的團隊，第一個完整週期</strong></p>
+<ol>
+<li><strong>遷移前的差異盤點</strong>——舊流程「定義→分解→執行」由平台強制，代理被關在固定模板裡；Superpowers 是技能層的指示，代理照做但你隨時能改</li>
+<li><strong>第一個功能</strong>——「加一個匯出儀表板的 CSV 功能」：using-superpowers 自動觸發 brainstorming，資深者第一次體驗「代理反問需求、而不是直接做」；設計核准後自動開 worktree、寫計畫</li>
+<li><strong>執行途中出問題</strong>——任務 3 的計畫假設過時，子代理回報 BLOCKED。團隊沒有「硬闖」，而是停下改計畫再續跑——這正是「你保有控制權」的證明</li>
+<li><strong>收尾</strong>——全綠後呈現四選項，團隊選擇先發 PR 讓其他部門 review；worktree 保留等回饋</li>
+<li><strong>回顧</strong>——週五回顧：把「中途改計畫」的經驗寫回 team wiki，並決定調整 brainstorming 對「匯出類功能」的預設問題清單</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>遷移最大的文化差異是「誰有最終決定權」。GSD 類做法讓流程凌駕於人；Superpowers 讓技能服務於人。這個案例刻意展示「計畫可以改、決策可以覆蓋、技能可以客製」——理解這三點，才不會把 Superpowers 用成另一個 GSD。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>「自動觸發」是這套方法論與「技能包」的分水嶺，而它的機制值得拆解：<strong>using-superpowers 不是一個「檢查一次」的開場白，而是一個持續生效的上下文常數</strong>。它被注入每個 session 的開頭，持續佔據模型注意力，讓「先檢查技能再行動」成為每次生成前的隱含約束。自動觸發的價值不在「提醒」，而在於<strong>把流程決策從記憶負擔變成系統行為</strong>——人不靠記得，agent 不靠提醒。</p>
+<p>「14 個技能接成一條管線」的另一面是<strong>狀態的流動</strong>：brainstorming 的輸出（設計文件）是 writing-plans 的輸入，writing-plans 的輸出（計畫）是執行的輸入。每一站產出的「文件」都是下一站的上下文，管線才會「自己跑起來」。這也解釋了為什麼文件位置被寫死（<code>docs/superpowers/specs/</code>、<code>plans/</code>）——交接文件必須有穩定的地址，管線才找得到。</p>
+<p><strong>陷阱案例：只移植「看起來好用」的幾個技能。</strong>「我們用 brainstorming 和 TDD 就好，跳過計畫和審查」——這是最常見的遷移半吊子。它的問題不是「少了幾個環節」，而是<strong>斷了管線</strong>：沒有 writing-plans，執行時沒有契約；沒有 code review，錯誤拖到合併前才發現；沒有 worktree，主分支隨時被污染。流程不是菜單，你無法只點前菜與甜點。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>技能裝了但從沒自動觸發</td><td>using-superpowers 沒安裝或版本不符</td><td>確認開場指令注入正常；用「我們來做 X」實測觸發</td></tr>
+<tr><td>代理繞過 brainstorming 直接做</td><td>觸發被使用者指示或上下文壓過</td><td>檢查是否有 AGENTS.md／CLAUDE.md 覆蓋；無則要求代理補走流程</td></tr>
+<tr><td>文件路徑找不到（specs/plans 消失）</td><td>專案沒有預設目錄或偏好設定遺失</td><td>建立 <code>docs/superpowers/</code> 目錄結構，確認技能可寫入</td></tr>
+<tr><td>管線跑到一半「斷電」</td><td>session 中斷，狀態沒落盤</td><td>靠已 commit 的設計／計畫文件續跑；重跑 executing-plans</td></tr>
+<tr><td>團隊質疑「太多流程、太慢」</td><td>把流程成本與不確定性成本混為一談</td><td>用證據比較：有流程的返工次數 vs 無流程的返工次數</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「自動觸發」為什麼必須是「任何回應之前」，而不是「開始工作之前」？若改成後者，會漏掉哪一種情況？</li>
+<li>如果一個團隊只用 brainstorming＋TDD，管線在哪兩個點斷掉？斷點各自造成什麼後果？</li>
+<li>「文件位置寫死」對管線的意義是什麼？若每個人自訂規格檔位置，管線會發生什麼事？</li>
+</ol>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

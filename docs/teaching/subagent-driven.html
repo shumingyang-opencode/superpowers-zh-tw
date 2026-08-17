@@ -104,6 +104,48 @@
 <li>□ 已嘗試用 SDD 完成至少一個任務</li>
 </ul>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：一整晚無人值守地跑完一份 12 任務的遷移計畫</strong></p>
+<ol>
+<li><strong>啟動前</strong>——建立 worktree、執行 <code>sdd-workspace</code>、確認 ledger 乾淨、讀完計畫並做前飛衝突掃描（發現 Task 8 的測試範例沒斷言，批次問夥伴後裁決）</li>
+<li><strong>無人值守執行</strong>——主代理不中斷地依序派發 Task 1-12；每個任務：派實作子代理 → 產 review package → 派任務審查 → 過關記入 ledger</li>
+<li><strong>途中兩個任務進修正迴圈</strong>——Task 3 三輪後換更強模型才過；Task 7 的審查發現「規格 ❌：缺錯誤處理分支」，R2 通過</li>
+<li><strong>意外事件</strong>——凌晨某次 context compaction 後，主代理靠 ledger 續跑：從第一個「無 complete 行」的任務接上，而不是重派已完成任務（這是 ledger 設計的核心目的）</li>
+<li><strong>最終審查</strong>——全部任務過關後，用最強模型派整支分支審查，把 ledger 中的 minor（deferred）清單交給它分流</li>
+<li><strong>收尾</strong>——審查乾淨 → finishing-a-development-branch 呈現選項；隔天一早使用者看到結果與完整 ledger 記錄</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>SDD 的價值在「可無人值守、可復原」。每個任務的產物（簡報、報告、審查套件、ledger）都落盤在 git-ignored 工作區，即使主代理上下文被壓縮，記錄仍然完整——這讓「長期運行」成為可能，也是它優於「單一對話做到底」的結構性理由。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>SDD 最反直覺的設計是「<strong>每次派全新的子代理</strong>」。直覺上，重複使用同一個代理好像更「連貫」，但代價是<strong>上下文污染</strong>：同一個 agent 的上下文會累積上一次任務的錯誤假設、半成品決策與試誤痕跡，而這些痕跡會無形地干擾下一個任務的判斷。全新子代理的上下文從任務簡報開始——唯一的資訊源是計畫的抽取結果，於是被迫照計畫行事。簡報「只含任務本身」，是刻意的資訊隔離，不是偷懶。</p>
+<p>「<strong>以檔案移交產物</strong>」的規則同樣值得拆解：子代理把完整報告寫進 <code>task-N-report.md</code>、只回傳一行的狀態摘要，讓協調者的上下文只保留「摘要＋檔案路徑」而非全文。這是一場精密的記憶管理——協調者要推動 12 個任務，它的上下文是稀缺資源，任何多餘的文字都會稀釋它對全局的掌握。文件是廉價的，上下文是昂貴的。</p>
+<p><strong>陷阱案例：讓子代理「讀整個計畫檔」。</strong>「它需要上下文，就給它全部」——這看似貼心，實則把一整份 12 任務的計畫塞進單一任務子代理的上下文。子代理會「看到」其他任務的細節，然後開始自作主張地調整自己的任務去配合它看到的東西，或對其他任務的內容產生錯誤理解。任務簡報之所以要「抽出來」，就是要保證子代理看到的範圍與它被指派的範圍完全一致。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>壓縮後重派了已完成的任務</td><td>進度只記在 todos，沒記 ledger</td><td>以 <code>progress.md</code> 的 <code>Task N: complete</code> 行為唯一進度真相</td></tr>
+<tr><td>子代理做出計畫沒有的「自創行為」</td><td>子代理看到了超出任務範圍的內容</td><td>只給任務簡報與必要介面；絕不給整個計畫檔</td></tr>
+<tr><td>任務審查與實作「互相吹捧」</td><td>審查者繼承了實作者的上下文或偏見</td><td>審查子代理只拿到簡報＋報告＋review package，獨立判決</td></tr>
+<tr><td>修正迴圈一直不過</td><td>原實作者看不見自己盲點</td><td>R4 換全新子代理＋更強模型，並告知「先前嘗試 N 次」</td></tr>
+<tr><td>多個實作子代理同時在改程式碼</td><td>違反「絕不平行派多個實作子代理」</td><td>實作任務一律循序；平行只留給調查類子代理</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>「全新子代理＝乾淨上下文」與「重複使用＝污染」的機制是什麼？舉一個「上一次任務的痕跡干擾本次判斷」的具體例子。</li>
+<li>為什麼實作子代理「絕不平行」，而調查類子代理可以平行（見 dispatching-parallel-agents）？區分這兩者的判準是什麼？</li>
+<li>某任務修正迴圈到 R5 仍有一條 load-bearing 發現。協調者該怎麼做？如果它「直接採用」這個發現而不回報，會違反哪條規則？</li>
+</ol>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

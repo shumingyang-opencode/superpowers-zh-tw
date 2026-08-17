@@ -608,6 +608,48 @@
 </ul>
 
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
+
+<p><strong>案例：CI 上「偶發」失敗的端對端測試，本機跑都過</strong></p>
+<ol>
+<li><strong>根因調查：穩定重現</strong>——本機無法重現。改用「蒐集證據」而非猜測：在 CI 失敗的 job log 裡撈出完整堆疊，發現失敗點在「等待通知 WebSocket 連線」這一行</li>
+<li><strong>檢查最近變更</strong>——<code>git log</code> 顯示昨天重構把「等待連線」從條件輪詢改成固定 <code>sleep(2000)</code>，理由寫「加速測試」</li>
+<li><strong>模式分析</strong>——對照倉庫內其他等待邏輯，發現專案有 <code>condition-based-waiting.md</code> 輔助技術：用事件條件輪詢取代任意 timeout</li>
+<li><strong>假設</strong>——「固定 sleep 在慢 CI runner 上不足以等完 WebSocket handshake，改用事件觸發條件等待即可穩定」</li>
+<li><strong>最小化測試</strong>——把 sleep 換成 polling <code>waitFor(ws.readyState === OPEN)</code>，本機連跑 20 次全過，CI 連跑 10 次全過</li>
+<li><strong>建立回歸測試</strong>——寫一支測試驗證「未連線時不執行後續步驟」，防止未來有人再改成 sleep</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>「偶發」是沒有根因調查就直接猜的典型陷阱。這裡走的是「不可重現 → 蒐集證據（失敗 log）→ 檢查變更 → 對照既有輔助技術」的完整四階段，最後用「條件等待」這個已被驗證的模式取代「固定等待」這個已知反模式。</p>
+
+<h2 id="deep-dive-theory">深入原理擴充</h2>
+
+<p>systematic-debugging 的結構對應著科學方法在 agent 身上的落地：<strong>觀察 → 假設 → 預測 → 實驗</strong>。技能強制「根因調查先於修復」，是因為 LLM 在除錯時有兩個已知偏差：一是<strong>錨定效應</strong>——看到症狀就產生第一個可能的解釋，然後找證據支持它；二是<strong>過度自信</strong>——第一次看到「好像懂了」就急著修。四階段強制把「形成假設」與「驗證假設」拆開，讓模型沒有機會在兩者之間偷渡。</p>
+<p>「3 次以上失敗 = 質疑架構」這條規則特別深刻：它把<strong>單一修復的失敗次數</strong>當成「假設空間本身有錯」的訊號。對 agent 而言，重複失敗通常不是「運氣差」，而是問題不在你假設的那一層——可能是架構、可能是資料模型、可能是整個模式的假設。與其再修一次，不如退回質疑「我們是不是在錯誤的問題空間裡」。</p>
+<p><strong>陷阱案例：調整測試來「配合」失敗。</strong>最隱晦的症狀修復是「改測試期望值讓它過」——例如把 <code>assert x == 3</code> 改成 <code>assert x in (2, 3)</code>。測試通過了，但你改變的是「判斷標準」，不是「行為」。系統化除錯的規則要求修復「根因」，而「測試期望值」不是根因——它是對正確行為的描述。改它，等於宣告「正確行為其實是會變的」，根因被永久封印。</p>
+
+<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
+
+<table>
+<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
+<tbody>
+<tr><td>問題無法重現</td><td>時間相依、環境差異、或根本是隱患</td><td>不要猜——蒐集更多資料（log、環境變數、重跑多次）</td></tr>
+<tr><td>修完又出現在別的地方</td><td>只修了症狀，根因在共用底層</td><td>沿呼叫鏈回溯到源頭；檢查共用函式／共用資料</td></tr>
+<tr><td>測試偶發性失敗</td><td>固定 timeout 或競態</td><td>用條件輪詢（condition-based-waiting）取代固定 sleep</td></tr>
+<tr><td>3 次以上修復失敗</td><td>假設空間錯誤或架構問題</td><td>停止修復，質疑整個模式／架構假設</td></tr>
+<tr><td>「系統化調查後找不到根因」</td><td>95% 的情況是調查不完整</td><td>逐一確認四個階段都走完；真找不到才記錄並加防護與監控</td></tr>
+</tbody>
+</table>
+
+<h2 id="advanced-challenges">進階挑戰題</h2>
+
+<ol>
+<li>你修好一個 bug，卻在「修復驗證」時發現測試通過、但手動重現步驟仍失敗。這代表什麼？你違反了哪一條規則？</li>
+<li>「一次改多個東西」為什麼是除錯的禁忌？用「可隔離性」這個詞解釋它如何讓根因永遠無法被確認。</li>
+<li>承上題的 flaky test：如果換成你，如何證明「改用條件輪詢」真的是修復，而不是又一次運氣好？寫出驗證步驟。</li>
+</ol>
+
 </div>
 </body>
 </html>
