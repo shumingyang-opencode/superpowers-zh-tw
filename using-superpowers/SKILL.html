@@ -183,6 +183,42 @@ If you think there is even a 1% chance a skill might apply to what you are doing
 <div class="pair"><div class="col-en" lang="en"><h2 id="user-instructions">User Instructions</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="使用者指示">使用者指示</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take precedence over skills, which in turn override default behavior. Only skip skill workflows or instructions when your human partner has explicitly told you to.</p></div><div class="col-zh" lang="zh-Hant"><p>使用者指示（CLAUDE.md、AGENTS.md、GEMINI.md 等，以及直接要求）優先於技能，而技能又覆蓋預設行為。只有在你的真人夥伴明確要求時，才跳過技能工作流或指示。</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>Using-superpowers 是 Superpowers 的「開場白」技能：在任何對話開始時，先檢查有沒有技能適用於你正在做的事。</p>
+<p>核心規則是<strong>「在任何回應之前先呼叫技能」</strong>——包括澄清問題。因為有些技能（如 brainstorming）會改變你提問的方式。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：使用者說「幫我建一個登入頁面」</strong></p>
+<ol>
+<li>代理檢查：這是一個新功能 → brainstorming 技能適用</li>
+<li>宣告「正在使用 brainstorming 技能」</li>
+<li>開始探索專案、提出釐清問題</li>
+</ol>
+<p>如果沒有先呼叫 brainstorming，代理可能直接開始寫登入頁面——而使用者可能想要的是 OAuth 而不是帳號密碼登入。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>直接回應而不先檢查技能</td><td>先掃描技能清單看有沒有適用的</td></tr>
+<tr><td>覺得「這太簡單不需要技能」</td><td>越是「看起來簡單」越可能有適用的技能</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已在對話開始時檢查技能清單</li>
+<li>□ 已在任何回應前呼叫相關技能</li>
+<li>□ 已宣告「正在使用 [技能] 以達成 [目的]」</li>
+</ul>
+
+
 </div>
 </body>
 </html>

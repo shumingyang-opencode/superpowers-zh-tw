@@ -240,6 +240,55 @@ After the spec review loop passes, ask the user to review the written spec befor
 <code>skills/brainstorming/visual-companion.md</code></p></div><div class="col-zh" lang="zh-Hant"><p>若他們同意使用夥伴，在繼續前先讀詳細指南：
 <code>skills/brainstorming/visual-companion.md</code></p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>Brainstorming 是所有開發工作的起點。它的核心思想是：<strong>在動手寫任何程式碼之前，先把需求、設計與範圍搞清楚。</strong>這不是浪費時間——恰恰相反，它能避免你花兩小時實作一個根本不是使用者想要的功能。</p>
+<p>這個技能特別強調「一次只問一個問題」。原因很簡單：每個問題的答案可能改變後續問題的方向。如果一次丟出五個問題，使用者可能只回答其中兩個，而你會在錯誤的假設上繼續前進。</p>
+<p>另一個關鍵概念是 <strong>YAGNI（You Aren't Gonna Need It）</strong>：無情地砍掉不必要的功能。「這個以後可能用得到」是技術債的最常見來源。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：使用者說「幫我建一個留言板功能」</strong></p>
+<ol>
+<li>先探索專案——發現已有使用者系統與 API 路由結構</li>
+<li>問第一個問題：「留言需要支援圖片嗎？」→ 使用者說不需要</li>
+<li>問第二個問題：「留言可以被刪除嗎？只有作者還是管理員也可以？」→ 使用者說只有作者</li>
+<li>問第三個問題：「需要通知功能嗎？」→ 使用者說先不做</li>
+<li>提出兩種做法：(A) 單純的 CRUD + 前端元件 (B) 搭配 WebSocket 即時更新</li>
+<li>建議做法 A（因為需求簡單，不需要即時更新）</li>
+<li>使用者核准 → 撰寫設計文件 → 呼叫 writing-plans</li>
+</ol>
+<p>注意：你沒有預設「需要圖片」、「需要通知」或「需要即時更新」。每一個假設都被問出來並得到答案。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>為什麼是錯的</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>跳過 brainstorming 直接實作</td><td>「這很簡單」往往是最危險的假設</td><td>就算專案再小，也要走完設計流程</td></tr>
+<tr><td>一次問太多問題</td><td>後續問題的答案可能被前幾題的答案影響</td><td>一次一題，等回答後再問下一題</td></tr>
+<tr><td>把 2-3 種做法都藏起來只給一種</td><td>使用者失去了選擇權</td><td>呈現做法與取捨，讓使用者決定</td></tr>
+<tr><td>設計文件寫完就直接動手</td><td>可能有隱含的假設或範圍問題</td><td>請使用者審查書面規格後再繼續</td></tr>
+<tr><td>brainstorming 後呼叫了 writing-plans 以外的技能</td><td>違反流程——下一步只能是 writing-plans</td><td>嚴格遵循：brainstorming → writing-plans</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已探索專案上下文（檔案、文件、近期 commits）</li>
+<li>□ 已一次一題地釐清需求</li>
+<li>□ 已提出 2-3 種做法並附上取捨與建議</li>
+<li>□ 已以適當篇幅呈現設計並取得使用者核准</li>
+<li>□ 已撰寫設計文件到 <code>docs/superpowers/specs/</code></li>
+<li>□ 已完成規格自我審查（佔位符、一致性、範圍、歧義）</li>
+<li>□ 已請使用者審查書面規格</li>
+<li>□ 使用者核准後才呼叫 writing-plans</li>
+</ul>
+
+
 </div>
 </body>
 </html>

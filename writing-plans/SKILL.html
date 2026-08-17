@@ -235,6 +235,53 @@ git commit -m &quot;feat: add specific feature&quot;
 - <strong>必要子技能：</strong> 使用 superpowers:executing-plans
 - 批次執行並設審查檢查點</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>撰寫計畫的核心原則是：<strong>假設執行者對你的程式碼庫零上下文。</strong>你寫的計畫不是給自己看的——是給一個完全不了解專案的人（或子代理）看的。</p>
+<p>每個任務都應該小到 2-5 分鐘內完成，並且包含：要改哪些檔案、要寫什麼測試、如何驗證。任務太大會讓執行者迷失方向；太小會瑣碎到沒意義。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：為「使用者偏好設定」功能撰寫計畫</strong></p>
+<pre><code>## Task 1: 建立資料模型
+- 檔案：src/models/user-prefs.ts（新建）
+- 內容：定義 UserPrefs interface（theme, language, notifications）
+- 測試：src/models/__tests__/user-prefs.test.ts
+- 驗證：tsc --noEmit 通過
+
+## Task 2: 建立 API 端點
+- 檔案：src/api/user-prefs.ts（新建）
+- 內容：GET/PUT /api/user/prefs
+- 測試：src/api/__tests__/user-prefs.test.ts
+- 驗證：跑測試，確認 CRUD 正常
+</code></pre>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>後果</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>任務太大（「實作整個功能」）</td><td>執行者迷失方向</td><td>拆成 2-5 分鐘的小任務</td></tr>
+<tr><td>不指定檔案路徑</td><td>執行者亂猜放哪裡</td><td>明確列出要改的每個檔案</td></tr>
+<tr><td>不寫測試要求</td><td>執行者可能跳過測試</td><td>每個任務都附上測試要求</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已確認範圍（如果太大，已拆成子計畫）</li>
+<li>□ 已規劃檔案結構（哪些建立、哪些修改）</li>
+<li>□ 每個任務都小到 2-5 分鐘可完成</li>
+<li>□ 每個任務都指定了要改的檔案</li>
+<li>□ 每個任務都附上測試要求</li>
+<li>□ 每個任務都有驗證方式</li>
+<li>□ 計畫已儲存到 <code>docs/superpowers/plans/</code></li>
+</ul>
+
+
 </div>
 </body>
 </html>

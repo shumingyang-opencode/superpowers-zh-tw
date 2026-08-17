@@ -594,6 +594,48 @@ Otherwise → not TDD
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>No exceptions without your human partner's permission.</p></div><div class="col-zh" lang="zh-Hant"><p>未經你的真人夥伴允許，沒有例外。</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>TDD 的核心循環是<strong>紅 → 綠 → 重構</strong>，但最容易被忽略的是「紅」這一步：<strong>你必須親眼看到測試失敗。</strong>如果你沒看到它失敗，你就不知道它測試的是不是對的東西——它可能本來就會通過。</p>
+<p>「最小程式讓它通過」是另一個容易被違反的原則。很多人會在第一次實作時就加入「以後可能用得到」的功能。這違反了 YAGNI——只寫剛好讓測試通過的最少程式碼。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：實作 <code>calculateDiscount(price, memberLevel)</code></strong></p>
+<ol>
+<li><strong>紅：</strong>寫測試 <code>assert calculateDiscount(100, 'gold') == 85</code> → 測試失敗（函式不存在）</li>
+<li><strong>綠：</strong>寫最小實作：<code>def calculateDiscount(price, level): return price * 0.85 if level == 'gold' else price</code> → 測試通過</li>
+<li><strong>重構：</strong>把折扣率抽成常數 <code>GOLD_DISCOUNT = 0.85</code></li>
+<li><strong>紅：</strong>加第二個測試 <code>assert calculateDiscount(100, 'silver') == 90</code> → 失敗</li>
+<li><strong>綠：</strong>加 <code>elif level == 'silver': return price * 0.90</code> → 通過</li>
+</ol>
+<p>你沒有在一開始就實作所有等級的折扣——你只寫了剛好讓第一個測試通過的程式碼。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>為什麼是錯的</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>先寫實作再補測試</td><td>你會不自覺地讓測試去適配實作</td><td>測試先寫，而且要先看到它失敗</td></tr>
+<tr><td>跳過「看它失敗」的步驟</td><td>可能測試本來就會通過（假陰性）</td><td>每次都要看到紅燈</td></tr>
+<tr><td>一次寫太多功能</td><td>無法隔離哪個修改導致失敗</td><td>一次只加一個功能</td></tr>
+<tr><td>實作了測試沒涵蓋的行為</td><td>未測試的行為可能隨時壞掉</td><td>只寫測試要求的最少實作</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已先寫測試且親眼看到它失敗（紅燈）</li>
+<li>□ 已寫最少的實作讓測試通過（綠燈）</li>
+<li>□ 已重構但保持測試通過</li>
+<li>□ 每次只加一個功能或修一個 bug</li>
+<li>□ 所有測試都通過後才繼續下一個功能</li>
+</ul>
+
+
 </div>
 </body>
 </html>

@@ -64,6 +64,41 @@
 <p>完整工作流就是 <a href="../../map.html">全景圖</a> 那條主線。想深入某一環，回<a href="index.html">教學中心</a>選。</p>
 
 </div>
+
+<h2>教學解說</h2>
+<p>工作流拆解是 Superpowers 的<strong>實戰地圖</strong>。每個階段都有明確的輸入與輸出：brainstorming 的輸出是設計文件，writing-plans 的輸出是任務清單，subagent-driven-development 的輸出是可運作的程式碼。</p>
+<p>關鍵概念是<strong>「階段之間有明確的交接點」</strong>。你不可以在 writing-plans 的中途跑去改 brainstorming 的設計——因為後面的階段可能已經基於那個設計開始工作了。如果需要改設計，必須先停下所有後續工作，回到 brainstorming 重新走流程。</p>
+
+<h2>Worked Example（具體案例）</h2>
+<p><strong>案例：完整的七階段流程</strong></p>
+<ol>
+<li><strong>第 0 步：</strong>說「幫我加一個匯出 CSV 功能」→ using-superpowers 觸發</li>
+<li><strong>第 1 步：</strong>brainstorming 問：匯出哪些欄位？需要篩選嗎？</li>
+<li><strong>第 2 步：</strong>建立隔離 worktree</li>
+<li><strong>第 3 步：</strong>拆成 3 個任務：API 端點 → 前端按鈕 → 測試</li>
+<li><strong>第 4 步：</strong>逐任務派子代理實作</li>
+<li><strong>第 5 步：</strong>每個任務都有 RED-GREEN-REFACTOR</li>
+<li><strong>第 6 步：</strong>任務間送 code review</li>
+<li><strong>第 7 步：</strong>測試全綠後選擇合併或建 PR</li>
+</ol>
+
+<h2>常見錯誤</h2>
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>跳過階段</td><td>每個階段都有存在的理由</td></tr>
+<tr><td>在執行中途改設計</td><td>先停下，回到 brainstorming</td></tr>
+<tr><td>不等子代理回報就派下一個</td><td>等回報 → 審查 → 通過後才派下一個</td></tr>
+</tbody>
+</table>
+
+<h2>練習／檢核清單</h2>
+<ul>
+<li>□ 已理解七個階段的順序與交接點</li>
+<li>□ 已理解「階段之間不能跳來跳去」的規則</li>
+<li>□ 已理解支線技能（debugging、verification）的使用時機</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

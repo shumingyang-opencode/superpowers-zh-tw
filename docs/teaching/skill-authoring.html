@@ -88,6 +88,37 @@ description: Use when executing implementation plans with independent tasks in t
 <p>本站每個技能頁面左欄英文、右欄繁中，逐段對照。如果你想為自己的專案寫新技能，<code>writing-skills</code> 的完整規則在 <a href="../../writing-skills/SKILL.html">writing-skills 技能頁</a>；想理解它怎麼測技能，見附屬的 <a href="../../writing-skills/testing-skills-with-subagents.html">testing-skills-with-subagents</a>。</p>
 
 </div>
+
+<h2>教學解說</h2>
+<p>撰寫技能本身就是 TDD 的實踐。核心概念是：<strong>先寫測試（壓力情境），看著代理失敗，再寫技能讓它通過</strong>。</p>
+<p>很多人會犯的錯誤是「直接寫技能描述」而不先測試。這就像寫程式不寫測試——你不知道你的技能是否真的教對了事情。</p>
+
+<h2>Worked Example（具體案例）</h2>
+<p><strong>案例：撰寫「資料庫遷移」技能</strong></p>
+<ol>
+<li>壓力測試：「幫我加欄位」→ 代理直接改 production DB → <strong>失敗</strong></li>
+<li>撰寫技能：定義遷移流程（建檔案 → staging 測試 → production）</li>
+<li>再測試：代理按照流程操作 → <strong>通過</strong></li>
+<li>重構：關閉「直接改 DB」的漏洞</li>
+</ol>
+
+<h2>常見錯誤</h2>
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>不寫測試就直接寫技能</td><td>先寫壓力情境看代理是否會失敗</td></tr>
+<tr><td>技能描述太模糊</td><td>具體到代理能照著做</td></tr>
+<tr><td>技能是敘事不是指南</td><td>技能是可重用的參考，不是故事</td></tr>
+</tbody>
+</table>
+
+<h2>練習／檢核清單</h2>
+<ul>
+<li>□ 已理解技能撰寫的 TDD 流程</li>
+<li>□ 已嘗試撰寫一個技能並用子代理測試</li>
+<li>□ 已確認技能描述具體到代理能照著做</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

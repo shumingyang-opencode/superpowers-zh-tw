@@ -172,6 +172,47 @@ You: [Fix progress indicators]
 - 請求釐清</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>See template at: <a href="code-reviewer.html">code-reviewer.md</a></p></div><div class="col-zh" lang="zh-Hant"><p>範本見：<a href="code-reviewer.html">code-reviewer.md</a></p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>請求程式碼審查的核心理念是：<strong>早點審查，常常審查。</strong>不要等到整個功能做完才送審——那時問題已經根深蒂固，修正成本很高。</p>
+<p>正確的做法是：每完成一個任務就派發一個審查子代理。審查子代理會拿到精確建構的上下文（diff、需求、base/head SHA），而不是你整個 session 的歷史。這確保審查者專注於工作成果。</p>
+<p>另一個關鍵：你是協調者，不是審查者。讓子代理去做 diff 分析，你專注於推動整體進度。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：完成 Task 2「新增驗證函式」後</strong></p>
+<ol>
+<li>取得 SHAs：<code>BASE_SHA=a7981ec</code>（Task 1 完成點），<code>HEAD_SHA=3df7661</code>（目前 HEAD）</li>
+<li>派發審查子代理：描述做了什麼、參照哪份計畫、提供 SHA 範圍</li>
+<li>子代理回報：優點（架構乾淨、有測試）、Important 問題（缺少進度指示器）、Minor 問題（魔法數字 100）</li>
+<li>修正 Important 問題 → 繼續 Task 3</li>
+</ol>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>因為「很簡單」就跳過審查</td><td>越是「看起來簡單」越容易藏問題</td></tr>
+<tr><td>自己看 diff 就算了</td><td>派發審查子代理，讓它用新鮮視角檢查</td></tr>
+<tr><td>忽略 Important 級別的問題</td><td>在繼續前修正 Important 問題</td></tr>
+<tr><td>把整個 session 歷史給審查者</td><td>只給精確的上下文：diff + 需求 + SHA</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 每完成一個任務就送審</li>
+<li>□ 已取得正確的 BASE_SHA 與 HEAD_SHA</li>
+<li>□ 已派發審查子代理並提供精確上下文</li>
+<li>□ 已依 Critical → Important → Minor 順序處理回饋</li>
+<li>□ 如果審查者有誤，已用技術論證提出異議</li>
+</ul>
+
+
 </div>
 </body>
 </html>

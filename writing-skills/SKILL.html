@@ -1024,6 +1024,45 @@ step2 [label=&quot;read file&quot;];
 </ol></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Optimize for this flow</strong> - put searchable terms early and often.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>為這個流程最佳化</strong>——把可搜尋的詞放在開頭並多次出現。</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>撰寫技能本身就是 TDD 的實踐：先寫測試案例（壓力情境），看著代理在沒有技能時失敗，然後撰寫技能文件讓代理通過測試。</p>
+<p>技能不是「你曾經怎麼做」的敘事——它是<strong>可重用的參考指南</strong>。好的技能描述要精確到讓代理知道「什麼時候用」和「怎麼用」。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：撰寫一個「資料庫遷移」技能</strong></p>
+<ol>
+<li>先寫壓力測試：「幫我加一個欄位到 users 表」→ 代理直接改 production DB → 失敗</li>
+<li>撰寫技能：「資料庫遷移必須 (1) 先建遷移檔案 (2) 在 staging 測試 (3) 才上 production」</li>
+<li>再跑測試：代理按照技能流程操作 → 通過</li>
+<li>重構：關閉「直接改 DB」的漏洞</li>
+</ol>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>技能描述太模糊</td><td>具體到代理能照著做</td></tr>
+<tr><td>不寫測試就直接寫技能</td><td>先寫壓力情境看代理是否會失敗</td></tr>
+<tr><td>技能是敘事而不是指南</td><td>技能是可重用的參考，不是故事</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已寫壓力測試案例</li>
+<li>□ 已確認代理在沒有技能時會失敗</li>
+<li>□ 已撰寫技能文件</li>
+<li>□ 已確認代理使用技能後通過測試</li>
+<li>□ 已重構技能文件關閉漏洞</li>
+</ul>
+
+
 </div>
 </body>
 </html>

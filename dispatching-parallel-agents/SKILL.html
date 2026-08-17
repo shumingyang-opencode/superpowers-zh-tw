@@ -223,6 +223,41 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 3. <strong>執行完整套件</strong> - 確認所有修正能共同運作
 4. <strong>抽樣檢查</strong> - 代理可能犯系統性錯誤</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>並行派發子代理的關鍵是<strong>任務之間必須互相獨立</strong>。如果 Task B 依賴 Task A 的結果，它們就不能並行——必須排成序列。</p>
+<p>並行的優勢是速度：三個獨立的 API 端點可以同時實作。但並行的代價是整合風險：三個子代理可能做出互相衝突的決策。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：建立三個獨立的 API 端點</strong></p>
+<ol>
+<li>確認：/api/users、/api/posts、/api/comments 互相獨立</li>
+<li>同時派發三個子代理，每個負責一個端點</li>
+<li>三個都完成後，做整合測試確認沒有衝突</li>
+</ol>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>把有依賴的任務並行派發</td><td>確認獨立性後才並行</td></tr>
+<tr><td>不檢查衝突就合併結果</td><td>並行完成後做整合測試</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已確認任務之間互相獨立</li>
+<li>□ 已同時派發所有獨立任務</li>
+<li>□ 並行完成後已做整合測試</li>
+</ul>
+
+
 </div>
 </body>
 </html>

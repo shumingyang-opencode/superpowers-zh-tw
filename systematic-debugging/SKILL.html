@@ -560,6 +560,54 @@
 <li><strong><code>condition-based-waiting.md</code></strong> —— 用條件輪詢取代任意逾時</li>
 </ul></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>系統化除錯的鐵律只有一條：<strong>先找根因，再提修復。</strong>這不是建議——這是強制要求。違反這條規則就是違反除錯的精神。</p>
+<p>為什麼這麼嚴格？因為「症狀修復」（symptom fix）幾乎必然導致更多問題。你修了一個 bug，結果製造了三個新的。你以為修好了，其實只是把問題藏起來。</p>
+<p>四階段流程的設計邏輯：<strong>根因調查</strong>（搞清楚發生了什麼）→ <strong>模式分析</strong>（對照正常運作的程式碼找出差異）→ <strong>假設與測試</strong>（科學方法：形成假設、最小化測試、驗證）→ <strong>實作</strong>（建立失敗測試、單一修復、驗證）。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：API 回傳 500 錯誤，但本機測試正常</strong></p>
+<ol>
+<li><strong>根因調查：</strong>閱讀錯誤訊息 → 「TypeError: Cannot read property 'name' of undefined」→ 穩定重現：只有在特定使用者有 NULL 的 profile 時發生</li>
+<li><strong>模式分析：</strong>找到另一個類似的 API 端點，它用 <code>user?.profile?.name</code> 安全取值；壞掉的那個用 <code>user.profile.name</code></li>
+<li><strong>假設：</strong>「根因是缺少 null 檢查，因為舊端點用 optional chaining 而新端點沒有」</li>
+<li><strong>最小化測試：</strong>建立一個 unit test，傳入 profile 為 NULL 的使用者 → 確認確實會 crash</li>
+<li><strong>實作：</strong>加上 null 檢查 → 測試通過 → 全部測試通過</li>
+</ol>
+<p>你沒有直接加 <code>if (user.profile) ...</code> 然後就算了——你先找到了根本原因（缺少 optional chaining），然後用一致的模式修復。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>為什麼是錯的</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>看到錯誤就直接修</td><td>可能只修了症狀，根因還在</td><td>先完成四階段流程再修</td></tr>
+<tr><td>一次改多個東西</td><td>無法隔離哪個修改起了作用</td><td>一次只做一個變更</td></tr>
+<tr><td>「先試試看」的心態</td><td>這是在猜，不是在除錯</td><td>形成明確假設再測試</td></tr>
+<tr><td>修了 2 次還失敗就繼續修</td><td>3 次以上失敗可能是架構問題</td><td>停下來質疑架構</td></tr>
+<tr><td>不看錯誤訊息就開始修</td><td>錯誤訊息往往就包含答案</td><td>仔細閱讀每一個字</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已仔細閱讀錯誤訊息與堆疊追蹤</li>
+<li>□ 已穩定重現問題</li>
+<li>□ 已檢查最近的變更（git diff、commits）</li>
+<li>□ 已形成單一明確假設</li>
+<li>□ 已做最小化測試（一次只改一個變數）</li>
+<li>□ 已建立失敗測試案例</li>
+<li>□ 已實作單一修復</li>
+<li>□ 已驗證修復：測試通過、無回歸</li>
+<li>□ 如果 3 次以上修復失敗，已停下來質疑架構</li>
+</ul>
+
+
 </div>
 </body>
 </html>

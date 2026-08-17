@@ -72,6 +72,38 @@
 </ul>
 
 </div>
+
+<h2>教學解說</h2>
+<p>SDD（子代理驅動開發）的核心洞察是：<strong>子代理沒有你的對話上下文，這反而是優點</strong>。因為沒有上下文，它只能照計畫行事——不會被「我覺得應該改成⋯⋯」的想法帶偏。</p>
+<p>另一個關鍵是<strong>「每次派全新的子代理」</strong>。重複使用同一個子代理會讓它的上下文累積越來越多雜訊，品質逐漸下降。全新的子代理 = 全新的上下文 = 專注的執行。</p>
+
+<h2>Worked Example（具體案例）</h2>
+<p><strong>案例：三任務的 SDD 流程</strong></p>
+<ol>
+<li>主代理派 Task 1 子代理 → 子代理實作 → 回報完成</li>
+<li>主代理做 code review → 發現問題 → 派修正子代理 → 修正完成</li>
+<li>主代理派 Task 2 子代理（全新的，不知道 Task 1 的任何事）→ 專注實作 Task 2</li>
+<li>依序完成所有任務</li>
+</ol>
+<p>Task 2 子代理完全不知道 Task 1 做了什麼——這確保它只關注自己的任務，不會被前一個任務的細節干擾。</p>
+
+<h2>常見錯誤</h2>
+<table>
+<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>重複使用同一個子代理</td><td>每次任務都派全新的子代理</td></tr>
+<tr><td>一次派多個任務</td><td>每次只派一個任務</td></tr>
+<tr><td>不等回報就派下一個</td><td>等回報 → 審查 → 通過後才派下一個</td></tr>
+</tbody>
+</table>
+
+<h2>練習／檢核清單</h2>
+<ul>
+<li>□ 已理解「每次派全新子代理」的原因</li>
+<li>□ 已理解「子代理沒有上下文是優點」的概念</li>
+<li>□ 已嘗試用 SDD 完成至少一個任務</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

@@ -313,6 +313,46 @@ Skip any step = lying, not verifying
 - 成功的暗示
 - 任何暗示完成/正確的溝通</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>這個技能的核心鐵律是：<strong>先有證據，再有宣稱。</strong>如果你沒有在當下執行驗證指令並親眼看到輸出，你就不能宣稱工作已完成。</p>
+<p>為什麼這麼嚴格？因為「之前測過了」不代表現在仍然通過。你可能在驗證之後又做了修改，而那些修改可能破壞了某些東西。每次宣稱完成都必須有<strong>新鮮的</strong>驗證證據。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：宣稱「bug 已修復」</strong></p>
+<pre><code>❌ 不好的做法：
+「我修好了那個 bug。」（沒有跑任何測試）
+
+✅ 正確的做法：
+「跑了 npm test，42 個測試全過（附輸出）。
+ bug 的特定重現場景現在回傳正確結果。
+ 確認修復完成。」</code></pre>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>為什麼是錯的</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>宣稱完成但沒跑驗證</td><td>你不知道是否真的完成了</td><td>每次都要跑驗證指令</td></tr>
+<tr><td>引用「之前」的測試結果</td><td>之前的結果不代表現在</td><td>用新鮮的執行結果</td></tr>
+<tr><td>只看部分輸出就宣稱通過</td><td>可能有隱藏的失敗</td><td>完整閱讀輸出，確認 exit code</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已確認要驗證什麼（哪個指令能證明？）</li>
+<li>□ 已執行完整的驗證指令（新鮮的、完整的）</li>
+<li>□ 已完整閱讀輸出並確認 exit code</li>
+<li>□ 輸出確認了你的宣稱</li>
+<li>□ 已附上證據（測試輸出）才宣稱完成</li>
+</ul>
+
+
 </div>
 </body>
 </html>

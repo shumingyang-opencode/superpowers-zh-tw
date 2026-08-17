@@ -332,6 +332,43 @@ Ready to implement &lt;feature-name&gt;
 </tbody>
 </table></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>Git worktree 的目的是<strong>隔離</strong>：讓你在不影響主分支的情況下開發功能。這就像開一個平行時空——你可以在那裡搞砸，而主分支完全不受影響。</p>
+<p>關鍵概念：<code>GIT_DIR</code> 與 <code>GIT_COMMON</code> 的差異。如果兩者相同，你在主 repo；如果不同，你已經在一個 linked worktree 中。<strong>不要重複建立 worktree</strong>——如果已經隔離了，就直接開始工作。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：開始開發新功能「使用者偏好設定」</strong></p>
+<ol>
+<li>偵測：目前在主 repo（<code>GIT_DIR == GIT_COMMON</code>）</li>
+<li>建立 worktree：<code>git worktree add .worktrees/user-prefs -b feature/user-prefs main</code></li>
+<li>切換到 worktree 目錄開始開發</li>
+<li>開發完成後，<code>finishing-a-development-branch</code> 會自動清理這個 worktree</li>
+</ol>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>後果</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>在已經隔離的環境中又建 worktree</td><td>多餘的隔離層，混亂</td><td>先偵測，已在 worktree 中就跳過</td></tr>
+<tr><td>在 main 分支上直接開發</td><td>污染穩定分支</td><td>永遠在隔離的 worktree 或分支中工作</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已偵測是否已在隔離環境中</li>
+<li>□ 如果不在，已建立新的 worktree</li>
+<li>□ 已確認在正確的分支上</li>
+<li>□ 開發完成後依流程清理 worktree</li>
+</ul>
+
+
 </div>
 </body>
 </html>

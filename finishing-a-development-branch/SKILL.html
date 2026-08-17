@@ -409,6 +409,53 @@ place. If your platform provides a workspace-exit tool, use it.</p></div><div cl
 </tbody>
 </table></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>完成開發分支的流程看似只是「合併或開 PR」，但它其實是一道<strong>安全關卡</strong>。核心原則是：驗證測試 → 偵測環境 → 呈現選項 → 執行選擇 → 清理。</p>
+<p>為什麼要先跑完整測試套件？因為「之前測過了」不算數——你必須對<strong>你即將整合的那棵樹</strong>跑測試。分支上測試通過不代表合併到 main 後也通過。</p>
+<p>另一個重要設計：<strong>不自動捨棄工作成果</strong>。選單上沒有「捨棄」選項，因為那是破壞性操作，只能在使用者明確要求時才執行。而且必須輸入確切的 <code>discard</code> 這個詞。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：功能開發完成，測試全綠</strong></p>
+<ol>
+<li>跑 <code>npm test</code> → 42 個測試全過</li>
+<li>偵測環境：不在 worktree 中（<code>GIT_DIR == GIT_COMMON</code>）→ 標準 3 個選項</li>
+<li>問：「這個分支從哪分出來的？」→ 使用者說 main</li>
+<li>呈現選項：(1) 合併回 main (2) Push 建 PR (3) 維持原狀</li>
+<li>使用者選 2 → push 到 origin → 建立 PR → 回報 PR URL</li>
+</ol>
+<p>注意：你沒有自動合併，也沒有自動捨棄。決定權完全在使用者。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>事實</th></tr></thead>
+<tbody>
+<tr><td>「之前測試通過了」就跳過</td><td>對即將整合的那棵樹跑測試才算數</td></tr>
+<tr><td>自動假設使用者想合併</td><td>呈現選單並等待，整合決定權在使用者</td></tr>
+<tr><td>使用者說「把它弄掉」就直接刪</td><td>只有輸入確切的 <code>discard</code> 才授權刪除</td></tr>
+<tr><td>PR 建好就清理 worktree</td><td>PR 回饋就是在 worktree 裡修正的</td></tr>
+<tr><td>清理非 Superpowers 建立的 worktree</td><td>只清理 <code>.worktrees/</code> 或 <code>worktrees/</code> 下的</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已宣告「我正使用 finishing-a-development-branch 技能」</li>
+<li>□ 已跑完整測試套件且全綠</li>
+<li>□ 已偵測環境狀態（worktree / 一般 repo / detached HEAD）</li>
+<li>□ 已確認基礎分支</li>
+<li>□ 已呈現選項並等待使用者選擇</li>
+<li>□ 如果選擇合併：先合併再跑測試確認</li>
+<li>□ 如果選擇建 PR：push + 建立 PR + 回報 URL</li>
+<li>□ 如果選擇維持原狀：回報保留狀態</li>
+</ul>
+
+
 </div>
 </body>
 </html>

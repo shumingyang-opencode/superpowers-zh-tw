@@ -332,6 +332,52 @@ You understand 1,2,3,6. Unclear on 4,5.
 <div class="pair"><div class="col-en" lang="en"><h2 id="github-thread-replies">GitHub Thread Replies</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="github-討論串回覆">GitHub 討論串回覆</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>When replying to inline review comments on GitHub, reply in the comment thread (<code>gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies</code>), not as a top-level PR comment.</p></div><div class="col-zh" lang="zh-Hant"><p>回覆 GitHub 上的行內審查意見時，請在該意見的討論串中回覆（<code>gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies</code>），而不是在 PR 頂層加一則留言。</p></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>接收程式碼審查回饋時，最重要的原則是：<strong>技術評估，不是情緒表演。</strong>收到回饋時不要急著說「你完全正確！」或「好觀點！」——這些是做作的附和，對技術改善沒有幫助。</p>
+<p>正確的流程是：先讀完 → 用自己的話複述需求 → 驗證是否符合程式碼現況 → 評估技術上是否合理 → 回應（確認或提出異議）→ 一次一項地實作。</p>
+<p>另一個重要概念是 <strong>YAGNI 檢查</strong>：當審查者要求「正規實作」某個功能時，先 grep 程式碼看看有沒有人在用。如果沒人用，那就是不需要的功能——不要加。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：審查者說「移除舊版 API 端點」</strong></p>
+<pre><code>❌ 不好的回應：「你完全正確！我現在就來移除⋯⋯」
+✅ 正確的回應：
+「檢查了一下，我們的 build target 是 10.15+，
+ 但這個 API 需要 13+。為了向後相容需要保留它。
+ 不過目前的實作有錯——要修正它還是放棄 pre-13 支援？」</code></pre>
+<p>你沒有直接附和，也沒有直接拒絕。你做了技術驗證，然後把決定權交回給人工夥伴。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>修正</th></tr></thead>
+<tbody>
+<tr><td>做作地附和（「好觀點！」）</td><td>陳述技術事實或直接行動</td></tr>
+<tr><td>不驗證就實作</td><td>先對照程式碼庫現況</td></tr>
+<tr><td>一次改全部不測試</td><td>一次一項，逐項測試</td></tr>
+<tr><td>預設審查者一定對</td><td>檢查是否破壞現有功能</td></tr>
+<tr><td>迴避提出異議</td><td>技術正確性優先於舒適感</td></tr>
+<tr><td>不理解就實作</td><td>先釐清不清楚的項目</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已完整閱讀回饋，沒有遺漏</li>
+<li>□ 已用自己的話複述需求（或提出釐清問題）</li>
+<li>□ 已驗證回饋是否符合程式碼庫現況</li>
+<li>□ 已評估技術上是否合理</li>
+<li>□ 如果回饋有問題，已用技術論證提出異議</li>
+<li>□ 如果不清楚，已先釐清才開始實作</li>
+<li>□ 已一次一項地實作並逐項測試</li>
+<li>□ 沒有說「謝謝」或「你完全正確」——直接用行動回應</li>
+</ul>
+
+
 </div>
 </body>
 </html>

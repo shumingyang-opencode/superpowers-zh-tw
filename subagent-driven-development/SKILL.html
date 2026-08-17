@@ -817,6 +817,51 @@ Final reviewer: All requirements met. Deferred minors triaged: none block merge.
 Done! Using superpowers:finishing-a-development-branch.
 </code></pre></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>子代理驅動開發是 Superpowers 的<strong>核心工作模式</strong>。你（主代理）是協調者，子代理是實作者。你負責理解需求、拆解任務、分配工作；子代理負責寫程式碼、跑測試。</p>
+<p>這個模式的關鍵是<strong>每次只派發一個任務</strong>。原因是：(1) 子代理的上下文有限，塞太多任務會讓它品質下降；(2) 你可以根據前一個任務的結果調整下一個任務的內容。</p>
+<p>另一個重要概念是<strong>「任務邊界」</strong>：每個任務應該小到可以在一個 session 內完成，並且有明確的完成定義（通常是測試通過）。如果一個任務太大，拆成更小的子任務。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：實作一個帶搜尋功能的使用者列表頁面</strong></p>
+<ol>
+<li>主代理拆解任務：Task 1 (API 端點) → Task 2 (前端元件) → Task 3 (搜尋功能) → Task 4 (整合測試)</li>
+<li>派發 Task 1 子代理：「建立 GET /api/users 端點，支援分頁，寫測試」</li>
+<li>子代理回報完成 → 主代理跑 code review → 確認通過</li>
+<li>派發 Task 2：「建立 UserList 元件，呼叫 /api/users，寫測試」</li>
+<li>子代理回報完成 → 主代理發現缺少載入狀態處理 → 回饋修正</li>
+<li>依序完成 Task 3、Task 4</li>
+</ol>
+<p>注意：主代理在每個任務之間都做了 code review，而不是等全部完成才審查。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>後果</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>一次派發多個任務給子代理</td><td>子代理品質下降，錯誤難以定位</td><td>每次只派發一個任務</td></tr>
+<tr><td>不等子代理回報就派下一個</td><td>前一個任務的問題會累積</td><td>等回報 → 審查 → 通過後才派下一個</td></tr>
+<tr><td>子代理任務描述太模糊</td><td>子代理產出的結果不符合預期</td><td>明確定義：改什麼檔案、做什麼測試、完成標準</td></tr>
+<tr><td>跳過 code review</td><td>問題在後期才發現，修正成本更高</td><td>每個任務完成後都做 code review</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 主代理已將大目標拆成小而明確的任務</li>
+<li>□ 每個任務有清楚的完成定義（測試通過）</li>
+<li>□ 每次只派發一個任務給子代理</li>
+<li>□ 子代理回報後，主代理有做 code review</li>
+<li>□ 發現問題時回饋修正，而不是忽略</li>
+<li>□ 全部任務完成後使用 finishing-a-development-branch</li>
+</ul>
+
+
 </div>
 </body>
 </html>

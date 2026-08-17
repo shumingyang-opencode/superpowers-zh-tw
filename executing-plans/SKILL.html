@@ -99,6 +99,52 @@
 <li>未經使用者明確同意，絕不在 main/master 分支上開始實作</li>
 </ul></div></div>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="teaching-explanation">教學解說</h2>
+
+<p>執行計畫的技能看似簡單——照著計畫做就好——但魔鬼在細節裡。這個技能的核心是<strong>批判性審查</strong>：在動手之前，你必須先質疑計畫本身是否有問題。</p>
+<p>為什麼？因為計畫是由另一個人（或另一個 session）寫的。他們可能不了解你目前的環境狀態、缺少某些依賴、或假設了某些不存在的條件。如果你不先問清楚就開始執行，很可能做到一半才發現根本做不下去。</p>
+<p>另一個關鍵點是<strong>「卡住就停」</strong>。很多人會試著「繞路」或「自己猜」，但這通常只會讓情況更糟。停下來說「我需要幫助」比硬闖然後製造更多問題要好得多。</p>
+
+<h2 id="worked-example">Worked Example（具體案例）</h2>
+
+<p><strong>案例：計畫要求「安裝 Redis 並設定快取層」</strong></p>
+<ol>
+<li>載入計畫，審查「安裝 Redis」這一步</li>
+<li>發現：當前環境是 Docker Compose，但計畫假設本機安裝</li>
+<li>在開始前提出：「計畫提到本機安裝 Redis，但我們用 Docker Compose。要在 docker-compose.yml 中加入 Redis 服務嗎？」</li>
+<li>夥伴確認後更新計畫</li>
+<li>依修正後的計畫執行：加入 Redis 服務 → 設定連線 → 實作快取層 → 跑驗證</li>
+</ol>
+<p>如果你直接照計畫跑 <code>brew install redis</code>，就會在本機裝一個用不到的服務，而 Docker 裡的 Redis 根本沒啟動。</p>
+
+<h2 id="common-mistakes">常見錯誤</h2>
+
+<table>
+<thead><tr><th>錯誤</th><th>後果</th><th>正確做法</th></tr></thead>
+<tbody>
+<tr><td>不審查計畫就直接執行</td><td>可能在錯誤的環境或假設上執行</td><td>先批判性審查，提出疑慮</td></tr>
+<tr><td>卡住時自己猜答案</td><td>可能偏離計畫、製造新問題</td><td>停下來說「我需要協助」</td></tr>
+<tr><td>跳過驗證步驟</td><td>不知道前一步是否真的成功</td><td>嚴格依計畫執行每個驗證</td></tr>
+<tr><td>在 main 分支上直接實作</td><td>可能污染穩定分支</td><td>先用 using-git-worktrees 建立隔離工作區</td></tr>
+</tbody>
+</table>
+
+<h2 id="practice-checklist">練習／檢核清單</h2>
+
+<ul>
+<li>□ 已宣告「我正使用 executing-plans 技能」</li>
+<li>□ 已確保隔離工作區（using-git-worktrees）</li>
+<li>□ 已讀取並批判性審查計畫</li>
+<li>□ 已提出任何疑慮或問題</li>
+<li>□ 已為計畫項目建立 todos</li>
+<li>□ 每個任務依序執行：標記 in_progress → 執行步驟 → 跑驗證 → 標記 completed</li>
+<li>□ 卡住時停下詢問，而不是亂猜</li>
+<li>□ 全部完成後呼叫 finishing-a-development-branch</li>
+</ul>
+
+
 </div>
 </body>
 </html>
