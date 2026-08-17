@@ -162,6 +162,50 @@ description: Use when executing implementation plans with independent tasks in t
 <li>把「description 決定是否讀、正文決定怎麼做」用一段話向同事解釋。如果同事堅持要在 description 加「會派子代理審查」來「幫助搜索」，你怎麼回應？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：以 TDD 建造「 Git 分支命名規範」技能——從壓力情境到部署的完整週期</strong></p>
+<ol>
+<li><strong>需求</strong>——使用者需要一個確保 Git 分支命名一致的技能，避免 feature/、bugfix/、hotfix/ 混亂使用</li>
+<li><strong>RED</strong>——寫壓力情境：1. 代理建立分支時直接用「test-branch」沒有前綴；2. 代理在 hotfix 情境用了 feature/ 前綴；3. 代理建立分支後沒有關聯 issue number。看代理在沒有技能時怎麼失敗</li>
+<li><strong>GREEN</strong>——寫最小技能：只針對上述三個失敗模式，提供「分支命名必須符合 pattern（type/issue-description）」的規則</li>
+<li><strong>REFACTOR</strong>——再跑一次：代理找到新藉口「我不知道 issue number」→ 補上「issue number 不明時用 placeholder 並在 PR description 說明」的規則；再測，直到打不穿</li>
+<li><strong>部署</strong>——技能通過壓力測試後，加入 .opencode/skills/git-branch-naming/</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>Git 分支命名是「看似簡單但代理會搞砸」的典型案例：沒有技能時，代理會「合理化」分支命名（「只是測試分支，不需要前綴」→ 污染 git log；「hotfix 很急，用 feature/ 沒差」→ 混淆分支用途）。writing-skills 的壓力情境揭露了這些合理化藉口，GREEN 階段的規則直接堵死它們。REFA階段的「我不知道 issue number」藉口，是典型的「合理化升級」——從「不做」升級為「做了但做錯」。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>技能長度的極致優化：一個「Git 分支命名」技能只需要約 150 字（規則 + 範例 + 反例），佔每個 session 約 100 tokens。但它的收益是「每個 Git 操作都正確命名」——5 個 session/天 × 2 個分支/天 × 100 tokens = 1k tokens/天的技能成本 vs 「git log 全是 test-branch 的清理成本」。ROI 在第一天就回正。</p>
+<p><strong>品質：</strong>技能品質的最小化原則：1. 規則數量最少——只保留「無法從常識推斷」的規則（分支命名 pattern 是可以從常識推斷的，但「issue number 不明時的處理」不能）；2. 範例最少——只提供「正確 vs 錯誤」的對比，不提供冗長的解釋；3. 反例最少——只列出最常見的 2-3 個失敗模式，不列「所有可能的錯誤」。</p>
+<p><strong>安全：</strong>Git 分支命名的安全意涵：1. 分支名稱洩漏專案結構——feature/user-auth 洩漏了「有用戶認證功能」；hotfix/security-patch 洩漏了「有安全漏洞」；2. 分支名稱中的 issue number 可能洩漏內部 issue tracker 的 ID；3. 技能規範中不能包含「自動推斷 issue number」的邏輯——這可能導致錯誤的關聯。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本頁主題</th><th>相關主題</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認壓力情境真實反映了代理的失敗模式</li>
+<li>- [ ] 已確認每個壓力情境在沒有技能時真的失敗</li>
+<li>- [ ] 已確認每個壓力情境在有技能時真的通過</li>
+<li>- [ ] 已確認技能原文 < 200 字（常用技能硬上限）</li>
+<li>- [ ] 已確認 description 精確描述「何時用」</li>
+<li>- [ ] 已確認沒有把參考資料塞進 SKILL.md</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

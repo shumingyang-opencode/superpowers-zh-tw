@@ -650,6 +650,50 @@
 <li>承上題的 flaky test：如果換成你，如何證明「改用條件輪詢」真的是修復，而不是又一次運氣好？寫出驗證步驟。</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：診斷「生產環境 API 回應延遲暴增」——跨 6 個技能的除錯專案</strong></p>
+<ol>
+<li><strong>using-superpowers 開場</strong>——使用者通報「API p99 從 200ms 飆到 3s」。開場技能判定這是除錯任務 → 強制進入 systematic-debugging</li>
+<li><strong>systematic-debugging</strong>——四階段流程：1. 擴大：確認哪些端點受影響、是否只在特定時間、是否與 deploy 時間吻合；2. 提出假設：DB query 慢？記憶體洩漏？外部 API 延遲？3. 測試：逐一排除，發現是 N+1 query 問題；4. 修復驗證：寫回歸測試確認 p99 恢復</li>
+<li><strong>verification-before-completion</strong>——修復後重跑完整測試套件，確認延遲恢復、無回歸</li>
+<li><strong>requesting-code-review</strong>——送審修復，審查者確認 N+1 解法正確、無副作用</li>
+<li><strong>finishing-a-development-branch</strong>——合併、部署、監控確認</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>systematic-debugging 的四階段流程確保除錯不會退化成「猜測＋亂改」。關鍵價值在「擴大階段」——多數除錯的浪費來自「一開始就跳進修復，沒有先確認問題的完整範圍」。這個專案中，擴大階段確認了「只有 GET /items 端點受影響、POST 不受影響」，這直接縮小了假設空間，把調查從「整個系統」縮到「單一查詢」。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>除錯的效能成本：四階段流程看起來繁瑣，但它的成本是「一次性」的，而「猜測修復」的成本是「累積性」的——每次錯誤修復都消耗 token、引入新 bug、浪費使用者時間。實務上，系統化除錯平均花 15-20 分鐘，但「猜測修復」平均花 45-90 分鐘（含重工與回滾）。break-point 機制（3 次修復失敗強制停止）是為了防止成本無限累積。</p>
+<p><strong>品質：</strong>假設品質決定除錯效率：「假設空間錯誤」是最常見的除錯失敗模式。高品質假設的特徵：1. 可測試（能設計實驗驗證或反證）；2. 具體（不是「系統有 bug」而是「DB query 在 N>100 時產生 N+1」）；3. 互斥（同時只測一個，避免混淆變因）。低品質假設的典型：「可能是網路問題」（不可測、不具體）。</p>
+<p><strong>安全：</strong>除錯過程中的安全風險：1. 除錯日誌可能洩漏敏感資料（user token、PII），生產環境除錯要確認日誌級別；2. 除錯過程中臨時開啟的 verbose logging 必須在修復後關閉，否則變成永久的安全弱點；3. 「一次改多個東西」的除錯禁忌同時也是安全禁忌——多點變更讓攻擊面變得不可預測。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已完成「擴大階段」：確認問題的完整範圍（哪些端點、什麼條件、何時開始）</li>
+<li>- [ ] 已確認假設可測試：每個假設都能設計實驗驗證或反證</li>
+<li>- [ ] 已確認一次只改一個東西：沒有同時修改多個變因</li>
+<li>- [ ] 已完成修復驗證：測試通過＋手動重現步驟也通過</li>
+<li>- [ ] 已確認除錯日誌中沒有洩漏敏感資料</li>
+<li>- [ ] 已確認臨時開啟的 verbose logging 已關閉</li>
+</ul>
+
 </div>
 </body>
 </html>

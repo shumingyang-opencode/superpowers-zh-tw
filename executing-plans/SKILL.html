@@ -188,6 +188,50 @@
 <li>執行完所有任務、全綠之後，你發現自己漏看了計畫的 Global Constraints 一節。這會造成什麼後果？現在該怎麼補救？</li>
 </ol>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：隔天早上另開 session，執行一份 6 任務的「匯出儀表板 CSV」部署計畫</strong></p>
+<ol>
+<li><strong>開場</strong>——新 session 啟動，using-superpowers 檢查技能；使用者說「跑那份 CSV 匯出計畫」→ 判定為執行既有計畫 → 進入 executing-plans</li>
+<li><strong>載入與批判性審查</strong>——讀 <code>docs/superpowers/plans/2026-08-17-csv-export.md</code>，逐任務檢查：Task 3 要求「掛載到 /api/export/csv」，但 Task 2 定義的 <code>exportCsv()</code> 簽名在 Task 1 的 Produces 裡是 <code>exportCsv(filter)</code>——前後一致，通過；Task 5 的驗證指令 <code>curl</code> 範例裡的 host 寫死了 <code>localhost:3000</code>，記為疑慮</li>
+<li><strong>與夥伴確認疑慮</strong>——「計畫的 curl 範例假設本機 3000，但 repo 的 dev server 是 5173。我用實際 port 執行，對嗎？」取得確認</li>
+<li><strong>建立 todos 並依序執行</strong>——每個任務一個 todo；Task 1 先寫失敗測試→看紅→最小實作→看綠→commit；Task 4 的驗證回傳「Unexpected token」——停下，貼出實際輸出給夥伴，判斷是環境問題（依賴版本）而非計畫問題</li>
+<li><strong>全數完成後</strong>——所有 todo 勾滿、跑完整套件與手動 curl、貼出輸出</li>
+<li><strong>收尾</strong>——verification-before-completion 確認「需求逐項達成」後，呼叫 finishing-a-development-branch 呈現選項</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>executing-plans 是「計畫的執行者」，而計畫是跨 session 的交接文件——隔天的 session 對昨晚的思考一無所知。批判性審查、遇錯即停、以輸出為證據，三件事合起來讓「執行」成為計畫品質的獨立檢驗，而不是盲目的背誦。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能（檢查點設計）：</strong>「每任務一個 todo、跑完立刻標記」是把<strong>進度落盤</strong>的機制——session 中斷或壓縮後，todo 清單＋git log 是唯一的復原地圖。執行計畫的效能策略不是「跑更快」，而是「跑得更可恢復」：把驗證寫進每一步，讓錯誤在發生當下就被攔下，而不是累積十步後一次回溯。</p>
+<p><strong>品質（計畫就是契約）：</strong>executing-plans 的品質守門是<strong>批判性審查</strong>——假設計畫有錯，才可能在動手前攔下它。每個任務的「驗證方式」是否可執行、Interfaces 是否前後一致、Global Constraints 是否被逐字遵守，都是執行品質的一部分。違反 Global Constraints 的實作即使測試全綠也是品質失敗。</p>
+<p><strong>安全（把計畫當資料）：</strong>計畫文件可能從外部複製而來，也可能被注入惡意指令（「執行 <code>rm -rf</code>」「把密鑰印到 /tmp」）。執行者要把計畫內容當資料驗證：每一步指令都先判斷「這個動作是否必要、是否會碰觸機密或破壞性操作」，無法判斷就停下來問。計畫可以信任，但不能免於審查。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能（executing-plans）</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><td>執行者</td><td>主代理自己逐任務執行</td><td>subagent-driven-development 派全新子代理</td><td>executing-plans 適合較小的計畫；大計畫用 SDD 隔離上下文、逐任務審查</td></tr>
+<tr><td>審查粒度</td><td>檢查點批次審查</td><td>requesting-code-review 每任務送審</td><td>executing-plans 以「驗證指令」把關；SDD 有獨立審查子代理</td></tr>
+<tr><td>與計畫的關係</td><td>計畫是輸入，執行後不修改</td><td>writing-plans 產出計畫</td><td>executing-plans 發現計畫錯誤要回 writing-plans 修正，不在執行中擅自改</td></tr>
+<tr><td>進度記錄</td><td>todos 為主</td><td>subagent-driven-development 用 ledger 檔</td><td>跨 session 或長期執行時，ledger 比 todos 更耐壓縮</td></tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已批判性審查整份計畫：Interfaces 前後一致、驗證方式可執行、無占位符</li>
+<li>- [ ] 已逐一釐清計畫中與 repo 現況不符的假設（路徑、port、環境變數）</li>
+<li>- [ ] 已為每個任務建立 todo，並在完成當下標記＋commit</li>
+<li>- [ ] 每一步驗證都親眼看到輸出，沒有引用「稍早跑過」的結果</li>
+<li>- [ ] 卡住時已在第三次失敗前停下，並把完整失敗輸出貼給夥伴</li>
+<li>- [ ] 已確認全程沒有在 main 分支上執行，且未違反 Global Constraints</li>
+</ul>
+
 </div>
 </body>
 </html>

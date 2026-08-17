@@ -420,6 +420,50 @@ You understand 1,2,3,6. Unclear on 4,5.
 <li>六條意見中你只懂四條。寫出你對人工夥伴的完整回覆，展示你如何在不實作任何一條的情況下確認理解。</li>
 </ol>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：匯出功能 PR 收到 6 條外部審查意見——把回覆流程整合成一個完整週期</strong></p>
+<ol>
+<li><strong>完整閱讀</strong>——6 條意見：(a) cursor 分頁建議 (b) <code>count</code> 查詢要 cache (c) 閾值 100 抽成常數 (d) 補寫測試 (e) 加 error 處理 (f) 文件更新</li>
+<li><strong>複述確認</strong>——「你希望我：把 offset 改 cursor、cache count、抽常數、補測試、加錯誤處理、更新文件，對嗎？」只有 (e) 不清楚，先請教（「『error 處理』指的是 CSV 空結果時回 204 嗎？」）</li>
+<li><strong>驗證與分類</strong>——grep 現況：<code>total</code> 閾值只在一處且是產品需求；(a)(b) 是設計選擇非 bug；(c)(d)(e)(f) 合理</li>
+<li><strong>以技術論證提出異議</strong>——「cursor 在資料 &lt;1 萬列時無收益，offset 讓測試直觀；cache 會破壞『新資料立即可見』的產品承諾。其餘四條我會做。」</li>
+<li><strong>依序實作</strong>——先 (c) 抽常數＋(d) 補測試，跑測試；再 (e) 錯誤處理、(f) 文件；每項逐項測試</li>
+<li><strong>在討論串回覆</strong>——用 <code>gh api .../comments/{id}/replies</code> 逐條回，不用「謝謝」開場，直接陳述修正；(a)(b) 的異議留給夥伴裁決</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>接收審查是「分類＋實作」兩件事的組合：先把 6 條分成「正確的／與需求衝突的／純偏好」，再依阻擋性排序逐項實作。技能禁止的「你完全正確！」式附和，正是在第一步就放棄分類責任——把決定權還給審查者，而不是自己用技術事實承接或反駁。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能（一次一項的意義）：</strong>「一次一項、逐項測試」表面上是品質規則，本質上是<strong>可隔離性</strong>的效能策略——同時改 6 處再一起跑測試，失敗時無法定位是哪一處造成。逐項做讓每個變更的影響範圍可逆、可定位，事後排錯的成本從 O(組合數) 降回 O(項數)。</p>
+<p><strong>品質（把外部意見當未驗證輸入）：</strong>審查意見是「主張」，不是「事實」。品質守門是「驗證→評估→才實作」三關：意見可能基於過時程式碼、對技術棧的誤解、或審查者對需求的錯誤假設。把每條意見都當成需要技術事實承接的輸入，而不是照單全收，才是對品質負責。</p>
+<p><strong>安全（別把漏洞意見照單全收）：</strong>外部審查者可能建議「正規化」功能，而其中可能夾帶不安全的模式（把驗證移除、把輸入直接拼進 SQL、把密鑰寫進常數）。實作前要特別檢查建議是否會削弱既有安全防線；若與安全實務衝突，提出異議並說明理由。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能（receiving-code-review）</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><td>角色</td><td>被審查者：回應與修正</td><td>requesting-code-review 是審查者：送出發現</td><td>同一條審查流程的兩端——一方派發、一方承接</td></tr>
+<tr><td>對意見的態度</td><td>懷疑但仔細檢查</td><td>requesting 要求審查者「新鮮視角」</td><td>接收方要防「盲從」，請求方要防「盲審」——兩者都防偏見</td></tr>
+<tr><td>實作方式</td><td>一次一項、逐項測試</td><td>subagent-driven-development 派子代理實作</td><td>收到小量意見由主代理自己修；任務級實作才派子代理</td></tr>
+<tr><td>決策上訴</td><td>異議時請夥伴裁決</td><td>requesting 的審查者用技術論證申辯</td><td>衝突最終都回到人工夥伴——技能雙方都不扮演最終裁決者</td></tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已完整閱讀全部意見，並用自己的話複述需求、先釐清不懂的項目</li>
+<li>- [ ] 已對照程式碼現況逐條驗證，沒有把審查者當成免驗證的權威</li>
+<li>- [ ] 已把意見分類（正確／衝突／偏好），對衝突者以技術論證提出異議</li>
+<li>- [ ] 已依阻擋性排序、一次一項實作並逐項測試</li>
+<li>- [ ] 已檢查每條建議是否會削弱既有安全防線，不安全的建議已提出異議</li>
+<li>- [ ] 全程沒有出現「謝謝」「好觀點」「你完全正確」等做作附和</li>
+</ul>
+
 </div>
 </body>
 </html>

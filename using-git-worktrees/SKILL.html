@@ -410,6 +410,53 @@ Ready to implement &lt;feature-name&gt;
 <li>你的專案沒有 .gitignore。請列出在建立 worktree 之前你必須先做的動作，並說明如果不做，最糟會發生什麼。</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：為「電商結帳流程重構」建立隔離工作區——跨 8 個技能的完整專案週期</strong></p>
+<ol>
+<li><strong>using-superpowers 開場</strong>——使用者說「重構結帳流程，支援多幣別」。開場技能判定這是大型功能 → 強制進入 brainstorming</li>
+<li><strong>brainstorming</strong>——釐清多幣別匯率來源、捨入策略、與現有優惠券的互動；設計寫進 spec</li>
+<li><strong>using-git-worktrees</strong>——偵測到目前在 feature/payment-main 分支 → 建立 <code>.worktrees/feature/multi-currency</code>，確認 .gitignore 已排除 build artifacts，跑基線測試確認乾淨起點</li>
+<li><strong>writing-plans</strong>——在隔離工作區中拆任務，不影響主分支</li>
+<li><strong>subagent-driven-development</strong>——逐任務執行，所有變更隔離在 worktree 中</li>
+<li><strong>requesting-code-review</strong>——Task 5 審查抓出 Critical：匯率快取沒有 TTL，會造成 stale rate</li>
+<li><strong>verification-before-completion</strong>——切回主分支跑完整測試確認無污染</li>
+<li><strong>finishing-a-development-branch</strong>——合併 multi-currency 到 payment-main</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>git worktree 在這個專案的關鍵價值：電商結帳是高風險區，任何 mistake 都可能影響交易。隔離工作區確保「重構期間主分支永遠可 deploy」——即使 worktree 中的實作出問題，main 和 payment-main 都不受影響。更重要的是，worktree 讓你可以同時在 payment-main 上修 hotfix，不用中斷 multi-currency 的開發。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>worktree 的效能優勢：每個 worktree 共享同一個 .git 倉庫（objects、refs），所以建立 worktree 幾乎是即時的（<1秒），不像 git clone 需要複製完整倉庫。磁碟空間也共享，9 個 worktree 只佔一份 .git 的空間。但要注意：build artifacts 和 node_modules 是各自獨立的，所以多個 worktree 會消耗更多磁碟空間在 dependencies 上。</p>
+<p><strong>品質：</strong>隔離品質的三層保障：1. 檔案系統隔離——每個 worktree 有獨立的工作目錄，改檔案不會互相干擾；2. Git 分支隔離——每個 worktree checkout 不同的 branch，commit 歷史獨立；3. 基線測試——建立 worktree 後第一件事是跑測試，確認起點乾淨。常見品質陷阱：「worktree 建了但沒跑基線測試」→ 後來發現依賴沒裝、環境不一致。</p>
+<p><strong>安全：</strong>worktree 的安全考量：1. worktree 目錄路徑不能包含敏感資訊（例如 API key 當目錄名稱）；2. 多個 worktree 同時存在時，確保不會意外在錯誤的 worktree 中 commit 敏感資料；3. 刪除 worktree 時要確認 git worktree remove 真的清理了所有檔案，不只是目錄——殘留的 .git 資料可能洩漏歷史。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已偵測現有隔離狀態（是否已在 worktree、子模組或容器中）</li>
+<li>- [ ] 已確認 .gitignore 排除了 build artifacts 和 dependencies</li>
+<li>- [ ] 已跑基線測試確認乾淨起點</li>
+<li>- [ ] 已確認 worktree 路徑不包含敏感資訊</li>
+<li>- [ ] 已確認切換回主分支時測試仍然通過（無污染）</li>
+<li>- [ ] 已確認刪除 worktree 時 git worktree remove 完整清理</li>
+</ul>
+
 </div>
 </body>
 </html>

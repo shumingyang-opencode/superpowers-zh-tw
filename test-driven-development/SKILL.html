@@ -677,6 +677,52 @@ Otherwise → not TDD
 <li>「測試太複雜」被技能當成「設計太複雜」的訊號。為什麼簡化介面通常比增加測試基礎設施更正確？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：以 TDD 建造「資料管線重試引擎」——跨 7 個技能的完整專案週期</strong></p>
+<ol>
+<li><strong>using-superpowers 開場</strong>——使用者說「我們需要一個可配置的重試引擎」。開場技能判定這是功能開發 → 強制進入 brainstorming</li>
+<li><strong>brainstorming</strong>——釐清：重試策略（固定間隔／指數退避／自訂）、最大重試次數、失敗後行為（拋異常／回傳預設值）、可觀察性需求；設計寫進 spec</li>
+<li><strong>using-git-worktrees</strong>——開隔離工作區</li>
+<li><strong>writing-plans</strong>——拆成 7 個任務：Task 1 RetryPolicy 介面、Task 2 FixedInterval 策略、Task 3 ExponentialBackoff 策略、Task 4 RetryExecutor 核心、Task 5 可觀察性 hook、Task 6 配置載入、Task 7 整合測試</li>
+<li><strong>subagent-driven-development + TDD</strong>——每個任務走 RED→GREEN→REFACTOR：Task 1 先寫「呼叫 execute 應在失敗時重試」的失敗測試 → 實作 RetryPolicy 介面 → 重構；Task 4 的 RetryExecutor 實作中，RED 階段寫了 12 支失敗測試覆蓋所有重試路徑</li>
+<li><strong>verification-before-completion</strong>——最終重跑完整測試套件，確認 100% 通過</li>
+<li><strong>finishing-a-development-branch</strong>——合併</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>TDD 在重試引擎這個專案的關鍵價值：重試邏輯涉及大量邊界條件（次數上限、間隔計算、中斷處理），如果「先寫實作再補測試」，很容易漏掉「重試到上限後的行為」或「退避計算的 off-by-one」。RED 階段強制你先定義「什麼是失敗」，確保每個邊界都被覆蓋。12 支失敗測試在 GREEN 之前就寫好，等於在寫第一行實作之前，就已經精確定義了所有預期行為。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>TDD 的效能成本與收益：RED 階段的「多餘」測試檔案會增加 5-10% 的測試執行時間，但它的收益是「減少 60-80% 的 debug 時間」。重試引擎的 12 支測試在 0.3 秒內完成，但它們省下了「在生產環境才發現退避計算錯誤」的巨大成本。REFACTOR 階段的效能收益：因為有測試保底，可以放心重構效能關鍵路徑（例如把同步重試改成非同步），不用擔心改壞。</p>
+<p><strong>品質：</strong>測試品質的三層結構：1. 單元測試（每個策略獨立）確保個體正確；2. 整合測試（策略 + executor）確保互動正確；3. 邊界測試（上限、中斷、並發）確保極端情況正確。常見品質陷阱：「測試只覆蓋 happy path」——例如只測「重試成功」不測「重試到上限仍失敗」。TDD 的 RED 階段天然防範這個陷阱，因為你必須先定義「什麼時候該放棄」。</p>
+<p><strong>安全：</strong>重試引擎的安全考量：1. 重試間隔的隨機化（jitter）防止 thundering herd——同時失敗的大量請求同時重試會打垮下游服務；2. 重試次數上限是安全屏障——無限重試會消耗 Resources 並放大 DDoS 效果；3. 可觀察性 hook 輸出的重試日誌不能包含敏感資料（例如 API key、user PII）。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認每個任務的 RED 階段有至少一支失敗測試</li>
+<li>- [ ] 已確認失敗測試在 GREEN 之前真的跑過且看到紅色輸出</li>
+<li>- [ ] 已確認沒有「寫在測試之前的實作」——任何在 RED 前寫的程式碼都應刪除重來</li>
+<li>- [ ] 已確認 REFACTOR 階段有跑過全部測試，不只是新寫的</li>
+<li>- [ ] 已確認邊界條件（空值、極值、並發）都有覆蓋</li>
+<li>- [ ] 已確認測試輸出中沒有洩漏敏感資料</li>
+</ul>
+
 </div>
 </body>
 </html>

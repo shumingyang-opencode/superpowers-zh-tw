@@ -146,6 +146,51 @@
 <li>某任務修正迴圈到 R5 仍有一條 load-bearing 發現。協調者該怎麼做？如果它「直接採用」這個發現而不回報，會違反哪條規則？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：SDD 在「微服務遷移」專案中的實踐——從任務迴圈到兩階段審查的完整應用</strong></p>
+<ol>
+<li><strong>spec 完成</strong>——設計文件核准：5 個微服務、共用 API gateway、event bus 串接</li>
+<li><strong>plans 完成</strong>——拆成 20 個任務：Task 1-4 建立服務骨架、Task 5-8 API gateway 路由、Task 9-12 event bus 訂閱、Task 13-16 資料遷移、Task 17-20 整合測試</li>
+<li><strong>SDD 執行迴圈</strong>——逐任務派發實作子代理：Task 1 走紅→綠→重構（建立 User Service 骨架）→ 審查通過 → Task 2（建立 Order Service 骨架）→ ……</li>
+<li><strong>修正迴圈</strong>——Task 7 的審查抓出 Critical：event bus 的 message schema 與 Task 5 的 API response 不一致 → 同一實作子代理帶審查意見回去修 → 修正後重審通過</li>
+<li><strong>breaker 觸發</strong>——Task 15 進入修正迴圈 5 輪仍未通過 → 換全新子代理＋更強模型 → 新子代理發現原實作者假設了不存在的 API → 回報 → 協調者裁決 → 修復</li>
+<li><strong>全部完成</strong>——20 個任務全部通過審查 → verification-before-completion → finishing-a-development-branch</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>微服務遷移是 SDD 的極致案例：20 個任務之間有大量介面依賴（Task 5 的 API response schema 被 Task 7 引用）。如果用單一代理，對話到 Task 10 時上下文已經被前 9 個任務的錯誤假設污染——SDD 的「全新子代理」確保每個任務都從乾淨的起點開始，只能讀任務簡報中的明確資訊。修正迴圈在 Task 7 抓出的 schema 不一致，如果在單一代理中可能要到 Task 15 才會被發現。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>SDD 的效能特性：1. 並行限制——實作子代理一律循序，因為它們可能改到同一個檔案；調查類子代理可平行，因為它們只讀不寫。2. Token 節省——每個子代理只有 2k-5k tokens 的任務簡報，比單一代理的完整對話（50k+ tokens）省 90%。3. 修正迴圈的成本——每輪修正消耗 1k-3k tokens，5 輪上限確保成本可控。</p>
+<p><strong>品質：</strong>兩階段審查的品質結構：第一階段（規格符合度）抓「做沒做」，佔 70% 的問題發現；第二階段（程式碼品質）抓「做好沒」，佔 30%。微服務遷移中，第一階段最重要——如果 API schema 不一致，後面的所有任務都會建在錯誤的基礎上。breaker 機制的品質意義：強制「換人」防止「同一個盲點反覆出現」。</p>
+<p><strong>安全：</strong>SDD 的安全隔離：1. 子代理只能讀任務簡報——不能存取完整對話、不能存取其他任務的實作細節；2. 任務簡報中的檔案路徑是白名單——子代理不能自行推斷路徑，防止路徑穿越；3. 修正迴圈中，審查意見必須寫進檔案——不能讓子代理「口頭」回報修復，確保可追溯。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本頁主題</th><th>相關主題</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認每個任務簡報包含：確切檔案路徑、要做什麼、怎麼驗證</li>
+<li>- [ ] 已確認實作子代理一律循序派發</li>
+<li>- [ ] 已確認審查子代理用最強模型</li>
+<li>- [ ] 已確認修正迴圈上限 5 輪</li>
+<li>- [ ] 已確認 breaker 觸發後換全新子代理</li>
+<li>- [ ] 已確認任務產物寫進檔案，不是讓子代理直接回傳</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

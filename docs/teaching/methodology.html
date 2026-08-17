@@ -146,6 +146,52 @@
 <li>「文件位置寫死」對管線的意義是什麼？若每個人自訂規格檔位置，管線會發生什麼事？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：方法論在「金融交易系統」中的實踐——從七階段流程到四個設計選擇的完整應用</strong></p>
+<ol>
+<li><strong>階段 0：開場（using-superpowers）</strong>——新 session 啟動，agent 自動檢查技能適用性</li>
+<li><strong>階段 1：腦力激盪（brainstorming）</strong>——釐清交易系統的需求：支援哪些交易類型、結算週期、風控規則；設計文件存進 docs/specs/</li>
+<li><strong>階段 2：開 worktree</strong>——在隔離環境中工作，主分支永遠可 deploy</li>
+<li><strong>階段 3：寫計畫</strong>——拆成 12 個任務，每個標明檔案、介面、TDD 步驟</li>
+<li><strong>階段 4-5：執行＋測試</strong>——SDD 逐任務派發，TDD 紅→綠→重構</li>
+<li><strong>階段 6：審查</strong>——兩階段審查確保規格符合與品質</li>
+<li><strong>階段 7：收尾</strong>——合併、部署、監控</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>金融交易系統是「為什麼需要七階段流程」的極致案例：每個階段的產出都是下一站的輸入（spec→plan→tasks），跳過任何一站都會在下游造成數百萬的損失。自動觸發在這裡至關重要——代理不會「忘記」走 brainstorming，因為 using-superpowers 強制它在任何回應之前檢查技能。子代理驅動確保每個任務的上下文乾淨，不會被前一個任務的錯誤假設污染。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>七階段流程的成本分析：階段 0-3（開場→brainstorming→worktree→plans）消耗約 session 的 20-30% tokens，但這是「設計成本」；階段 4-7（執行→測試→審查→收尾）消耗 70-80%，這是「實作成本」。關鍵是：設計成本越高，實作成本越低——好的 spec 減少重工，好的 plan 減少推斷，好的隔離 減少回滾。在金融系統中，設計成本每增加 1%，實作成本可能降低 5-10%。</p>
+<p><strong>品質：</strong>七階段流程的品質保障機制：1. 自動觸發防止「跳站」——每個階段都強制執行；2. 檔案移交確保「可追溯」——每個階段的產出都是下一站的輸入，有據可查；3. 兩階段審查確保「雙重確認」——規格符合度＋程式碼品質，兩者缺一不可。最強的品質屏障是「階段間的產出銜接」——spec 的品質決定 plan 的品質，plan 的品質決定實作的品質。</p>
+<p><strong>安全：</strong>金融系統的安全特殊性：1. 每個階段的安全審查都是強制的——不只是程式碼安全，還有流程安全（例如「誰核准了這個 spec？」）；2. 檔案移交的完整性——spec 和 plan 不能被未授權修改（用 git 簽章確保）；3. 审计追溯——七階段的每個階段都有明確的產出和審查記錄，滿足金融監管的審計要求。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本頁主題</th><th>相關主題</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認七階段流程的每個階段都有明確的產出文件</li>
+<li>- [ ] 已確認自動觸發機制在「任何回應之前」運作</li>
+<li>- [ ] 已確認子代理驅動的任務簡報包含所有必要資訊</li>
+<li>- [ ] 已確認兩階段審查涵蓋規格符合度與程式碼品質</li>
+<li>- [ ] 已確認階段間的產出銜接正確（spec→plan→tasks 沒有缺口）</li>
+<li>- [ ] 已確認金融系統的安全審查在每個階段都強制執行</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

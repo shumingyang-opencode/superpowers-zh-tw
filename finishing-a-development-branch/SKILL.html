@@ -498,6 +498,48 @@ place. If your platform provides a workspace-exit tool, use it.</p></div><div cl
 <li>使用者選了「本機合併」後，你發現合併結果測試紅。列出你此刻「絕對不能做」的三件事，並說明每件為什麼危險。</li>
 </ol>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：同一週內三支功能分支先後完成——三場收尾串成一個完整專案節奏</strong></p>
+<ol>
+<li><strong>Feature A（匯出 CSV）</strong>——worktree 內全綠後，<code>GIT_DIR != GIT_COMMON</code> 偵測為具名分支 worktree；確認基礎分支是 main；使用者選「push 建 PR」→ worktree 保留等回饋</li>
+<li><strong>Feature B（登入優化）</strong>——同週完成；這次使用者選「本機合併」→ 先捕捉 <code>WORKTREE_PATH</code> → 切到主 repo → checkout main、pull、merge → 對<strong>合併結果</strong>重跑測試（不是分支上的測試）→ 全綠 → <code>git worktree remove</code>＋<code>git worktree prune</code>＋<code>git branch -d</code></li>
+<li><strong>Feature C（通知中心）</strong>——審查發現 Critical 未解，先用 verification-before-completion 補驗證、修復後才進入收尾；此時 A 的 PR 也收到回饋，回到 A 的 worktree 修正再 push</li>
+<li><strong>週五整合檢查</strong>——三支全部落地後，在 main 上跑完整套件、確認沒有跨功能衝突</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>三支分支分別走「保留等回饋」與「本機合併」兩種收尾，是因為收尾選項是<strong>使用者對工作節奏的選擇</strong>，不是技能的偏好。技能只保證：每次收尾都先對「將被留下的那棵樹」驗證、每個刪除都有確認、每個合併都留復原餘地。把「決定權」與「安全性」分開，正是這支技能的核心設計。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能（在哪棵樹上測試）：</strong>收尾階段的效能策略是「一次測對」——對分支測試、再對合併結果測試，兩次測試各有不可取代的作用：前者證明功能本身，後者證明「合併後的世界」沒有被 base 的新變更破壞。跳過合併後測試省下的是幾十秒，賠上的是一次可能上線的整合 bug。</p>
+<p><strong>品質（證據勝於宣稱）：</strong>「這個 session 稍早測試通過了」是技能明列的合理化藉口——程式碼在驗證之後可能又改過、base 可能動過。品質守門是<strong>新鮮的、貼著宣告的驗證</strong>：對即將整合的那棵樹跑一次完整套件，讓「完成」這個宣稱有可引用的輸出支撐。</p>
+<p><strong>安全（破壞性操作的三重防護）：</strong>收尾是整條管線中破壞性操作最密集的階段——刪分支、force-push、捨棄 worktree。技能用三重防護：① 刪除必須輸入確切單字 <code>discard</code>；② push 被拒時先調查、force-push 需夥伴明確要求；③ 只清理自己建立的 <code>.worktrees/</code>／<code>worktrees/</code>。每一重都在阻止「手滑」變成「不可逆的遺憾」。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能（finishing-a-development-branch）</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><td>作用時機</td><td>工作完成後的收尾</td><td>using-git-worktrees 在工作開始時建立隔離</td><td>開場建隔離、收尾做整合——兩者形成 worktree 生命週期的兩端</td></tr>
+<tr><td>決策權</td><td>整合選項交給使用者</td><td>executing-plans 由代理依計畫執行</td><td>「合併／建 PR／保留」是夥伴的決定；執行計畫的步驟是代理的職責</td></tr>
+<tr><td>驗證重點</td><td>合併後那棵樹的測試</td><td>verification-before-completion 驗證需求達成</td><td>收尾驗證「可安全整合」，完成驗證「符合需求」——兩者都要過</td></tr>
+<tr><td>清理所有權</td><td>只清理自有 worktree</td><td>using-git-worktrees 用原生工具管理</td><td>收尾遵守「誰建立誰清理」；原生工具建立的由原生工具管理</td></tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已對「即將整合的那棵樹」跑過完整測試套件，不是引用稍早的結果</li>
+<li>- [ ] 已偵測環境（一般 repo／具名分支 worktree／detached HEAD）並依結果調整選項</li>
+<li>- [ ] 已向夥伴確認基礎分支，沒有「顯然是 main」的臆測</li>
+<li>- [ ] 若選本機合併：已先捕捉 <code>WORKTREE_PATH</code>，合併後才跑測試、全綠才清理</li>
+<li>- [ ] 若選建 PR：worktree 已保留，並把 PR URL 回報給夥伴</li>
+<li>- [ ] 沒有執行任何未經 <code>discard</code> 確認的刪除，也沒有未經要求的 force-push</li>
+</ul>
+
 </div>
 </body>
 </html>

@@ -905,6 +905,53 @@ Done! Using superpowers:finishing-a-development-branch.
 <li>某任務進入修正迴圈第 5 輪，breaker 觸發。你逐一裁決剩餘發現後，發現其中一個是 load-bearing。技能要你做什麼？與「把 Minor 記進 ledger」差在哪？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：從零打造「即時協作白板」——跨 9 個技能的完整專案週期</strong></p>
+<ol>
+<li><strong>using-superpowers 開場</strong>——使用者說「我們需要一個多人即時白板」。開場技能判定這涉及前端 WebSocket 後端狀態同步 → 強制進入 brainstorming</li>
+<li><strong>brainstorming</strong>——一次一題釐清：幾人同時編輯、是否需要圖形物件、衝突解決策略、儲存格式；提出 3 種架構（OT／CRDT／Operational log）並分析利弊；設計寫進 <code>docs/specs/2026-08-17-whiteboard.md</code></li>
+<li><strong>using-git-worktrees</strong>——開 <code>.worktrees/feature/whiteboard</code>，安裝依賴、跑基線測試</li>
+<li><strong>writing-plans</strong>——拆成 9 個任務：Task 1 WebSocket 頻道建立、Task 2 CRDT 模型實作、Task 3 畫布渲染引擎……每個任務標明檔案、介面簽名、TDD 步驟</li>
+<li><strong>subagent-driven-development</strong>——逐任務派發實作子代理：Task 2 走紅→綠→重構，Task 5 進修正迴圈三輪（CRDT 合併邏輯在邊界案例產生衝突），最終 breaker 觸發後更換策略</li>
+<li><strong>requesting-code-review</strong>——Task 7 完成後派審查子代理；抓出 Critical：WebSocket 斷線重連未處理 cursor 狀態遺失</li>
+<li><strong>verification-before-completion</strong>——最終重跑完整測試＋多人同時編輯壓力測試，貼出實際輸出</li>
+<li><strong>finishing-a-development-branch</strong>——呈現選項；使用者選「push 建 PR」</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>SDD 在這個專案的關鍵價值：CRDT 合併邏輯極度依賴正確的資料結構，子代理每次乾淨的上下文確保不會被前一次的錯誤假設污染。任務 5 的修正迴圈證明了「 breaker 機制」在複雜演算法場景的實際價值——同一個子代理三輪修不好，breaker 強制更換策略，避免無限迴圈。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>並行度控制：SDD 規定實作子代理一律循序，調查類子代理才可平行。在白板專案中，若同時派兩個子代理改 CRDT 模型和渲染引擎，兩者會因共用狀態產生競態；循序執行加上兩階段審查，確保每次變更都建立在已驗證的基線上。Token 預算：每個子代理任務平均消耗 8k-15k tokens，9 個任務加上審查約 150k tokens，比「單一代理長對話」省 30-40%（因為避免了上下文污染導致的重工）。</p>
+<p><strong>品質：</strong>兩階段審查的品質保證：第一階段查規格符合度（有沒有照 plan 做？），第二階段查程式碼品質（可讀性、可維護性、邊界處理）。實務上，第一階段抓到的問題佔 70%（主要是「漏做」或「做偏」），第二階段抓到的問題佔 30%（主要是「做對了但做醜了」）。修正迴圈的上限是 5 輪，超過 breaker 觸發，強制重新評估——這是為了防止「越修越偏」的退化螺旋。</p>
+<p><strong>安全：</strong>子代理隔離的安全意涵：每個子代理只能讀任務簡報，不能存取完整對話歷史。這同時是品質保障（避免污染）和安全屏障（防止 prompt injection 透過對話歷史傳播）。實務上，任務簡報中的檔案路徑必須是明確的白名單，子代理不得自行推斷路徑——這防止了路徑穿越攻擊（path traversal）。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認每個任務簡報包含：確切檔案路徑、要做什麼、怎麼驗證（三要素缺一不可）</li>
+<li>- [ ] 已確認實作子代理一律循序派發，沒有平行派多個實作子代理</li>
+<li>- [ ] 已確認審查子代理用最強模型，不是預設模型</li>
+<li>- [ ] 已確認修正迴圈上限 5 輪，超過觸發 breaker</li>
+<li>- [ ] 已確認任務完成後產物寫進檔案，不是讓子代理直接回傳全文</li>
+<li>- [ ] 已確認 review package 的 BASE 不是 HEAD~1（多 commit 任務的審查基準要正確）</li>
+</ul>
+
 </div>
 </body>
 </html>

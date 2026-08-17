@@ -259,6 +259,53 @@ If you think there is even a 1% chance a skill might apply to what you are doing
 <li>使用者說「幫我建一個登入頁面」。若代理跳過 brainstorming 直接寫頁面，最可能錯在哪裡？舉一個 concrete 的需求誤判例子。</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：「開場白」如何在真實專案中自動串起整條管線——跨 10 個技能的完整工作日</strong></p>
+<ol>
+<li><strong>09:00 開場</strong>——使用者打開新 session 說「早安，我們繼續昨天的白板專案」。using-superpowers 立即觸發，判定「繼續昨天的工作」→ 檢查是否有未完成任務 → 強制進入 executing-plans 或 subagent-driven-development</li>
+<li><strong>09:15 執行中</strong>——Task 6 完成後，using-superpowers 再次觸發，判定「任務完成，需要審查」→ 強制進入 requesting-code-review</li>
+<li><strong>09:30 審查完成</strong>——using-superpowers 判定「審查通過，可進下一個任務」→ 回到 subagent-driven-development</li>
+<li><strong>10:00 發現 bug</strong>——Task 8 的實作子代理報告「既有功能壞了」→ using-superpowers 判定「這是除錯任務」→ 強制進入 systematic-debugging</li>
+<li><strong>10:30 修復完成</strong>——using-superpowers 判定「修復完成，需要驗證」→ 強制進入 verification-before-completion</li>
+<li><strong>11:00 全部完成</strong>——using-superpowers 判定「所有任務完成，需要收尾」→ 強制進入 finishing-a-development-branch</li>
+<li><strong>11:30 需求變更</strong>——使用者說「加一個 export PDF 功能」→ using-superpowers 判定「這是新功能需求」→ 強制回到 brainstorming，不允許在執行中「順手」加入</li>
+<li><strong>12:00 收工</strong>——finishing-a-development-branch 呈現選項，使用者選「push 建 PR」</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>using-superpowers 的關鍵價值是「強制正確的順序」。沒有它，使用者說「繼續昨天的工作」時，代理可能直接開始寫 code，跳過審查、跳過驗證、跳過 brainstorming 的需求變更流程。它解決了「技能裝了但沒被用」的根本問題——不是你在觸發技能，是技能在確保你走到對的流程。1% 的開場成本，避免 100% 的方向錯誤。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>開場成本的精確計量：using-superpowers 在每個 session 開頭消耗約 200-500 tokens（讀取技能列表＋判定適用性），佔一個典型 session 總 token 的 0.5-1%。但它的收益是「避免整個 session 走錯方向」——如果代理跳過 brainstorming 直接寫 code，整個 session 的 tokens 可能全部浪費。1% 成本 vs 100% 風險，這是系統中最划算的保險。</p>
+<p><strong>品質：</strong>觸發品質的三個層次：1. 正確觸發——不漏觸（該進 brainstorming 沒進）也不誤觸（不該觸發時觸發）；2. 正確路由——觸發後選對技能（不是所有問題都進 systematic-debugging）；3. 正確時機——在「任何回應之前」觸發，而不是「開始工作之前」。如果改成後者，會漏掉「使用者只是問個問題但其實需要走流程」的情況。</p>
+<p><strong>安全：</strong>SUBAGENT-STOP 的安全意涵：子代理被派發執行特定任務時，using-superpowers 的觸發機制會被 SUBAGENT-STOP 標記攔截——子代理不檢查技能、直接執行任務。這是為了防止子代理「讀取開場白技能後改變行為」。如果子代理也觸發 using-superpowers，它可能會偏離任務簡報、嘗試「改善」工作流程，反而引入不穩定性。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認 using-superpowers 在「任何回應之前」觸發，不只是「開始工作之前」</li>
+<li>- [ ] 已確認子代理的 SUBAGENT-STOP 標記正常運作</li>
+<li>- [ ] 已確認觸發後能正確路由到對應技能（不是所有問題都進同一個技能）</li>
+<li>- [ ] 已確認 12 種常見合理化藉口都被紅旗表覆蓋</li>
+<li>- [ ] 已確認「使用者要求跳過技能」時，只有明確指示才優先於技能</li>
+<li>- [ ] 已確認每次 session 開頭都有觸發記錄（可追溯）</li>
+</ul>
+
 </div>
 </body>
 </html>

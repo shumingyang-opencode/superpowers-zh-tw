@@ -141,6 +141,52 @@
 <li>假設你在任務 4 發現 Task 2 的實作有 bug（不是計畫問題）。這該走工作流的哪條路？它與「需求變更」的路徑有何不同？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：七階段工作流在「 SaaS 功能上線」中的完整實踐——從冒想到合併的每一步</strong></p>
+<ol>
+<li><strong>階段 0：開場</strong>——使用者說「我們需要一個用戶仪表板」。using-superpowers 立即觸發，判定這是創意工作 → 強制進入 brainstorming</li>
+<li><strong>階段 1：腦力激盪</strong>——一次一題釐清：仪表板要顯示什麼數據、更新頻率、是否需要匯出、與現有用戶系統的串接方式；設計寫進 spec</li>
+<li><strong>階段 2：開 worktree</strong>——開隔離工作區，確認 .gitignore、跑基線測試</li>
+<li><strong>階段 3：寫計畫</strong>——拆成 8 個任務：Task 1 API endpoint、Task 2 資料聚合邏輯、Task 3 前端元件、Task 4 即時更新、…</li>
+<li><strong>階段 4：執行</strong>——SDD 逐任務派發，TDD 紅→綠→重構</li>
+<li><strong>階段 5-6：測試＋審查</strong>——verification-before-completion + requesting-code-review</li>
+<li><strong>階段 7：收尾</strong>——finishing-a-development-branch 呈現選項</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>七階段工作流的核心價值是「每個階段的輸出是下一站的輸入」——brainstorming 的 spec 是 writing-plans 的輸入，writing-plans 的 plan 是 subagent-driven-development 的輸入，SDD 的審查結果是 finishing 的輸入。在 SaaS 功能上線中，跳過任何一站都會在下游造成重工：跳過 brainstorming → 需求不明 → 執行中頻繁變更；跳過 writing-plans → 子代理自己推斷 → 結構不一致。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>七階段的 token 分配：階段 0-3（開場→brainstorming→worktree→plans）佔 20-30% tokens，階段 4-7（執行→測試→審查→收尾）佔 70-80%。關鍵是：階段 0-3 是「一次性成本」，階段 4-7 是「每任務成本」——階段 0-3 花越多（更好的 spec、更詳細的 plan），階段 4-7 每個任務的 token 消耗越低（更少的推斷、更少的重工）。</p>
+<p><strong>品質：</strong>七階段的品質保障機制：1. 自動觸發——確保走到對的階段；2. 檔案移交——確保階段間的產出可追溯；3. 兩階段審查——確保執行品質；4. verification——確保完成前有證據。最強的品質屏障是「階段間的產出銜接」——spec 的品質決定 plan 的品質，plan 的品質決定實作的品質。在 SaaS 上線中，品質的每一個層次都被下一個階段驗證。</p>
+<p><strong>安全：</strong>SaaS 上線的安全特殊性：1. 七階段的每個階段都有安全審查節點——不只是程式碼安全，還有流程安全（例如「誰核准了這個 spec？」）；2. 檔案移交的完整性——spec 和 plan 不能被未授權修改（用 git 簽章確保）；3. 最終部署前的 verification 必須包含安全掃描——不只是功能正確，還要沒有已知漏洞。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本頁主題</th><th>相關主題</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認七階段流程的每個階段都有明確的產出文件</li>
+<li>- [ ] 已確認自動觸發機制在「任何回應之前」運作</li>
+<li>- [ ] 已確認子代理驅動的任務簡報包含所有必要資訊</li>
+<li>- [ ] 已確認兩階段審查涵蓋規格符合度與程式碼品質</li>
+<li>- [ ] 已確認階段間的產出銜接正確（spec→plan→tasks 沒有缺口）</li>
+<li>- [ ] 已確認 verification 在最終部署前執行</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

@@ -123,6 +123,49 @@
 <li>舉一個「字面遵守、精神違反」的例子（四原則任一條），並說明你如何判斷它違反了精神。</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：四原則在「開源專案貢獻」中的實踐——從 TDD 到證據勝於宣稱的完整應用</strong></p>
+<ol>
+<li><strong>原則一：TDD</strong>——為開源專案的 PR 寫回歸測試：先寫「現有行為會失敗」的測試（RED），再提 PR（GREEN 的一半）， maintainer 合併後確認測試通過（GREEN 的另一半）</li>
+<li><strong>原則二：系統化</strong>——用 PR template 確保每個 PR 都經過：需求描述、測試證明、文件更新、安全掃描——不靠記憶，靠流程</li>
+<li><strong>原則三：簡潔</strong>——PR description 只寫「做了什麼、為什麼、怎麼測」，不寫故事、不寫心路歷程——YAGNI 也適用於溝通</li>
+<li><strong>原則四：證據</strong>——PR 中附上 CI 綠燈截圖、測試覆蓋率報告、效能基準比較——「我測過了」不算數，截圖才算數</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>開源貢獻是「四原則如何在沒有職權的環境中運作」的最佳案例：你不能強制 maintainer 走流程，但你可以用流程的產出（測試、截文件、CI 證據）說服他們。四原則在這裡的角色是「品質的通用語言」——即使 maintainer 不知道 Superpowers，他們也能從「有測試、有證據、有文件」的 PR 中判斷品質。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>四原則的成本效益：TDD 在開源貢獻中的 ROI 最高——回歸測試不只證明你的 PR 正確，還保護未來的 contributor 不會不小心 break 你修復的功能。系統化的 PR template 增加 5 分鐘的填寫時間，但減少 80% 的 maintainer 追問（「你怎麼測的？」「為什麼改這個？」「有沒有安全風險？」）。</p>
+<p><strong>品質：</strong>四原則的品質互咬結構：TDD 提供證據（原則一→原則四），系統化確保 TDD 不被繞過（原則二→原則一），簡潔讓系統化可持續（原則三→原則二），證據反過來驗證系統化有效（原則四→原則二）。在開源貢獻中，這個互咬結構的價值是「可預測性」——maintainer 知道你的每個 PR 都經過同樣的品質把關，不用逐個判斷。</p>
+<p><strong>安全：</strong>開源貢獻的安全特殊性：1. 你的 PR 可能被數千人使用——安全影響範圍比內部專案大得多；2. TDD 的回歸測試是安全屏障——防止未來的 PR 不小心引入安全漏洞；3. 證據勝於宣稱——CI 綠燈和安全掃描報告是「你的 PR 沒有已知漏洞」的唯一可信證據。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本頁主題</th><th>相關主題</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認每個 PR 都附有回歸測試（TDD 原則）</li>
+<li>- [ ] 已確認 PR template 涵蓋需求、測試、文件、安全四個維度（系統化原則）</li>
+<li>- [ ] 已確認 PR description 簡潔——只寫做了什麼、為什麼、怎麼測（簡潔原則）</li>
+<li>- [ ] 已確認 PR 中附有 CI 綠燈截圖或連結（證據原則）</li>
+<li>- [ ] 已確認四原則的互咬結構在 PR 中可追溯</li>
+<li>- [ ] 已確認安全掃描報告已附在 PR 中</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

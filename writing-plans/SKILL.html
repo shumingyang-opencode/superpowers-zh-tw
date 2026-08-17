@@ -325,6 +325,51 @@ git commit -m &quot;feat: add specific feature&quot;
 <li>你的計畫有 Task 3 定義 <code>clearLayers()</code>、Task 7 卻寫 <code>clearFullLayers()</code>。這是哪一類計畫失敗？為什麼自我審查能抓到你而執行者抓不到？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：為「即時協作白板」撰寫完整實作計畫——跨 6 個技能的完整專案週期</strong></p>
+<ol>
+<li><strong>brainstorming 完成</strong>——設計文件已核准：CRDT 模型、WebSocket 頻道、畫布渲染引擎、多人 cursor 同步</li>
+<li><strong>using-git-worktrees</strong>——開隔離工作區</li>
+<li><strong>writing-plans</strong>——把 spec 拆成 9 個任務：Task 1 WebSocket 頻道建立（Files: ws/channel.ts, Interfaces: Channel.create()）、Task 2 CRDT 模型（Files: crdt/model.ts, Interfaces: CRDT.merge()）……每個任務 2-5 分鐘，含完整 TDD 步驟</li>
+<li><strong>自我審查</strong>——掃描 spec 確認每條需求都有對應任務，掃描任務確認函數名一致（不會 Task 2 用 merge()、Task 5 用 apply()）</li>
+<li><strong>subagent-driven-development</strong>——依計畫逐任務執行</li>
+<li><strong>verification-before-completion</strong>——最終驗證</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>writing-plans 在這個專案的關鍵價值：白板專案有 9 個任務，每個任務的輸出是下一個任務的輸入（Task 2 的 CRDT.merge() 簽名被 Task 5 引用）。如果計畫中的介面簽名不一致，子代理會在 Task 5 才發現 Task 2 的 API 不同——這時已經太晚。writing-plans 的自我審查階段強制你「在計畫完成時就確認一致性」，而不是「執行到才發現」。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>計畫的 token 成本：writing-plans 在每個任務中消耗 500-1500 tokens（含 Files、Interfaces、TDD 步驟），9 個任務約 10k tokens。但這個成本是「一次性」的——它替代了子代理在執行時「自己推斷要改哪些檔案」的 token 消耗（每次推斷約 2k-5k tokens，9 個任務就是 18k-45k tokens）。用 10k tokens 換 18k-45k tokens 的節省，ROI > 100%。</p>
+<p><strong>品質：</strong>計畫品質的三個維度：1. 完整性——每條 spec 需求都有對應任務（透過自我審查確保）；2. 一致性——任務間的介面簽名、命名、資料結構完全一致（透過掃描確認）；3. 獨立性——每個任務可以被子代理獨立執行（透過 Interfaces 區塊確保）。最常見的品質陷阱：「計畫看起來對，但執行到一半才發現 Task 3 假設了 Task 1 的某個函數，而那個函數的簽名在 Task 1 中不存在」。</p>
+<p><strong>安全：</strong>計畫的安全考量：1. 計畫中的檔案路徑必須是明確的——子代理嚴格照路徑操作，防止路徑穿越；2. 計畫中不能有「自行推斷」的指示——所有資訊都必須在計畫中明確寫出；3. 計畫本身是「可審查的」——使用者可以在執行前審查計畫，確認沒有安全風險（例如「在 Task 5 中寫入環境變數」可能洩漏密鑰）。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認每條 spec 需求都有對應任務（逐段掃描 spec）</li>
+<li>- [ ] 已確認任務間的介面簽名完全一致（不會 Task 2 用 merge()、Task 5 用 apply()）</li>
+<li>- [ ] 已確認每個任務標明確切檔案路徑（不是「相關檔案」）</li>
+<li>- [ ] 已確認每個任務含完整 TDD 步驟（RED→GREEN→REFACTOR）</li>
+<li>- [ ] 已確認計畫的下一個使用者是子代理——假設零上下文、零品味</li>
+<li>- [ ] 已確認設定/配置/脚手架步驟已併入需要它們的任務，沒有獨立存在</li>
+</ul>
+
 </div>
 </body>
 </html>

@@ -254,6 +254,50 @@ You: [Fix progress indicators]
 <li>審查者回報了一條你確定是誤判的意見。技能要求你怎麼處理——是直接不理會，還是讓它進審查迴圈？請引用規則說明。</li>
 </ol>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：一份 8 任務的「訂單狀態機」計畫——把審查嵌入整個執行週期</strong></p>
+<ol>
+<li><strong>writing-plans 產出計畫</strong>——8 個任務，每個都含 Interfaces 與驗證方式；儲存後詢問執行方式，使用者選「子代理驅動」</li>
+<li><strong>subagent-driven-development 設定</strong>——建立 worktree、執行 <code>sdd-workspace</code>、建立 ledger、逐任務派發</li>
+<li><strong>每個任務完成後即送審</strong>——Task 1 派發前記錄 <code>BASE_SHA</code>；實作子代理回報 DONE 後跑 <code>review-package</code> 產生套件、派任務審查者（只給簡報＋報告＋diff 檔路徑＋全域約束）</li>
+<li><strong>處理審查發現</strong>——Task 3 被標 Critical：狀態轉移漏了「已取消」分支 → 進修正迴圈；Task 6 的 Minor 記進 ledger 延後</li>
+<li><strong>最終整支分支審查</strong>——全部任務完成後，用最強模型派 code-reviewer，以 <code>git merge-base main HEAD</code> 為 MERGE_BASE 產生整支套件；把 ledger 的 deferred-minor 清單交給它分流</li>
+<li><strong>收尾</strong>——審查乾淨 → verification-before-completion → finishing-a-development-branch</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>requesting-code-review 不是一個獨立的儀式，而是嵌在 SDD 迴圈裡的每個節點——任務級審查把關每一小步、最終審查把關整支分支。每次送審都用「精確的 SHA 範圍＋只給工作成果」維持審查的盲審品質，主代理的上下文則始終只收到結論、不收到過程。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能（審查外包的上下文經濟）：</strong>「你是協調者，不是審查者」是本技能最重要的效能原則——自己 inline 看 diff 會把整段 diff 載入你的上下文，而這些 token 你留著是為了持續推動計畫。把審查外包給子代理，你的上下文只收到「發現清單」而不是「diff 全文」；對大型計畫而言，這是數量級的成本差異。</p>
+<p><strong>品質（盲審的價值）：</strong>審查子代理拿到的上下文「精確地描述工作成果、完全不含你的思考過程」——這是把盲審移植進 agent harness：審查者不會被你的既有判斷、你繞過問題的理由或你的疲勞污染。品質的前提是資訊隔離；一旦你把自己的 session 歷史塞給審查者，它就失去新鮮視角。</p>
+<p><strong>安全（不洩漏 session 歷史）：</strong>「審查者需要我整個 session 歷史」是技能明列的藉口，也是安全議題——你的 session 可能包含密鑰、客戶資料、未發布決策。給審查者的是 diff、需求、SHA 範圍，不是記憶；把「只給工作成果」同時當成「資訊最小化」的資安守則。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能（requesting-code-review）</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><td>立場</td><td>送審方：派出審查者、處理回饋</td><td>receiving-code-review 是承接方</td><td>同一流程的兩端；送審方負責定義「審查什麼」，承接方負責「怎麼回應」</td></tr>
+<tr><td>上下文隔離</td><td>審查者只知道工作成果</td><td>subagent-driven-development 的實作子代理只知道任務簡報</td><td>兩者都把「資訊最小化」當品質前提——審查與實作都靠隔離保持客觀</td></tr>
+<tr><td>審查頻率</td><td>每任務一審＋整支一審</td><td>executing-plans 用檢查點審查</td><td>SDD 的任務級審查更細；executing-plans 的檢查點較疏但成本較低</td></tr>
+<tr><td>錯誤處理</td><td>審查發現進修正迴圈</td><td>receiving 的異議由夥伴裁決</td><td>送審方內部處理誤判（迴圈），只有跨方衝突才上升到人工夥伴</td></tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 每個任務完成後都送審，沒有因「這很簡單」跳過任何一次</li>
+<li>- [ ] <code>BASE_SHA</code> 是派發前記錄的 commit，不是 <code>HEAD~1</code></li>
+<li>- [ ] 審查 prompt 只含 diff、需求、SHA 範圍與必要介面，不含 session 歷史</li>
+<li>- [ ] 審查者的 diff 以檔案（review package）交付，沒有載入自己的上下文</li>
+<li>- [ ] Critical 立即修、Important 在繼續前修、Minor 已記入 ledger 或清單</li>
+<li>- [ ] 對誤判意見已依規則進入迴圈或提出異議，沒有靜默忽略</li>
+</ul>
+
 </div>
 </body>
 </html>

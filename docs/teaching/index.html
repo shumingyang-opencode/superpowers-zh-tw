@@ -125,6 +125,51 @@
 <li>這個教學中心缺哪一種內容，會讓「資深工程師想自己寫技能」的使用者卡住？你怎麼補？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：教學中心首頁——從「安裝 superpowers」到「日常開發」的完整學習旅程</strong></p>
+<ol>
+<li><strong>Day 1：安裝與驗證</strong>——照 index.html 的步驟安裝 superpowers，用 using-superpowers 驗證技能已載入；跑 writing-skills 的壓力測試確認系統正常</li>
+<li><strong>Day 2：第一次完整流程</strong>——選一個小功能（例如「加一個 API endpoint」），走完 brainstorming→worktree→writing-plans→subagent-driven-development→verification→finishing 的完整七階段</li>
+<li><strong>Day 3：遇到 bug</strong>——用 systematic-debugging 走四階段流程修復，體驗「假設→測試→排除」的系統化除錯</li>
+<li><strong>Day 4：code review</strong>——用 requesting-code-review 送審，用 receiving-code-review 回應審查意見</li>
+<li><strong>Day 5：需求變更</strong>——在執行中遭遇需求變更，體驗「回到 brainstorming 更新 spec」而不是「在執行中打補丁」的正確流程</li>
+<li><strong>Week 2：進階技能</strong>——嘗試 dispatching-parallel-agents 並行調查、writing-skills 建立自己的技能</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>教學中心首頁的價值在於「降低啟動成本」——使用者不需要從 14 個技能中自己挑選學習順序，首頁直接提供了一條經過驗證的學習路徑。關鍵是「每天只學一個技能、只做一個小任務」——避免「一次學太多、消化不良」的常見失敗模式。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>學習效能的關鍵指標：1. 首次完整流程的時間——目標是 < 30 分鐘（包含安裝）；2. 技能觸發率——使用者不需要手動觸發的技能佔比（目標 > 90%）；3. 返工率——因為流程不熟導致的重工佔比（目標 < 10%）。教學首頁的每一步都朝這三個指標優化。</p>
+<p><strong>品質：</strong>教學品質的三層保障：1. 範例驅動——每個技能都有具體的操作步驟，不是抽象的解釋；2. 錯誤驅動——常見錯誤表揭露了「看起來對但其實錯」的做法；3. 驗證驅動——每個學習階段都有驗證步驟，確保你真的學會了而不是「感覺學會了」。</p>
+<p><strong>安全：</strong>學習過程的安全考量：1. 範例中的 API key、token 都用 placeholder（<YOUR_KEY_HERE>），防止學習者不小心 commit 真實密鑰；2. 安裝步驟確認了來源是官方 GitHub repo，防止中間人攻擊；3. 教學站明確標註「非官方」，避免被誤認為官方文件。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本頁主題</th><th>相關主題</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認安裝步驟與最新版本一致</li>
+<li>- [ ] 已確認所有技能頁面的連結正確且可訪問</li>
+<li>- [ ] 已確認學習路線的順序合理（每個技能的前置技能已排在前面）</li>
+<li>- [ ] 已確認範例中的 placeholder 正確（沒有真實的 API key 或 token）</li>
+<li>- [ ] 已確認常見錯誤表涵蓋了最常見的 5 種失敗模式</li>
+<li>- [ ] 已確認每個學習階段都有驗證步驟</li>
+</ul>
+
 <footer>
   <div>這是 <a href="https://github.com/obra/superpowers">obra/superpowers</a> 的繁體中文翻譯學習站——翻譯只動說明文字，指令、路徑、技能名一律照原樣，安裝照常可用。</div>
   <div>內容 © <a href="https://github.com/obra">Jesse Vincent</a>（MIT License）· 本站為非官方教學站，與 Prime Radiant 無關</div>

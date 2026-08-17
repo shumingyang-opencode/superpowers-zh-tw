@@ -300,6 +300,51 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 <li>某個子代理的 prompt 寫了「不要更動其他模組」，它卻改了。這代表 prompt 結構的哪個環節失效？應該在 prompt 裡加什麼來補強？</li>
 </ol>
 
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：大型重構後 CI 一次掛了 9 個測試——把「並行派發」整合進整個收尾工作流</strong></p>
+<ol>
+<li><strong>using-superpowers 定調</strong>——收到「CI 全紅」請求，先判定這是除錯情境 → 進入 systematic-debugging 的根因調查，而不是直接派 9 個子代理各修一個</li>
+<li><strong>根因調查</strong>——<code>git diff main..HEAD</code> 與失敗清單比對，發現 9 個測試依失敗檔分佈在 <code>auth</code>／<code>search</code>／<code>notifications</code> 三個模組，diff 顯示三模組動到的檔案互不重疊</li>
+<li><strong>獨立性驗證</strong>——比對三模組的共同依賴集合（shared helpers、型別、公用函式）為空，才判定三個領域真正獨立——這是並行派發的前提</li>
+<li><strong>同一則訊息中並行派發 3 個調查子代理</strong>——每個 prompt 自足：失敗測試名、錯誤訊息、「不要更動其他模組」硬性限制；三個代理各自讀同一份 repo 但不共享狀態</li>
+<li><strong>收集摘要後審查</strong>——auth：refresh token 的 exp 型別解析錯誤；search：索引版本號沒遞增；notifications：時區少了 UTC 偏移。三個 fix 不相衝突</li>
+<li><strong>整合驗證</strong>——合併後跑完整 CI，全綠；依 verification-before-completion 貼出「9/9 通過」的實際輸出</li>
+<li><strong>收尾</strong>——finishing-a-development-branch 呈現選項，使用者選擇合併</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>並行不是「什麼都同時丟出去」——它是根因調查完成之後的優化。先在 systematic-debugging 確認三個根因獨立，才讓並行派發安全；先跑完整套件驗證，才讓並行的產物可信。並行加快的是「執行」，不是「判斷」。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能（上下文預算）：</strong>並行派發的最大效能收益不是「牆鐘時間」，而是<strong>主代理的上下文</strong>——三個調查各自在自己的子代理上下文裡跑完，回傳的只有三份摘要。若改為循序派發，每個調查的中間過程都會塞進你的上下文、佔用你推動全局的稀缺資源。技能流程圖的「Are they independent?」菱形，就是派發前最後的成本檢查。</p>
+<p><strong>品質（系統性錯誤）：</strong>多個子代理可能犯「同類型的系統性錯誤」——例如都用了同一種錯的日期解析方式。技能在驗證步驟要求「抽樣檢查」，就是對抗這個盲點：只看三份摘要都說「修好了」不夠，要抽查其中一份 diff 確認修的是根因而不是症狀。並行讓錯誤規模放大，抽樣檢查是唯一廉價的保險。</p>
+<p><strong>安全（資訊最小化）：</strong>每個並行子代理的 prompt 都該是「最小授權」——只給它完成任務需要的檔案路徑與範圍，不給無關的密鑰、連線字串或使用者資料。多個代理同時在場時，任一個被注入都可能造成更大破壞；用「範圍硬性限制」＋「不提供不需要的機密」雙重防線，把單一代理被攻破的爆炸半徑控制在它的任務內。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能（dispatching-parallel-agents）</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><td>派發方式</td><td>同則訊息多個子代理並行</td><td>subagent-driven-development 一律循序</td><td>實作任務有共享檔案衝突，只能循序；調查類任務才允許並行</td></tr>
+<tr><td>適用任務</td><td>彼此獨立的調查／修復</td><td>requesting-code-review 派單一審查者</td><td>審查單一 diff 用一對一；多個獨立領域同時調查才用並行</td></tr>
+<tr><td>整合責任</td><td>主代理在派發後做整合驗證</td><td>executing-plans 每步有內建驗證</td><td>並行派發的整合風險更高，必須以完整套件收尾；執行計畫則逐步把關</td></tr>
+<tr><td>失敗成本</td><td>單一子代理做錯會被並行放大</td><td>subagent-driven-development 有修正迴圈</td><td>並行沒有 R1-R5 迴圈，靠抽樣檢查攔截；需要迴圈深度時退回循序</td></tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已用「共同依賴集合」而非「目錄名」驗證各領域真正獨立</li>
+<li>- [ ] 每個並行 prompt 都自足（失敗資訊、範圍、硬性限制），不依賴主代理補充</li>
+<li>- [ ] 每個 prompt 都做到資訊最小化——不含無關密鑰、連線字串或使用者資料</li>
+<li>- [ ] 已在同一則訊息中完成多工具派發，確認平台支援平行執行</li>
+<li>- [ ] 整合後已跑完整套件，並抽查至少一份子代理的 diff 而非只看摘要</li>
+<li>- [ ] 已確認沒有兩個子代理共用同一支 helper 或共享可變狀態</li>
+</ul>
+
 </div>
 </body>
 </html>

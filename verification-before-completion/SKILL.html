@@ -394,6 +394,50 @@ Skip any step = lying, not verifying
 <li>管理者要你「趕快說完成了」。根據技能，最便宜、最快的合法路徑是什麼？寫出你的實際回應。</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：在「多幣別結帳」專案中執行完成前驗證——跨 5 個技能的完整收尾流程</strong></p>
+<ol>
+<li><strong>subagent-driven-development 完成最後任務</strong>——Task 8（多幣別匯率快取）實作完成，子代理報告「所有測試通過」</li>
+<li><strong>verification-before-completion 觸發</strong>——不接受子代理的「通過」宣稱，獨立重跑完整測試套件：147 tests passed, 0 failed</li>
+<li><strong>更深層驗證</strong>——測試通過不代表需求完成：手動檢查匯率 API 的 error path、確認快取 TTL 到期後的 refresh 行為、確認多幣別捨入在所有邊界值正確</li>
+<li><strong>requesting-code-review</strong>——帶著「驗證輸出截圖」送審，審查者能直接看到證據</li>
+<li><strong>finishing-a-development-branch</strong>——以完整驗證報告為依據，宣告完成</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>verification-before-completion 在這個專案的關鍵價值：「測試 147/147 通過」這句話本身不能證明「多幣別功能完成」——它只證明「現有測試通過」。匯率快取的 error path、TTL refresh 的邊界行為、多幣別捨入的極端值，這些可能不在現有測試中。verification 要求你從「測試輸出」跳到「需求驗證」，確保兩者之間沒有缺口。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>驗證的成本與收益：verification 在每個任務完成時消耗 5-10 分鐘（重跑測試＋手動檢查），但它的收益是「避免在 PR review 阶段才被指出需求未滿足」——PR review 的修復成本是 verification 的 5-10 倍。breaker 機制（3 次驗證失敗強制停止）防止「驗證本身變成無限迴圈」。</p>
+<p><strong>品質：</strong>驗證品質的三層結構：1. 指令級驗證（跑 test/lint/typecheck）確保程式碼品質；2. 需求級驗證（手動檢查每條需求是否滿足）確保功能完整性；3. 证据級驗證（截圖、log、輸出）確保宣稱有據可查。最常見的品質陷阱：「只做指令級驗證」→ 測試全綠但需求沒滿足。</p>
+<p><strong>安全：</strong>驗證過程的安全考量：1. 驗證指令的輸出可能包含敏感資料（例如測試中的 mock data 含真實 API key），截圖前要確認內容安全；2. 驗證完成後，臨時開啟的 verbose logging 必須關閉；3. 「子代理說成功了你就照抄」是安全風險——二手宣稱未經獨立驗證，可能隱藏安全漏洞。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已重跑完整測試套件，確認輸出中 0 failed</li>
+<li>- [ ] 已確認測試輸出截圖中沒有洩漏敏感資料</li>
+<li>- [ ] 已確認每條需求都有對應的驗證證據</li>
+<li>- [ ] 已確認「測試通過」不等於「需求完成」——兩者之間沒有缺口</li>
+<li>- [ ] 已確認臨時 verbose logging 已關閉</li>
+<li>- [ ] 已確認子代理的「成功」宣稱經過獨立驗證</li>
+</ul>
+
 </div>
 </body>
 </html>

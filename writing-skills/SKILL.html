@@ -1106,6 +1106,50 @@ step2 [label=&quot;read file&quot;];
 <li>description 一旦總結工作流，代理就不讀正文。試解釋：這對「把技能寫短」的直覺構成什麼反直覺的壓力？</li>
 </ol>
 
+
+<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
+
+<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
+
+<p><strong>案例：以 TDD 建造「多語系管理」技能——從壓力情境到部署的完整週期</strong></p>
+<ol>
+<li><strong>需求</strong>——使用者需要一個處理多語系 i18n 的技能，確保代理在翻譯時保持文化脈絡而不只是逐字翻譯</li>
+<li><strong>RED</strong>——寫壓力情境：1. 代理把「早安」直譯成「Good morning」在正式信件中（太隨意）；2. 代理把日文敬語「です/ます」統一成英文 without 保留敬語層次；3. 代理在中翻英時把成語「畫蛇添足」直譯成「draw a snake and add feet」（文化脈絡丟失）。看代理在沒有技能時怎麼失敗</li>
+<li><strong>GREEN</strong>——寫最小技能：只針對上述三個失敗模式，提供「翻譯前先確認語境與受眾」的規則</li>
+<li><strong>REFACTOR</strong>——再跑一次壓力情境：代理找到了新藉口「我不確定語境」→ 補上「語境不明時問、不猜」的規則；再測，直到所有藉口都被堵住</li>
+<li><strong>部署</strong>——技能通過所有壓力情境後，加入 .opencode/skills/ 目錄</li>
+</ol>
+<p><strong>為什麼選這條路徑：</strong>writing-skills 的關鍵價值：「寫技能就是 TDD」這個元技能解決了「技能看起來對但實際無效」的問題。沒有 RED 階段的壓力情境，你會以為「翻譯前先確認語境」這個規則夠了；但壓力情境揭露了「代理會用『我不確定語境』當藉口跳過規則」→ 你需要更強的規則「語境不明時問、不猜，不猜就是不翻譯」。每次 REFACTOR 都是對抗代理合理化能力的升級戰。</p>
+
+<h2 id="perf-quality-security">效能／品質／安全深度</h2>
+
+<p><strong>效能：</strong>技能的永久 token 成本：一個 500 字的技能在每個 session 消耗約 300-500 tokens。假設每天 5 個 session，一年就是 500k-900k tokens。這迫使你問：「這個技能的 500 字，是否每一個字都值得每年 500k tokens 的成本？」答案通常是「不是」——技能越短越好，只保留「無法從常識推斷」的規則。</p>
+<p><strong>品質：</strong>技能品質的判準：1. 壓力測試覆蓋率——所有已知的代理失敗模式都被反制；2. 原文長度——越短越好，500 字是硬上限；3. description 品質——決定「何時用」，必須精確到不誤觸也不漏觸。最常見的品質陷阱：「技能太長，代理讀不完」——把參考資料塞進 SKILL.md 而不是拆到獨立檔案。</p>
+<p><strong>安全：</strong>技能的安全考量：1. description 不能包含可執行指令——它只描述「何時用」，不描述「怎麼做」；2. 技能的支援檔案不能被子代理直接存取（除非明確引用）；3. 技能的測試壓力情境中不能包含真實的敏感資料（用 mock data）。</p>
+
+<h2 id="skill-comparison">技能間比較對照表</h2>
+
+<table>
+<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
+<tbody>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+<tr><</tr>
+</tbody>
+</table>
+
+<h2 id="interactive-checklist">互動式檢核清單</h2>
+
+<ul>
+<li>- [ ] 已確認 RED 階段的壓力情境真實反映了代理的失敗模式</li>
+<li>- [ ] 已確認每個壓力情境在沒有技能時真的失敗、有技能時真的通過</li>
+<li>- [ ] 已確認技能原文 < 500 字（硬上限）</li>
+<li>- [ ] 已確認 description 精確描述「何時用」，不包含「怎麼做」</li>
+<li>- [ ] 已確認沒有把參考資料塞進 SKILL.md（拆到獨立檔案）</li>
+<li>- [ ] 已確認部署前壓力測試全部通過（不是「測試過」而是「我親眼看到失敗和通過」）</li>
+</ul>
+
 </div>
 </body>
 </html>
