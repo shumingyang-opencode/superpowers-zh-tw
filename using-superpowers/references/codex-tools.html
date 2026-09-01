@@ -26,39 +26,103 @@ multi_agent = true
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-toml">[features]
 multi_agent = true
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>This enables <code>spawn_agent</code>, <code>wait_agent</code>, and <code>close_agent</code> for skills like <code>dispatching-parallel-agents</code> and <code>subagent-driven-development</code>. When using subagent-driven-development, close reviewer subagents when their review returns. Keep each implementer subagent open until its task's review passes — the fix loop resumes the implementer — then close it. If your harness cannot send another message to a spawned agent, dispatch each fix round as a fresh implementer carrying the brief, the report file, and the findings.</p></div><div class="col-zh" lang="zh-Hant"><p>這會為 <code>dispatching-parallel-agents</code> 與 <code>subagent-driven-development</code> 這類技能啟用 <code>spawn_agent</code>、<code>wait_agent</code> 與 <code>close_agent</code>。使用 subagent-driven-development 時，審查子代理的回報一送回就關閉它。每個實作子代理則保持開啟，直到其任務的審查通過——修復迴圈會續用該實作子代理——然後才關閉。如果你的 harness 無法向已產生的代理再送訊息，就把每一輪修復派成一個新的實作子代理，攜帶 brief、報告檔與審查發現。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="environment-detection">Environment Detection</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="環境偵測">環境偵測</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Skills that create worktrees or finish branches should detect their
-environment with read-only git commands before proceeding:</p></div><div class="col-zh" lang="zh-Hant"><p>建立 worktree 或收尾分支的技能，應該先用唯讀 git 指令偵測環境再繼續：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
-GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
-BRANCH=$(git branch --show-current)
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+<div class="pair"><div class="col-en" lang="en"><p>This enables the multi-agent tools that skills like
+<code>dispatching-parallel-agents</code> and <code>subagent-driven-development</code> use.
+Which tools you get depends on the multi-agent version your model
+preset selects (current presets run V2; older ones run V1). Trust your
+actual tool list over any table — including this one — when they
+disagree.</p></div><div class="col-zh" lang="zh-Hant"><p>這會為 <code>dispatching-parallel-agents</code> 與 <code>subagent-driven-development</code> 這類技能啟用 <code>spawn_agent</code>、<code>wait_agent</code> 與 <code>close_agent</code>。使用 subagent-driven-development 時，審查子代理的回報一送回就關閉它。每個實作子代理則保持開啟，直到其任務的審查通過——修復迴圈會續用該實作子代理——然後才關閉。如果你的 harness 無法向已產生的代理再送訊息，就把每一輪修復派成一個新的實作子代理，攜帶 brief、報告檔與審查發現。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Spawning:</strong> give children a clean context with
+  <code>spawn_agent {fork_turns: "none"}</code>; the default <code>"all"</code> copies your
+  entire transcript into the child. On Codex 0.145+, role files under
+  <code>~/.codex/agents/</code> attach to isolated forks via <code>agent_type</code>.
+  Full-history forks accept <code>model</code> and <code>reasoning_effort</code> overrides
+  (only <code>agent_type</code> is refused there) — isolated forks are the SDD
+  default for context hygiene, not because overrides require them.</li>
+<li><strong>Fix rounds:</strong> resume the implementer with <code>followup_task</code> — it
+  delivers your message, triggers a turn, and transparently reloads a
+  child the harness evicted. Never dispatch a fresh implementer on the
+  theory that a spawned agent cannot be messaged again; on V2 it
+  always can.</li>
+<li><strong>Lifecycle:</strong> V2 has no <code>close_agent</code>. Finished children are
+  evicted automatically when slots are needed; leaving them unclosed
+  costs nothing. Only V1 sessions have <code>close_agent</code> — there, close
+  reviewers when their review returns, and close each implementer
+  after its task's review passes.</li>
+<li><strong>Model names:</strong> never copy a model name from a skill, table, or old
+  session into <code>spawn_agent</code> without checking it against your current
+  spawn allowlist — V2 accepts only V2-capable presets and hard-errors
+  on the rest.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><h2 id="環境偵測">環境偵測</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="waiting-on-children">Waiting on children</h2></div><div class="col-zh" lang="zh-Hant"><p>建立 worktree 或收尾分支的技能，應該先用唯讀 git 指令偵測環境再繼續：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>wait_agent</code> is an event subscription, not a poll: a long wait wakes
+the moment a child produces mailbox activity, with the same latency as
+a short one. Short-timeout polling buys nothing and costs a tool call —
+and a context rebill — per poll. In measured sessions, roughly
+two-thirds of all wait calls were short polls that timed out.</p></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
 GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
 BRANCH=$(git branch --show-current)
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><ul>
-<li><code>GIT_DIR != GIT_COMMON</code> → already in a linked worktree (skip creation)</li>
-<li><code>BRANCH</code> empty → detached HEAD (cannot branch/push/PR from sandbox)</li>
+<li>While you still have local work, do not wait at all. A completed
+  child's final answer is pushed into your mailbox and arrives with
+  your next turn.</li>
+<li>When you are genuinely idle with children outstanding, wait in
+  bounded stretches: <code>wait_agent</code> with <code>timeout_ms</code> 300000-600000
+  (5-10 minutes). After each stretch — wake or timeout — post one
+  status line, run <code>list_agents</code>, and chase any child that finished
+  without reporting. Never stack polls shorter than five minutes; the
+  event subscription wakes a bounded stretch just as fast as a short
+  one.</li>
+<li>Completion mail cannot wake an idle controller (it is delivered
+  without triggering a turn); covering that idle window is
+  <code>wait_agent</code>'s only job. A stretch that times out with no activity
+  is your cue to reconcile, not to shorten the next stretch.</li>
 </ul></div><div class="col-zh" lang="zh-Hant"><ul>
 <li><code>GIT_DIR != GIT_COMMON</code> → 已在關聯的 worktree 中（跳過建立）</li>
 <li><code>BRANCH</code> 為空 → detached HEAD（無法從 sandbox 建立分支／推送／發 PR）</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>See <code>using-git-worktrees</code> Step 0 and <code>finishing-a-development-branch</code>
-Step 1 for how each skill uses these signals.</p></div><div class="col-zh" lang="zh-Hant"><p>關於各技能如何使用這些訊號，見 <code>using-git-worktrees</code> 的第 0 步與 <code>finishing-a-development-branch</code> 的第 1 步。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="codex-app-finishing">Codex App Finishing</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="codex-app-收尾">Codex App 收尾</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>When the sandbox blocks branch/push operations (detached HEAD in an
-externally managed worktree), the agent commits all work and informs
-the user to use the App's native controls:</p></div><div class="col-zh" lang="zh-Hant"><p>當 sandbox 阻擋分支／推送操作（在外部管理的 worktree 中處於 detached HEAD），代理提交所有工作並告知使用者改用 App 的原生控制：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><ul>
-<li><strong>"Create branch"</strong> — names the branch, then commit/push/PR via App UI</li>
-<li><strong>"Hand off to local"</strong> — transfers work to the user's local checkout</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<div class="pair"><div class="col-en" lang="en"><h2 id="model-routing-on-spawns">Model routing on spawns</h2></div><div class="col-zh" lang="zh-Hant"><p>關於各技能如何使用這些訊號，見 <code>using-git-worktrees</code> 的第 0 步與 <code>finishing-a-development-branch</code> 的第 1 步。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Every <code>spawn_agent</code> you issue — including when you are yourself a
+spawned child running a fan-out — sets <code>model</code> AND <code>reasoning_effort</code>
+explicitly, per the Model Selection rules of the skill you are
+executing. Setting <code>model</code> alone is a trap: the child's effort
+silently resets to that model's default, not to yours.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="codex-app-收尾">Codex App 收尾</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Ask your human partner to add a machine-level backstop to
+<code>~/.codex/config.toml</code> so any spawn that slips through still routes to
+a deliberate tier instead of silently inheriting the session's most
+expensive model:</p></div><div class="col-zh" lang="zh-Hant"><p>當 sandbox 阻擋分支／推送操作（在外部管理的 worktree 中處於 detached HEAD），代理提交所有工作並告知使用者改用 App 的原生控制：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-toml">[agents]
+default_subagent_model = &quot;&lt;a mid-tier model from your spawn allowlist&gt;&quot;
+default_subagent_reasoning_effort = &quot;medium&quot;
+</code></pre></div><div class="col-zh" lang="zh-Hant"><ul>
 <li><strong>「Create branch」</strong> — 命名分支，然後透過 App UI 提交／推送／發 PR</li>
 <li><strong>「Hand off to local」</strong> — 把工作轉移給使用者的本機 checkout</li>
 </ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="environment-detection">Environment Detection</h2></div><div class="col-zh" lang="zh-Hant"><p>代理仍然可以執行測試、暫存檔案，並輸出建議的分支名稱、commit 訊息與 PR 描述供使用者複製。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Skills that create worktrees or finish branches should detect their
+environment with read-only git commands before proceeding:</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">GIT_DIR=$(cd &quot;$(git rev-parse --git-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+GIT_COMMON=$(cd &quot;$(git rev-parse --git-common-dir)&quot; 2&gt;/dev/null &amp;&amp; pwd -P)
+BRANCH=$(git branch --show-current)
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><code>GIT_DIR != GIT_COMMON</code> → already in a linked worktree (skip creation)</li>
+<li><code>BRANCH</code> empty → detached HEAD (cannot branch/push/PR from sandbox)</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>See <code>using-git-worktrees</code> Step 0 and <code>finishing-a-development-branch</code>
+Step 1 for how each skill uses these signals.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="codex-app-finishing">Codex App Finishing</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When the sandbox blocks branch/push operations (detached HEAD in an
+externally managed worktree), the agent commits all work and informs
+the user to use the App's native controls:</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>"Create branch"</strong> — names the branch, then commit/push/PR via App UI</li>
+<li><strong>"Hand off to local"</strong> — transfers work to the user's local checkout</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>The agent can still run tests, stage files, and output suggested branch
-names, commit messages, and PR descriptions for the user to copy.</p></div><div class="col-zh" lang="zh-Hant"><p>代理仍然可以執行測試、暫存檔案，並輸出建議的分支名稱、commit 訊息與 PR 描述供使用者複製。</p></div></div>
+names, commit messages, and PR descriptions for the user to copy.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
 
 </div>
 </body>

@@ -111,10 +111,11 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 scripts/start-server.sh --project-dir /path/to/project --open --foreground
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Copilot CLI:</strong></p>
-<pre><code class="language-bash"># Use --foreground and start the server via the bash tool with mode: &quot;async&quot;
-# so the process survives across turns. Capture the returned shellId for
-# read_bash / stop_bash if you need to interact with it later.
-scripts/start-server.sh --project-dir /path/to/project --open --foreground
+<pre><code class="language-bash"># Start it with Copilot CLI's non-blocking/background shell mechanism so the
+# server survives across turns. Keep --foreground so the harness, not the
+# script, owns backgrounding. The launcher is a .sh, so invoke it via bash
+# (on Windows, call Git Bash's bash.exe from the PowerShell tool).
+bash scripts/start-server.sh --project-dir /path/to/project --open --foreground
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Copilot CLI：</strong></p>
 <pre><code class="language-bash"># Use --foreground and start the server via the bash tool with mode: &quot;async&quot;
 # so the process survives across turns. Capture the returned shellId for

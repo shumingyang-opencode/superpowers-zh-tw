@@ -8,13 +8,74 @@
     "date": "2026-07-27"
   },
   "current": {
-    "commit": "44c9b2d6e889982ac18c27d05a19fefe335194e1",
-    "short": "44c9b2d",
-    "version": "v6.2.0",
-    "date": "2026-07-24"
+    "commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
+    "short": "b36e082",
+    "version": "v6.3.0",
+    "date": "2026-08-12"
   },
-  "status": "synced",
-  "pending": [],
-  "non_md_count": 0,
-  "checked_at": "2026-08-08T15:48:40Z"
+  "status": "behind",
+  "pending": [
+    {
+      "kind": "translate",
+      "path": "skills/using-superpowers/references/hermes-tools.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/brainstorming/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/brainstorming/visual-companion.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/finishing-a-development-branch/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/requesting-code-review/code-reviewer.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/subagent-driven-development/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/subagent-driven-development/implementer-prompt.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/subagent-driven-development/re-review-prompt.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/subagent-driven-development/task-reviewer-prompt.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/using-superpowers/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/using-superpowers/references/codex-tools.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/writing-plans/SKILL.md",
+      "reason": "modified"
+    }
+  ],
+  "non_md_count": 42,
+  "checked_at": "2026-09-01T03:39:58Z"
 }

@@ -175,6 +175,7 @@ If you think there is even a 1% chance a skill might apply to what you are doing
 <li>Codex: <code>references/codex-tools.md</code></li>
 <li>Pi: <code>references/pi-tools.md</code></li>
 <li>Antigravity: <code>references/antigravity-tools.md</code></li>
+<li>Hermes Agent: <code>references/hermes-tools.md</code></li>
 </ul></div><div class="col-zh" lang="zh-Hant"><ul>
 <li>Codex：<code>references/codex-tools.md</code></li>
 <li>Pi：<code>references/pi-tools.md</code></li>
@@ -182,129 +183,6 @@ If you think there is even a 1% chance a skill might apply to what you are doing
 </ul></div></div>
 <div class="pair"><div class="col-en" lang="en"><h2 id="user-instructions">User Instructions</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="使用者指示">使用者指示</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>User instructions (CLAUDE.md, AGENTS.md, GEMINI.md, etc, direct requests) take precedence over skills, which in turn override default behavior. Only skip skill workflows or instructions when your human partner has explicitly told you to.</p></div><div class="col-zh" lang="zh-Hant"><p>使用者指示（CLAUDE.md、AGENTS.md、GEMINI.md 等，以及直接要求）優先於技能，而技能又覆蓋預設行為。只有在你的真人夥伴明確要求時，才跳過技能工作流或指示。</p></div></div>
-
-<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
-
-<h2 id="teaching-explanation">教學解說</h2>
-
-<p>Using-superpowers 是 Superpowers 的「開場白」技能：在任何對話開始時，先檢查有沒有技能適用於你正在做的事。</p>
-<p>核心規則是<strong>「在任何回應之前先呼叫技能」</strong>——包括澄清問題。因為有些技能（如 brainstorming）會改變你提問的方式。</p>
-
-<h2 id="worked-example">Worked Example（具體案例）</h2>
-
-<p><strong>案例：使用者說「幫我建一個登入頁面」</strong></p>
-<ol>
-<li>代理檢查：這是一個新功能 → brainstorming 技能適用</li>
-<li>宣告「正在使用 brainstorming 技能」</li>
-<li>開始探索專案、提出釐清問題</li>
-</ol>
-<p>如果沒有先呼叫 brainstorming，代理可能直接開始寫登入頁面——而使用者可能想要的是 OAuth 而不是帳號密碼登入。</p>
-
-<h2 id="common-mistakes">常見錯誤</h2>
-
-<table>
-<thead><tr><th>錯誤</th><th>正確做法</th></tr></thead>
-<tbody>
-<tr><td>直接回應而不先檢查技能</td><td>先掃描技能清單看有沒有適用的</td></tr>
-<tr><td>覺得「這太簡單不需要技能」</td><td>越是「看起來簡單」越可能有適用的技能</td></tr>
-</tbody>
-</table>
-
-<h2 id="practice-checklist">練習／檢核清單</h2>
-
-<ul>
-<li>□ 已在對話開始時檢查技能清單</li>
-<li>□ 已在任何回應前呼叫相關技能</li>
-<li>□ 已宣告「正在使用 [技能] 以達成 [目的]」</li>
-</ul>
-
-
-<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
-
-<h2 id="advanced-worked-example">進階真實情境 Worked Example</h2>
-
-<p><strong>案例：使用者回報「API 在星期一早上特別慢」——這是一次多技能觸發的會話</strong></p>
-<ol>
-<li><strong>對話開始</strong>——using-superpowers 先啟動：檢查技能清單，發現「效能問題」符合 systematic-debugging 的觸發情境（非預期行為），優先於任何回應</li>
-<li><strong>宣告並進入流程技能</strong>——「正在使用 systematic-debugging 以找出根因」，先走四階段根因調查，而不是直接提「加 cache」這種修復方案</li>
-<li><strong>調查到一半發現需要動設計</strong>——根因指向「查詢大量資料」，解決方案會改變 API 行為——此時流程技能讓位，補上 brainstorming 確認變更範圍與成功準則</li>
-<li><strong>設計核准後</strong>——進入 using-git-worktrees 開隔離工作區 → writing-plans 寫計畫 → subagent-driven-development 執行（內部每步由 TDD 把關）→ requesting-code-review 送審 → finishing-a-development-branch 收尾</li>
-</ol>
-<p><strong>為什麼選這條路徑：</strong>技能的優先序不是裝飾——「流程型技能先定調，實作型技能再執行」。效能問題若直接進入「寫 cache」，會跳過「為什麼慢」的根因調查；而改變行為前若沒有 brainstorming，會做出使用者不想要的變更。每一步都「先確認再做」，是這條管線自動運作的結果。</p>
-
-<h2 id="deep-dive-theory">深入原理擴充</h2>
-
-<p>using-superpowers 的「1% 規則」聽起來極端，但它精準描述了 agent 技能觸發的真實機制：<strong>技能觸發不是精確的函式比對，而是語意近似</strong>。模型在生成第一個 token 之前，會把「使用者的請求」與「技能清單中的 description」做語意匹配。若門檻設太低，該用沒用；設太高，無關技能亂觸發。「即使只有 1% 可能也必須呼叫」之所以正確，是因為「呼叫後發現不適用，可以不用它」的失敗成本，遠低於「該用沒用，讓錯誤流程默默進行」的成本。</p>
-<p>技能優先序的規則「流程型技能先於實作型技能」建立在另一個觀察上：<strong>流程技能改變的是「你怎麼行動」，實作技能改變的是「你做出什麼」</strong>。先有流程，才能保證實作是在正確的前提下進行。若你先套用實作型技能再回頭想流程，通常會發現前半段的工作白做了——因為流程技能（如 brainstorming）會重新定義需求本身。</p>
-<p><strong>陷阱案例：只靠 description 觸發，卻沒讀技能正文。</strong>「我看到 description 寫著 'Use when fixing bugs'，於是我確認呼叫了 systematic-debugging」——但呼叫之後沒有讀完整技能內容，只憑「我懂這個技能」就開始照常除錯。技能的實際效益來自正文的細節（四階段、合理化藉口表、檢查清單），description 只是觸發器。跳過正文等於「觸發了技能，卻沒有執行技能」——比完全沒觸發更糟，因為它給你虛假的流程保障。技能清單裡的每條「紅旗」都在防這件事。</p>
-
-<h2 id="troubleshooting-table">診斷式疑難排解表</h2>
-
-<table>
-<thead><tr><th>症狀</th><th>可能原因</th><th>解決方案</th></tr></thead>
-<tbody>
-<tr><td>技能裝了，但從沒被觸發</td><td>description 與實際請求語意不匹配</td><td>檢查 description 是否只描述「何時用」、是否用了具體觸發詞與症狀</td></tr>
-<tr><td>同時觸發多個技能、不知選誰</td><td>流程與實作型技能混在一起</td><td>流程型優先：brainstorming / systematic-debugging 先定調，再套實作技能</td></tr>
-<tr><td>呼叫了技能但行為跟沒呼叫一樣</td><td>只讀了 description，沒讀技能正文</td><td>逐字讀完整技能，為檢查清單每個項目建 todo</td></tr>
-<tr><td>被使用者指示跳過技能</td><td>使用者指示優先於技能</td><td>遵守使用者指示（僅限明確要求），否則技能優先於預設行為</td></tr>
-<tr><td>一直觸發技能拖慢節奏</td><td>誤把「呼叫」當「執行」，或門檻設太低</td><td>呼叫後發現不適用可不用它；真正的成本在「該用沒用」</td></tr>
-</tbody>
-</table>
-
-<h2 id="advanced-challenges">進階挑戰題</h2>
-
-<ol>
-<li>「1% 規則」為什麼在成本結構上是正確的？用「錯誤方向」的成本解釋它。</li>
-<li>你被派為子代理執行特定任務。根據 SUBAGENT-STOP，你該怎麼做？這與「任何回應前先檢查技能」的規則衝突嗎？為什麼不衝突？</li>
-<li>使用者說「幫我建一個登入頁面」。若代理跳過 brainstorming 直接寫頁面，最可能錯在哪裡？舉一個 concrete 的需求誤判例子。</li>
-</ol>
-
-
-<hr style="margin:3rem 0;border:none;border-top:2px solid #e2e8f0;">
-
-<h2 id="project-worked-example">專案級端到端 Worked Example</h2>
-
-<p><strong>案例：「開場白」如何在真實專案中自動串起整條管線——跨 10 個技能的完整工作日</strong></p>
-<ol>
-<li><strong>09:00 開場</strong>——使用者打開新 session 說「早安，我們繼續昨天的白板專案」。using-superpowers 立即觸發，判定「繼續昨天的工作」→ 檢查是否有未完成任務 → 強制進入 executing-plans 或 subagent-driven-development</li>
-<li><strong>09:15 執行中</strong>——Task 6 完成後，using-superpowers 再次觸發，判定「任務完成，需要審查」→ 強制進入 requesting-code-review</li>
-<li><strong>09:30 審查完成</strong>——using-superpowers 判定「審查通過，可進下一個任務」→ 回到 subagent-driven-development</li>
-<li><strong>10:00 發現 bug</strong>——Task 8 的實作子代理報告「既有功能壞了」→ using-superpowers 判定「這是除錯任務」→ 強制進入 systematic-debugging</li>
-<li><strong>10:30 修復完成</strong>——using-superpowers 判定「修復完成，需要驗證」→ 強制進入 verification-before-completion</li>
-<li><strong>11:00 全部完成</strong>——using-superpowers 判定「所有任務完成，需要收尾」→ 強制進入 finishing-a-development-branch</li>
-<li><strong>11:30 需求變更</strong>——使用者說「加一個 export PDF 功能」→ using-superpowers 判定「這是新功能需求」→ 強制回到 brainstorming，不允許在執行中「順手」加入</li>
-<li><strong>12:00 收工</strong>——finishing-a-development-branch 呈現選項，使用者選「push 建 PR」</li>
-</ol>
-<p><strong>為什麼選這條路徑：</strong>using-superpowers 的關鍵價值是「強制正確的順序」。沒有它，使用者說「繼續昨天的工作」時，代理可能直接開始寫 code，跳過審查、跳過驗證、跳過 brainstorming 的需求變更流程。它解決了「技能裝了但沒被用」的根本問題——不是你在觸發技能，是技能在確保你走到對的流程。1% 的開場成本，避免 100% 的方向錯誤。</p>
-
-<h2 id="perf-quality-security">效能／品質／安全深度</h2>
-
-<p><strong>效能：</strong>開場成本的精確計量：using-superpowers 在每個 session 開頭消耗約 200-500 tokens（讀取技能列表＋判定適用性），佔一個典型 session 總 token 的 0.5-1%。但它的收益是「避免整個 session 走錯方向」——如果代理跳過 brainstorming 直接寫 code，整個 session 的 tokens 可能全部浪費。1% 成本 vs 100% 風險，這是系統中最划算的保險。</p>
-<p><strong>品質：</strong>觸發品質的三個層次：1. 正確觸發——不漏觸（該進 brainstorming 沒進）也不誤觸（不該觸發時觸發）；2. 正確路由——觸發後選對技能（不是所有問題都進 systematic-debugging）；3. 正確時機——在「任何回應之前」觸發，而不是「開始工作之前」。如果改成後者，會漏掉「使用者只是問個問題但其實需要走流程」的情況。</p>
-<p><strong>安全：</strong>SUBAGENT-STOP 的安全意涵：子代理被派發執行特定任務時，using-superpowers 的觸發機制會被 SUBAGENT-STOP 標記攔截——子代理不檢查技能、直接執行任務。這是為了防止子代理「讀取開場白技能後改變行為」。如果子代理也觸發 using-superpowers，它可能會偏離任務簡報、嘗試「改善」工作流程，反而引入不穩定性。</p>
-
-<h2 id="skill-comparison">技能間比較對照表</h2>
-
-<table>
-<thead><tr><th>面向</th><th>本技能</th><th>相關技能</th><th>差異說明</th></tr></thead>
-<tbody>
-<tr><</tr>
-<tr><</tr>
-<tr><</tr>
-<tr><</tr>
-</tbody>
-</table>
-
-<h2 id="interactive-checklist">互動式檢核清單</h2>
-
-<ul>
-<li>- [ ] 已確認 using-superpowers 在「任何回應之前」觸發，不只是「開始工作之前」</li>
-<li>- [ ] 已確認子代理的 SUBAGENT-STOP 標記正常運作</li>
-<li>- [ ] 已確認觸發後能正確路由到對應技能（不是所有問題都進同一個技能）</li>
-<li>- [ ] 已確認 12 種常見合理化藉口都被紅旗表覆蓋</li>
-<li>- [ ] 已確認「使用者要求跳過技能」時，只有明確指示才優先於技能</li>
-<li>- [ ] 已確認每次 session 開頭都有觸發記錄（可追溯）</li>
-</ul>
 
 </div>
 </body>
