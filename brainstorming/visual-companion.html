@@ -58,7 +58,7 @@
 <div class="pair"><div class="col-en" lang="en"><h2 id="starting-a-session">Starting a Session</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="啟動一個-session">啟動一個 session</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash"># Start AFTER the user approves the companion. --open auto-opens their browser on
 # the first screen; --project-dir persists mockups and enables same-port restart.
-scripts/start-server.sh --project-dir /path/to/project --open
+bash scripts/start-server.sh --project-dir /path/to/project --open
 
 # Returns: {&quot;type&quot;:&quot;server-started&quot;,&quot;port&quot;:52341,
 #           &quot;url&quot;:&quot;http://localhost:52341/?key=ab12…&quot;,
@@ -86,7 +86,7 @@ without repeating it.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>URL
 <div class="pair"><div class="col-en" lang="en"><p><strong>Launching the server by platform:</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>依平台啟動伺服器：</strong></p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Claude Code:</strong></p>
 <pre><code class="language-bash"># Default mode works — the script backgrounds the server itself.
-scripts/start-server.sh --project-dir /path/to/project --open
+bash scripts/start-server.sh --project-dir /path/to/project --open
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Claude Code：</strong></p>
 <pre><code class="language-bash"># Default mode works — the script backgrounds the server itself.
 scripts/start-server.sh --project-dir /path/to/project --open
@@ -95,7 +95,7 @@ scripts/start-server.sh --project-dir /path/to/project --open
 <div class="pair"><div class="col-en" lang="en"><p><strong>Codex:</strong></p>
 <pre><code class="language-bash"># Codex reaps background processes. The script auto-detects CODEX_CI and
 # switches to foreground mode. Run it normally — no extra flags needed.
-scripts/start-server.sh --project-dir /path/to/project --open
+bash scripts/start-server.sh --project-dir /path/to/project --open
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Codex：</strong></p>
 <pre><code class="language-bash"># Codex reaps background processes. The script auto-detects CODEX_CI and
 # switches to foreground mode. Run it normally — no extra flags needed.
@@ -104,7 +104,7 @@ scripts/start-server.sh --project-dir /path/to/project --open
 <div class="pair"><div class="col-en" lang="en"><p><strong>Gemini CLI:</strong></p>
 <pre><code class="language-bash"># Use --foreground and set is_background: true on your shell tool call
 # so the process survives across turns
-scripts/start-server.sh --project-dir /path/to/project --open --foreground
+bash scripts/start-server.sh --project-dir /path/to/project --open --foreground
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>Gemini CLI：</strong></p>
 <pre><code class="language-bash"># Use --foreground and set is_background: true on your shell tool call
 # so the process survives across turns
@@ -124,7 +124,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Other environments:</strong> The server must keep running in the background across conversation turns. If your environment reaps detached processes, use <code>--foreground</code> and launch the command with your platform's background execution mechanism.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>其他環境：</strong> 伺服器必須在背景中跨對話回合持續執行。若你的環境會收割分離的 process，使用 <code>--foreground</code>，並以你平台的背景執行機制啟動指令。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>If the URL is unreachable from your browser (common in remote/containerized setups), bind a non-loopback host:</p></div><div class="col-zh" lang="zh-Hant"><p>若你的瀏覽器無法連到該 URL（在遠端／容器化設定中很常見），綁定一個非 loopback 的主機：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">scripts/start-server.sh \
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">bash scripts/start-server.sh \
   --project-dir /path/to/project \
   --host 0.0.0.0 \
   --url-host localhost
@@ -394,7 +394,7 @@ scripts/start-server.sh --project-dir /path/to/project --open --foreground
 <li>伺服器依修改時間提供最新的檔案</li>
 </ul></div></div>
 <div class="pair"><div class="col-en" lang="en"><h2 id="cleaning-up">Cleaning Up</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="清理">清理</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">scripts/stop-server.sh $SESSION_DIR
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">bash scripts/stop-server.sh $SESSION_DIR
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">scripts/stop-server.sh $SESSION_DIR
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>If the session used <code>--project-dir</code>, mockup files persist in <code>.superpowers/brainstorm/</code> for later reference. Only <code>/tmp</code> sessions get deleted on stop.</p></div><div class="col-zh" lang="zh-Hant"><p>若 session 使用了 <code>--project-dir</code>，mockup 檔案會保存在 <code>.superpowers/brainstorm/</code> 中供日後參照。只有 <code>/tmp</code> session 會在停止時被刪除。</p></div></div>

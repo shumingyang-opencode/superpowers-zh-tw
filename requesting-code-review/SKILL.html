@@ -45,7 +45,7 @@
 - 修正複雜 bug 之後</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><h2 id="how-to-request">How to Request</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="如何請求">如何請求</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>1. Get git SHAs:</strong></p>
-<pre><code class="language-bash">BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
+<pre><code class="language-bash">BASE_SHA=$(git rev-parse HEAD~1)  # or: git merge-base origin/main HEAD
 HEAD_SHA=$(git rev-parse HEAD)
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>1. 取得 git SHAs：</strong></p>
 <pre><code class="language-bash">BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main

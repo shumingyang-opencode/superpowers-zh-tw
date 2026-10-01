@@ -8,17 +8,133 @@
     "date": "2026-07-27"
   },
   "current": {
-    "commit": "b36e0829c6d0140e93cfef2ca599b1b07d4a7797",
-    "short": "b36e082",
-    "version": "v6.3.0",
-    "date": "2026-08-12"
+    "commit": "8ca22dba9a94f28898bbce59f2537ff4d87c747d",
+    "short": "8ca22db",
+    "version": "v6.4.2",
+    "date": "2026-09-25"
   },
   "status": "behind",
   "pending": [
     {
+      "kind": "new-skill",
+      "path": "skills/diagnosing-superpowers/SKILL.md",
+      "reason": "added",
+      "note": "需翻譯＋加入 registry（blurb/level/inv）"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/analyst-common.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/cost-and-time.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/plan-adherence.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/quality-evidence.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/repeated-work.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/request-conflicts.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/scrub-audit.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/scrub.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/similar-session.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/skill-timeline.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/prompts/stumbles.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/references/context-safety.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/references/github-issues.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/references/redaction-policy.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/references/session-discovery.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/templates/bundle-README.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/templates/case.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/templates/issue.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/diagnosing-superpowers/templates/report.md",
+      "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/using-superpowers/references/claude-code-tools.md",
+      "reason": "added"
+    },
+    {
       "kind": "translate",
       "path": "skills/using-superpowers/references/hermes-tools.md",
       "reason": "added"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/using-superpowers/references/muse-tools.md",
+      "reason": "added"
+    },
+    {
+      "kind": "remove",
+      "path": "skills/writing-plans/plan-document-reviewer-prompt.md",
+      "reason": "deleted"
     },
     {
       "kind": "translate",
@@ -32,7 +148,17 @@
     },
     {
       "kind": "translate",
+      "path": "skills/executing-plans/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
       "path": "skills/finishing-a-development-branch/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/requesting-code-review/SKILL.md",
       "reason": "modified"
     },
     {
@@ -62,6 +188,16 @@
     },
     {
       "kind": "translate",
+      "path": "skills/systematic-debugging/root-cause-tracing.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/test-driven-development/SKILL.md",
+      "reason": "modified"
+    },
+    {
+      "kind": "translate",
       "path": "skills/using-superpowers/SKILL.md",
       "reason": "modified"
     },
@@ -74,8 +210,13 @@
       "kind": "translate",
       "path": "skills/writing-plans/SKILL.md",
       "reason": "modified"
+    },
+    {
+      "kind": "translate",
+      "path": "skills/writing-skills/SKILL.md",
+      "reason": "modified"
     }
   ],
-  "non_md_count": 42,
-  "checked_at": "2026-09-01T03:39:58Z"
+  "non_md_count": 91,
+  "checked_at": "2026-10-01T04:16:23Z"
 }

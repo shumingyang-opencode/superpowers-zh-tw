@@ -72,27 +72,31 @@ git diff [BASE_SHA]..[HEAD_SHA]
 git diff [BASE_SHA]..[HEAD_SHA]
 ```
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>## Read-Only Review
+<div class="pair"><div class="col-en" lang="en"><pre><code>## The spec is a vision document
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Read-Only Review
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
+<div class="pair"><div class="col-en" lang="en"><pre><code>The spec says what the software must do. It does not enumerate every
+input, environment, or condition the software will meet. For behavior
+the spec is silent on, judge by what a reasonable person using this
+software would expect: a reasonable person's expectation is a
+requirement, and a spec's silence is not permission. Grade such
+findings by their effect on that person, not by whether the spec
+mentions the trigger.
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>## You Do Not Dispatch Subagents
+<div class="pair"><div class="col-en" lang="en"><pre><code>## Declined to judge
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## What to Check
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>Do all of this review yourself. Never spawn a subagent to review part
-of the diff, and never spawn another reviewer for a second opinion.
-This process already provides every review seat the work gets; a
-reviewer you spawn duplicates one of them at full cost, and its
-verdict counts for nothing. If the diff feels too large for one
-pass, review it in passes yourself and say so in your report.
+<div class="pair"><div class="col-en" lang="en"><pre><code>Before your verdict, list every behavior you considered and set aside
+as outside the plan or spec, one line each, with the reason. The
+executor rules on each line; nothing you set aside is dropped
+silently. An empty list means you set nothing aside.
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Plan alignment:**
 - Does the implementation match the plan / requirements?
 - Are deviations justified improvements, or problematic departures?
 - Is all planned functionality present?
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>## What to Check
+<div class="pair"><div class="col-en" lang="en"><pre><code>## Read-Only Review
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Code quality:**
 - Clean separation of concerns?
 - Proper error handling?
@@ -100,15 +104,42 @@ pass, review it in passes yourself and say so in your report.
 - DRY without premature abstraction?
 - Edge cases handled?
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>**Plan alignment:**
-- Does the implementation match the plan / requirements?
-- Are deviations justified improvements, or problematic departures?
-- Is all planned functionality present?
+<div class="pair"><div class="col-en" lang="en"><pre><code>Your review is read-only on this checkout. Do not mutate the working tree, the index, HEAD, or branch state in any way. Use tools like `git show`, `git diff`, and `git log` to inspect history. If you need a working copy of a different revision, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Architecture:**
 - Sound design decisions?
 - Reasonable scalability and performance?
 - Security concerns?
 - Integrates cleanly with surrounding code?
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>## You Do Not Dispatch Subagents
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Testing:**
+- Tests verify real behavior, not mocks?
+- Edge cases covered?
+- Integration tests where they matter?
+- All tests passing?
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Do all of this review yourself. Never spawn a subagent to review part
+of the diff, and never spawn another reviewer for a second opinion.
+This process already provides every review seat the work gets; a
+reviewer you spawn duplicates one of them at full cost, and its
+verdict counts for nothing. If the diff feels too large for one
+pass, review it in passes yourself and say so in your report.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Production readiness:**
+- Migration strategy if schema changed?
+- Backward compatibility considered?
+- Documentation complete?
+- No obvious bugs?
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>## What to Check
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Calibration
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>**Plan alignment:**
+- Does the implementation match the plan / requirements?
+- Are deviations justified improvements, or problematic departures?
+- Is all planned functionality present?
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Categorize issues by actual severity. Not everything is Critical.
+Acknowledge what was done well before listing issues — accurate praise
+helps the implementer trust the rest of the feedback.
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>**Code quality:**
 - Clean separation of concerns?
@@ -116,105 +147,82 @@ pass, review it in passes yourself and say so in your report.
 - Type safety where applicable?
 - DRY without premature abstraction?
 - Edge cases handled?
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Testing:**
-- Tests verify real behavior, not mocks?
-- Edge cases covered?
-- Integration tests where they matter?
-- All tests passing?
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>If you find significant deviations from the plan, flag them specifically
+so the implementer can confirm whether the deviation was intentional.
+If you find issues with the plan itself rather than the implementation,
+say so.
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>**Architecture:**
 - Sound design decisions?
 - Reasonable scalability and performance?
 - Security concerns?
 - Integrates cleanly with surrounding code?
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Production readiness:**
-- Migration strategy if schema changed?
-- Backward compatibility considered?
-- Documentation complete?
-- No obvious bugs?
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Output Format
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>**Testing:**
 - Tests verify real behavior, not mocks?
 - Edge cases covered?
 - Integration tests where they matter?
 - All tests passing?
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Calibration
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Strengths
+[What's well done? Be specific.]
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>**Production readiness:**
 - Migration strategy if schema changed?
 - Backward compatibility considered?
 - Documentation complete?
 - No obvious bugs?
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>Categorize issues by actual severity. Not everything is Critical.
-Acknowledge what was done well before listing issues — accurate praise
-helps the implementer trust the rest of the feedback.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Issues
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>## Calibration
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>If you find significant deviations from the plan, flag them specifically
-so the implementer can confirm whether the deviation was intentional.
-If you find issues with the plan itself rather than the implementation,
-say so.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>#### Critical (Must Fix)
+[Bugs, security issues, data loss risks, broken functionality]
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>Categorize issues by actual severity. Not everything is Critical.
 Acknowledge what was done well before listing issues — accurate praise
 helps the implementer trust the rest of the feedback.
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Output Format
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>#### Important (Should Fix)
+[Architecture problems, missing features, poor error handling, test gaps]
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>If you find significant deviations from the plan, flag them specifically
 so the implementer can confirm whether the deviation was intentional.
 If you find issues with the plan itself rather than the implementation,
 say so.
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Strengths
-[What's well done? Be specific.]
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>## Output Format
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Issues
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>### Strengths
-[What's well done? Be specific.]
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>#### Critical (Must Fix)
-[Bugs, security issues, data loss risks, broken functionality]
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>### Issues
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>#### Important (Should Fix)
-[Architecture problems, missing features, poor error handling, test gaps]
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>#### Critical (Must Fix)
-[Bugs, security issues, data loss risks, broken functionality]
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>#### Minor (Nice to Have)
 [Code style, optimization opportunities, documentation polish]
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>#### Important (Should Fix)
-[Architecture problems, missing features, poor error handling, test gaps]
+<div class="pair"><div class="col-en" lang="en"><pre><code>## Output Format
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>For each issue:
 - File:line reference
 - What's wrong
 - Why it matters
 - How to fix (if not obvious)
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>#### Minor (Nice to Have)
-[Code style, optimization opportunities, documentation polish]
+<div class="pair"><div class="col-en" lang="en"><pre><code>### Strengths
+[What's well done? Be specific.]
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Recommendations
 [Improvements for code quality, architecture, or process]
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>### Issues
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Assessment
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>#### Critical (Must Fix)
+[Bugs, security issues, data loss risks, broken functionality]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Ready to merge?** [Yes | No | With fixes]
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>#### Important (Should Fix)
+[Architecture problems, missing features, poor error handling, test gaps]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Reasoning:** [1-2 sentence technical assessment]
+</code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>#### Minor (Nice to Have)
+[Code style, optimization opportunities, documentation polish]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Critical Rules
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>For each issue:
 - File:line reference
 - What's wrong
 - Why it matters
 - How to fix (if not obvious)
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Assessment
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>### Recommendations
-[Improvements for code quality, architecture, or process]
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Ready to merge?** [Yes | No | With fixes]
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>### Assessment
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**Reasoning:** [1-2 sentence technical assessment]
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>**Ready to merge?** [Yes | No | With fixes]
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>## Critical Rules
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>**Reasoning:** [1-2 sentence technical assessment]
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**DO:**
 - Categorize by actual severity
 - Be specific (file:line, not vague)
@@ -222,7 +230,8 @@ say so.
 - Acknowledge strengths
 - Give a clear verdict
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>## Critical Rules
+<div class="pair"><div class="col-en" lang="en"><pre><code>### Recommendations
+[Improvements for code quality, architecture, or process]
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>**DON'T:**
 - Say "looks good" without checking
 - Mark nitpicks as Critical
@@ -231,31 +240,18 @@ say so.
 - Avoid giving a clear verdict
 </code></pre>
 <p>```</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>**DO:**
-- Categorize by actual severity
-- Be specific (file:line, not vague)
-- Explain WHY each issue matters
-- Acknowledge strengths
-- Give a clear verdict
+<div class="pair"><div class="col-en" lang="en"><pre><code>### Assessment
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>占位符：</strong>
 - <code>[DESCRIPTION]</code> — 建構內容的簡短摘要
 - <code>[PLAN_OR_REQUIREMENTS]</code> — 它應該做什麼（計畫檔路徑、任務文字或需求）
 - <code>[BASE_SHA]</code> — 起始 commit
 - <code>[HEAD_SHA]</code> — 結束 commit</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>**DON'T:**
-- Say "looks good" without checking
-- Mark nitpicks as Critical
-- Give feedback on code you didn't actually read
-- Be vague ("improve error handling")
-- Avoid giving a clear verdict
-</code></pre>
-<p>```</p></div><div class="col-zh" lang="zh-Hant"><p><strong>審查者回傳：</strong> 優點、問題（Critical / Important / Minor）、建議、評估</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Placeholders:</strong>
-- <code>[DESCRIPTION]</code> — brief summary of what was built
-- <code>[PLAN_OR_REQUIREMENTS]</code> — what it should do (plan file path, task text, or requirements)
-- <code>[BASE_SHA]</code> — starting commit
-- <code>[HEAD_SHA]</code> — ending commit</p></div><div class="col-zh" lang="zh-Hant"><h2 id="範例輸出">範例輸出</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Reviewer returns:</strong> Strengths, Issues (Critical / Important / Minor), Recommendations, Assessment</p></div><div class="col-zh" lang="zh-Hant"><pre><code>### Strengths
+<div class="pair"><div class="col-en" lang="en"><pre><code>**Ready to merge?** [Yes | No | With fixes]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>審查者回傳：</strong> 優點、問題（Critical / Important / Minor）、建議、評估</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>**Reasoning:** [1-2 sentence technical assessment]
+</code></pre></div><div class="col-zh" lang="zh-Hant"><h2 id="範例輸出">範例輸出</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>## Critical Rules
+</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>### Strengths
 - Clean database schema with proper migrations (db.ts:15-42)
 - Comprehensive test coverage (18 tests, all edge cases)
 - Good error handling with fallbacks (summarizer.ts:85-92)
@@ -289,6 +285,27 @@ say so.
 
 **Reasoning:** Core implementation is solid with good architecture and tests. Important issues (help text, date validation) are easily fixed and don't affect core functionality.
 </code></pre></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>**DO:**
+- Categorize by actual severity
+- Be specific (file:line, not vague)
+- Explain WHY each issue matters
+- Acknowledge strengths
+- Give a clear verdict
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>**DON'T:**
+- Say "looks good" without checking
+- Mark nitpicks as Critical
+- Give feedback on code you didn't actually read
+- Be vague ("improve error handling")
+- Avoid giving a clear verdict
+</code></pre>
+<p>```</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Placeholders:</strong>
+- <code>[DESCRIPTION]</code> — brief summary of what was built
+- <code>[PLAN_OR_REQUIREMENTS]</code> — what it should do (plan file path, task text, or requirements)
+- <code>[BASE_SHA]</code> — starting commit
+- <code>[HEAD_SHA]</code> — ending commit</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Reviewer returns:</strong> Strengths, Issues (Critical / Important / Minor), Recommendations, Assessment</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><h2 id="example-output">Example Output</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><pre><code>### Strengths
 - Clean database schema with proper migrations (db.ts:15-42)

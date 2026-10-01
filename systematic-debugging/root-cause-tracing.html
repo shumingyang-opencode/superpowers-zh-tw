@@ -143,7 +143,7 @@ async function gitInit(directory: string) {
 <div class="pair"><div class="col-en" lang="en"><h2 id="finding-which-test-causes-pollution">Finding Which Test Causes Pollution</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="找出是哪個測試造成污染">找出是哪個測試造成污染</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>If something appears during tests but you don't know which test:</p></div><div class="col-zh" lang="zh-Hant"><p>如果測試期間出現某些東西，但你不知道是哪個測試：</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Use the bisection script <code>find-polluter.sh</code> in this directory:</p></div><div class="col-zh" lang="zh-Hant"><p>使用本目錄中的二分搜尋腳本 <code>find-polluter.sh</code>：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">./find-polluter.sh '.git' 'src/**/*.test.ts'
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-bash">bash ./find-polluter.sh '.git' 'src/**/*.test.ts'
 </code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code class="language-bash">./find-polluter.sh '.git' 'src/**/*.test.ts'
 </code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p>Runs tests one-by-one, stops at first polluter. See script for usage.</p></div><div class="col-zh" lang="zh-Hant"><p>它會一個一個跑測試，在第一個污染源停下。用法請見腳本。</p></div></div>

@@ -19,25 +19,37 @@
 </div>
 <table class="fm-table">
 <tr><td>name</td><td><code>executing-plans</code></td></tr>
-<tr><td>description (EN)</td><td>Use when you have a written implementation plan to execute in a separate session with review checkpoints</td></tr>
+<tr><td>description (EN)</td><td>Use when executing an implementation plan in the current session as the implementer yourself — your human partner chose inline execution, or no subagent tool is available</td></tr>
 <tr><td>說明 (繁中)</td><td>當你有一份書面的實作計畫，需要在另一個 session 中執行並設有審查檢查點時使用</td></tr>
 </table>
 <h1>executing-plans</h1>
 <div class="subtitle">照寫好的計畫，在另開的 session 分批執行，每批有人類檢查點。</div>
 <div class="pair"><div class="col-en" lang="en"><h1 id="executing-plans">Executing Plans</h1></div><div class="col-zh" lang="zh-Hant"><h1 id="執行計畫">執行計畫</h1></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="overview">Overview</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="總覽">總覽</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Load plan, review critically, execute all tasks, report when complete.</p></div><div class="col-zh" lang="zh-Hant"><p>載入計畫、批判性審查、執行所有任務、完成後回報。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Announce at start:</strong> "I'm using the executing-plans skill to implement this plan."</p></div><div class="col-zh" lang="zh-Hant"><p><strong>開始時宣告：</strong> 「我正使用 executing-plans 技能來實作這個計畫。」</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Note:</strong> Tell your human partner that Superpowers works much better with access to subagents (Claude Code, Codex CLI, Codex App, Copilot CLI, and Gemini CLI all qualify; see the per-platform tool refs in <code>../using-superpowers/references/</code>). If subagents are available, use superpowers:subagent-driven-development instead of this skill.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>注意：</strong> 告訴你的人工夥伴，Superpowers 在能使用子代理（Claude Code、Codex CLI、Codex App、Copilot CLI 與 Gemini CLI 皆符合；請參閱 <code>../using-superpowers/references/</code> 中各平台的工具參考）時會運作得更好。如果可以使用子代理，請改用 superpowers:subagent-driven-development，而不要使用此技能。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="the-process">The Process</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="流程">流程</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3 id="step-1-load-and-review-plan">Step 1: Load and Review Plan</h3>
-<ol>
-<li>Ensure an isolated workspace: use superpowers:using-git-worktrees to create one or verify the existing one</li>
-<li>Read plan file</li>
-<li>Review critically - identify any questions or concerns about the plan</li>
-<li>If concerns: Raise them with your human partner before starting</li>
-<li>If no concerns: Create todos for the plan items and proceed</li>
-</ol></div><div class="col-zh" lang="zh-Hant"><h3 id="第-1-步載入並審查計畫">第 1 步：載入並審查計畫</h3>
+<div class="pair"><div class="col-en" lang="en"><p>Execute the plan yourself, task by task, in this session: no implementer
+subagent per task, no reviewer per task. One fresh-context review of the
+whole branch at the end.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="總覽">總覽</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Why inline:</strong> Subagent-driven development pays for a fresh implementer
+and a fresh reviewer on every task, each re-reading the codebase from zero.
+Inline execution pays for one context (yours) plus one reviewer at the end.
+What it gives up is a fresh context per task and a second pair of eyes per
+task. This skill keeps what those two things bought, by other means: the
+brief is the spec, the ledger is your memory, TDD is the per-task gate, and
+the final reviewer is the second pair of eyes.</p></div><div class="col-zh" lang="zh-Hant"><p>載入計畫、批判性審查、執行所有任務、完成後回報。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Core principle:</strong> The plan already did the thinking. Execute it exactly,
+prove each step with a test you watched fail and then pass, and leave a
+record that survives your own forgetting.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>開始時宣告：</strong> 「我正使用 executing-plans 技能來實作這個計畫。」</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Narration:</strong> between tool calls, narrate at most one short line — the
+ledger and the tool results carry the record.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>注意：</strong> 告訴你的人工夥伴，Superpowers 在能使用子代理（Claude Code、Codex CLI、Codex App、Copilot CLI 與 Gemini CLI 皆符合；請參閱 <code>../using-superpowers/references/</code> 中各平台的工具參考）時會運作得更好。如果可以使用子代理，請改用 superpowers:subagent-driven-development，而不要使用此技能。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Continuous execution:</strong> Do not pause to check in with your human partner
+between tasks. They chose inline execution to spend less, not to answer
+"should I continue?" after every task. Execute all tasks from the plan
+without stopping.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="流程">流程</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Rulings, not stalls.</strong> Conflicts, ambiguities, plan defects — decide them.
+The spec is the binding authority, the plan is its argument, and your
+judgment settles what neither answers. Record every decision in the ledger
+as <code>Ruling: &lt;what you decided&gt; — &lt;why&gt; — &lt;what it costs if wrong&gt;</code>, and keep
+going. Deviating from the plan without a ledgered ruling is a decision made
+in secret.</p></div><div class="col-zh" lang="zh-Hant"><h3 id="第-1-步載入並審查計畫">第 1 步：載入並審查計畫</h3>
 <ol>
 <li>確保有隔離的工作區：使用 superpowers:using-git-worktrees 建立一個或驗證現有的</li>
 <li>讀取計畫檔</li>
@@ -45,51 +57,95 @@
 <li>若有顧慮：開始前先與你的人工夥伴提出</li>
 <li>若無顧慮：為計畫項目建立 todos 並繼續進行</li>
 </ol></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3 id="step-2-execute-tasks">Step 2: Execute Tasks</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="第-2-步執行任務">第 2 步：執行任務</h3></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>For each task:
-1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
-4. Mark as completed</p></div><div class="col-zh" lang="zh-Hant"><p>對每個任務：
+<div class="pair"><div class="col-en" lang="en"><p>Four things stop you, and only these: an irreversible or destructive
+operation; a security-sensitive action; a side effect outside this worktree
+that norms say you ask about first (a merge, a push to a shared branch, a
+publish); and a plan so broken that every path forward is a guess. For
+those, stop and ask.</p></div><div class="col-zh" lang="zh-Hant"><h3 id="第-2-步執行任務">第 2 步：執行任務</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-use">When to Use</h2></div><div class="col-zh" lang="zh-Hant"><p>對每個任務：
 1. 標記為 in_progress
 2. 精確依循每個步驟（計畫已切成小而專注的步驟）
 3. 依指定執行驗證
 4. 標記為 completed</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3 id="step-3-complete-development">Step 3: Complete Development</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="第-3-步完成開發">第 3 步：完成開發</h3></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>After all tasks complete and verified:
-- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- <strong>REQUIRED SUB-SKILL:</strong> Use superpowers:finishing-a-development-branch
-- Follow that skill to verify tests, present options, execute choice</p></div><div class="col-zh" lang="zh-Hant"><p>所有任務完成並驗證後：
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>You have a plan from superpowers:writing-plans and your human partner
+  chose inline execution at the handoff.</li>
+<li>Your harness has no subagent tool (see the per-platform references in
+  <code>../using-superpowers/references/</code>). Never fabricate a dispatch; run
+  the plan here.</li>
+<li>Tasks are mostly independent — the same precondition as
+  superpowers:subagent-driven-development.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><h3 id="第-3-步完成開發">第 3 步：完成開發</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A fully specified plan makes inline execution transcription plus testing:
+it runs well on a mid-tier session model, and the one place the most
+capable model earns its cost is the final review, which this skill
+dispatches separately. Tell your human partner so when they choose inline.</p></div><div class="col-zh" lang="zh-Hant"><p>所有任務完成並驗證後：
 - 宣告：「我正使用 finishing-a-development-branch 技能來完成這份工作。」
 - <strong>必要子技能：</strong> 使用 superpowers:finishing-a-development-branch
 - 依循該技能驗證測試、呈現選項、執行選擇</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-stop-and-ask-for-help">When to Stop and Ask for Help</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時停下尋求協助">何時停下尋求協助</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>STOP executing immediately when:</strong>
-- Hit a blocker (missing dependency, test fails, instruction unclear)
-- Plan has critical gaps preventing starting
-- You don't understand an instruction
-- Verification fails repeatedly</p></div><div class="col-zh" lang="zh-Hant"><p><strong>遇到以下情況立即停止執行：</strong>
+<div class="pair"><div class="col-en" lang="en"><p>Prefer superpowers:subagent-driven-development when your human partner
+wants a review gate on every task, or when the plan is long enough that
+its later tasks would run on a compacted context. Inline execution over a
+long plan still works — the ledger is what makes it recoverable — but the
+last tasks get the least of you.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="何時停下尋求協助">何時停下尋求協助</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-process">The Process</h2></div><div class="col-zh" lang="zh-Hant"><p><strong>遇到以下情況立即停止執行：</strong>
 - 卡住（缺少依賴、測試失敗、指示不明）
 - 計畫有阻礙開始的關鍵缺口
 - 不理解某個指示
 - 驗證持續失敗</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Ask for clarification rather than guessing.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>寧可詢問釐清，也不要亂猜。</strong></p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="when-to-revisit-earlier-steps">When to Revisit Earlier Steps</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時回到較早的步驟">何時回到較早的步驟</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Return to Review (Step 1) when:</strong>
-- Partner updates the plan based on your feedback
-- Fundamental approach needs rethinking</p></div><div class="col-zh" lang="zh-Hant"><p><strong>遇到以下情況回到審查（第 1 步）：</strong>
+<div class="pair"><div class="col-en" lang="en"><pre><code class="language-dot">digraph process {
+    rankdir=TB;
+
+    subgraph cluster_per_task {
+        label=&quot;Per Task&quot;;
+        &quot;task-start: brief + BASE; read the brief&quot; [shape=box];
+        &quot;Work the steps in order: TDD, run every verification, read every output&quot; [shape=box];
+        &quot;Step output matches plan's Expected?&quot; [shape=diamond];
+        &quot;Plan wrong? Rule and ledger. Code wrong? systematic-debugging&quot; [shape=box];
+        &quot;Commit as the plan's commit steps say&quot; [shape=box];
+        &quot;Completion contract met?&quot; [shape=diamond];
+        &quot;task-done: run tests, ledger the result; mark todo complete&quot; [shape=box];
+    }
+
+    &quot;Setup: worktree, workspace + ledger, read plan + spec, pre-flight scan&quot; [shape=box];
+    &quot;More tasks remain?&quot; [shape=diamond];
+    &quot;Final whole-branch review (fresh reviewer if you have one)&quot; [shape=box];
+    &quot;Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger&quot; [shape=box];
+    &quot;Final review clean: delete this plan's workspace&quot; [shape=box];
+    &quot;Use superpowers:finishing-a-development-branch&quot; [shape=box style=filled fillcolor=lightgreen];
+
+    &quot;Setup: worktree, workspace + ledger, read plan + spec, pre-flight scan&quot; -&gt; &quot;task-start: brief + BASE; read the brief&quot;;
+    &quot;task-start: brief + BASE; read the brief&quot; -&gt; &quot;Work the steps in order: TDD, run every verification, read every output&quot;;
+    &quot;Work the steps in order: TDD, run every verification, read every output&quot; -&gt; &quot;Step output matches plan's Expected?&quot;;
+    &quot;Step output matches plan's Expected?&quot; -&gt; &quot;Plan wrong? Rule and ledger. Code wrong? systematic-debugging&quot; [label=&quot;no&quot;];
+    &quot;Plan wrong? Rule and ledger. Code wrong? systematic-debugging&quot; -&gt; &quot;Work the steps in order: TDD, run every verification, read every output&quot;;
+    &quot;Step output matches plan's Expected?&quot; -&gt; &quot;Commit as the plan's commit steps say&quot; [label=&quot;yes, last step&quot;];
+    &quot;Commit as the plan's commit steps say&quot; -&gt; &quot;Completion contract met?&quot;;
+    &quot;Completion contract met?&quot; -&gt; &quot;Work the steps in order: TDD, run every verification, read every output&quot; [label=&quot;no - finish the task&quot;];
+    &quot;Completion contract met?&quot; -&gt; &quot;task-done: run tests, ledger the result; mark todo complete&quot; [label=&quot;yes&quot;];
+    &quot;task-done: run tests, ledger the result; mark todo complete&quot; -&gt; &quot;More tasks remain?&quot;;
+    &quot;More tasks remain?&quot; -&gt; &quot;task-start: brief + BASE; read the brief&quot; [label=&quot;yes&quot;];
+    &quot;More tasks remain?&quot; -&gt; &quot;Final whole-branch review (fresh reviewer if you have one)&quot; [label=&quot;no&quot;];
+    &quot;Final whole-branch review (fresh reviewer if you have one)&quot; -&gt; &quot;Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger&quot;;
+    &quot;Re-grade, then: Critical/Important → ONE fix pass, each fix RED→GREEN + green suite; Minor → ledger&quot; -&gt; &quot;Final review clean: delete this plan's workspace&quot;;
+    &quot;Final review clean: delete this plan's workspace&quot; -&gt; &quot;Use superpowers:finishing-a-development-branch&quot;;
+}
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>寧可詢問釐清，也不要亂猜。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="setup">Setup</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="何時回到較早的步驟">何時回到較早的步驟</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Ensure the work happens in an isolated workspace: use
+superpowers:using-git-worktrees to create one or verify the existing one.
+Never start implementation on a main/master branch without your human
+partner's explicit consent.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>遇到以下情況回到審查（第 1 步）：</strong>
 - 夥伴根據你的回饋更新計畫
 - 根本做法需要重新思考</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Don't force through blockers</strong> - stop and ask.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不要硬闖卡點</strong> - 停下來詢問。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="remember">Remember</h2>
-<ul>
-<li>Review plan critically first</li>
-<li>Follow plan steps exactly</li>
-<li>Don't skip verifications</li>
-<li>Reference skills when plan says to</li>
-<li>Stop when blocked, don't guess</li>
-<li>Never start implementation on main/master branch without explicit user consent</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><h2 id="記住">記住</h2>
+<div class="pair"><div class="col-en" lang="en"><p>Conversation memory does not survive compaction. An inline executor that
+loses its place re-implements tasks whose commits already exist — the same
+failure as a controller re-dispatching them, paid for in your own context.
+Track progress in a ledger file, not only in todos. Harness todos are a
+live view; the ledger is the record.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>不要硬闖卡點</strong> - 停下來詢問。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The workspace and ledger are shared with superpowers:subagent-driven-development
+— same directory, same format — so a plan can change executors mid-flight
+and the new one resumes from the same ledger.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="記住">記住</h2>
 <ul>
 <li>先批判性審查計畫</li>
 <li>精確依循計畫步驟</li>
@@ -98,6 +154,271 @@
 <li>卡住就停下，不要亂猜</li>
 <li>未經使用者明確同意，絕不在 main/master 分支上開始實作</li>
 </ul></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Each plan owns a workspace: at skill start, run
+  <code>../subagent-driven-development/scripts/sdd-workspace PLAN_FILE</code> — it
+  prints the plan's git-ignored directory
+  (<code>&lt;repo-root&gt;/.superpowers/sdd/&lt;plan-basename&gt;/</code>), home to every
+  artifact for THIS plan: ledger, briefs, review packages. Another plan's
+  directory is never yours to read or write.</li>
+<li>Check for this plan's ledger at <code>&lt;workspace&gt;/progress.md</code>. If its first
+  line names your plan file, tasks with a <code>Task &lt;N&gt;: complete</code> line are
+  DONE — do not redo them; resume at the first task without one. Their
+  commits exist in git even when your context no longer remembers making
+  them: after compaction, trust the ledger and <code>git log</code> over your own
+  recollection. A ledger whose first line names a different plan file is
+  another plan's progress: leave it and start your own, fresh.</li>
+<li>Create the ledger with its identity as the first line:
+  <code># SDD ledger — plan: &lt;plan file path&gt;</code>.</li>
+<li><code>git clean -fdx</code> will destroy the workspace (it's git-ignored scratch);
+  if that happens, recover from <code>git log</code>.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Read the plan once, note its context and Global Constraints, and create a
+todo per task. If the plan names a Spec, read that too: the spec is the
+authority the plan argues from, and conflicts inside the plan resolve
+against it. A plan with no reachable spec gets a ledger note saying so —
+rulings made without one are provisional.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>REQUIRED SUB-SKILL:</strong> load superpowers:test-driven-development now,
+before Task 1. It governs every step of every task below; a plan whose
+steps already say "write the failing test first" does not exempt you
+from reading it.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before Task 1, scan the plan for conflicts between tasks. The plan's
+Interfaces blocks tell you where to look: for every task that consumes
+what an earlier task produces, one ledger row — the two tasks, what one
+produces against what the other consumes, and what you found. Tasks that
+share nothing get no row; a plan whose tasks share nothing gets the single
+line <code>Pre-flight: no shared interfaces</code>. Rule on each conflict a row
+surfaces with the spec as the binding authority, record the ruling beside
+its row, and start Task 1. Each task's own text is checked when you read
+its brief, not here.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="the-task-loop">The Task Loop</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Everything you print, and every tool result, stays resident in your
+context for the rest of the session. Redirect long test output to a file
+in the workspace and read its tail; read a brief, not the whole plan.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="1-take-the-task">1. Take the task</h3></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Run this skill's <code>scripts/task-start PLAN_FILE N</code>. It prints the brief
+  path and BASE (the commit the task's range is cut from) in one call.
+  Read the brief for every task, including ones you remember from setup:
+  what you remember is a summary, the brief has the exact values,
+  signatures, and test cases.</li>
+<li>Mark the task's todo in_progress.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Every tool call is a turn that re-reads your whole context. Bookkeeping
+rides along with work — a ledger append in the same call as the commit,
+never in a call of its own.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="2-work-the-steps">2. Work the steps</h3></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>The plan's steps are already in RED-GREEN order; follow them in that
+order under superpowers:test-driven-development, loaded at setup. A test
+step's code is written first and run first. Watching it fail is a step,
+not a formality — a test that passes before the implementation exists is
+a finding about the test.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Every step that runs a command has an <code>Expected:</code> line. Run the command,
+read its output, and compare. Three outcomes:</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Matches.</strong> Next step.</li>
+<li><strong>The code is wrong.</strong> Use superpowers:systematic-debugging. Find the
+  cause; never patch the symptom to make the step's output match.</li>
+<li><strong>The plan is wrong</strong> — a step contradicts the spec, an interface from an
+  earlier task doesn't match what this task consumes, a command that
+  cannot work. Rule on the smallest change that satisfies the spec, ledger
+  it as <code>Task &lt;N&gt;: Ruling: &lt;finding&gt; — &lt;what you decided and why&gt;</code>, and
+  continue. The ruling is carried, not remembered: later tasks that touch
+  the same interface read it from the ledger.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Commit as the plan's commit steps say. A task that spans several commits
+is fine; BASE is what the review range is cut from, never <code>HEAD~1</code>.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="3-the-completion-contract">3. The completion contract</h3></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before a task's ledger line, all of the following are true, with evidence
+in this session — not inferred from the diff looking right:</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Every test the brief names exists and ran in this task, and you read
+  the output.</li>
+<li>The final test run for the task passed — <code>task-done</code> is that run, and
+  it writes the command and result into the ledger line.</li>
+<li>Every <code>Expected:</code> line in the brief was compared against real output.</li>
+<li>Every deviation from the brief has a <code>Ruling:</code> line in the ledger.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>REQUIRED SUB-SKILL:</strong> superpowers:verification-before-completion governs
+the claim. If any item is missing, the task is not complete: finish it.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="4-complete-the-task">4. Complete the task</h3></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Run this skill's <code>scripts/task-done PLAN_FILE N BASE -- &lt;test command&gt;</code>
+with the test command the brief names for the whole task. It runs the
+tests, keeps the full output in the workspace, prints the tail, and — only
+if they pass — appends the completion line to the ledger:</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><code>Task &lt;N&gt;: complete (commits &lt;base7&gt;..&lt;head7&gt;, tests: &lt;command&gt; → &lt;result&gt;)</code></p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A failing run records nothing; the task is not complete. When it records,
+mark the todo complete and take the next task.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="final-review">Final Review</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Run <code>../subagent-driven-development/scripts/review-package PLAN_FILE MERGE_BASE HEAD</code>
+(MERGE_BASE = the commit the branch started from, e.g.
+<code>git merge-base main HEAD</code>) and review from the file it prints.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>With a subagent tool:</strong> dispatch the reviewer on the most capable
+available model — the whole-branch review is a judgment task — using
+superpowers:requesting-code-review's
+<a href="../requesting-code-review/code-reviewer.html">code-reviewer.md</a>, with the
+package path, the plan and spec paths, the plan's Review Focus section
+verbatim if it has one (the input classes and failure modes the plan's
+tests do not exercise — the reviewer checks each deliberately), and a
+pointer to the ledger's <code>Ruling:</code> lines so it can weigh the calls you
+made. Specify the model
+explicitly; an omitted model inherits the session's, which may not be the
+most capable. This is the one fresh context the whole run buys. Do not
+skip it, and do not replace it with your own read of the diff.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Without a subagent tool:</strong> read code-reviewer.md and perform that review
+yourself against the package, as a separate pass after the last task's
+ledger line. Write <code>Final review: self-review (no subagent tool)</code> to the
+ledger, and say so in your final message: a self-review by the author is
+weaker than a fresh reviewer, and your human partner decides whether that
+is enough before merge.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Sort the findings before you act on any of them. The reviewer's severity
+labels are advice; the gate is yours. Its "Declined to judge" list is
+yours too: every line there is a ruling you make and ledger, exactly like
+a plan conflict — <code>Final: Ruling: &lt;behavior the reviewer set aside&gt; —
+&lt;what a reasonable person using this software gets, and why that stands
+or why it is now a finding&gt; — &lt;cost if wrong&gt;</code>. Re-grade first, by effect: the
+spec is a vision document, and a finding's grade is what a reasonable
+person using this software gets if it ships, not whether the spec names
+the input that triggers it — a reviewer who set a finding at Minor
+because the spec was silent has graded the spec, not the effect. Then:</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li><strong>Critical and Important</strong> enter the fix pass.</li>
+<li><strong>Minor</strong> goes to the ledger as <code>Final: minor (deferred): &lt;one-liner&gt;</code>
+  and to your final message under "Deferred minors". Minors never enter
+  the fix pass, and never become rulings — a ruling is a decision about a
+  conflict, not a note that you declined a polish suggestion.</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Fix the Critical and Important findings yourself — you are the
+implementer here — in ONE pass. Each fix is verified by TDD, not by a
+second reviewer: write the test that reproduces the finding, watch it
+fail, make it pass, then run the whole suite. Record each in the ledger as
+<code>Final: fixed &lt;finding&gt; — &lt;test name&gt; RED→GREEN, suite &lt;N&gt;/&lt;N&gt;</code>. A fix
+without a test that failed first is not verified; a suite that is not
+green after the pass means the pass is not over. Do not dispatch a
+re-review: it would re-read a diff whose covering tests already answer
+"addressed" and whose suite run already answers "broke nothing".</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>A finding you decide not to fix is a ruling — <code>Final: Ruling: &lt;finding&gt; —
+&lt;why the code stands&gt; — &lt;cost if wrong&gt;</code> — and reaches your human partner
+in the rulings list. There is no second fix pass.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="finish">Finish</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before you delete anything, collect every ledger line containing
+<code>Ruling:</code> into your final message under "Rulings I made", in the order you
+made them, each with what it costs if wrong, and every <code>minor (deferred)</code>
+line under "Deferred minors". Both lists are exhaustive. Your final
+message is the only place the decisions you took on your human partner's
+behalf — and the findings you chose not to act on — reach them.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When the final review is clean and its fixes are committed, delete this
+plan's workspace directory — the git history is the record now. Sibling
+directories belong to other plans; leave them alone.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Use superpowers:finishing-a-development-branch.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-rationalizations">Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Excuse</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"I remember what Task N says"</td>
+<td>You remember a summary. The brief has the exact values. Read it.</td>
+</tr>
+<tr>
+<td>"The plan's code is right, skip watching the test fail"</td>
+<td>A test you never saw fail proves nothing. It is one step. Run it.</td>
+</tr>
+<tr>
+<td>"I'll run the full suite at the end instead of per step"</td>
+<td>Per-step runs are how you learn which step broke it. The end-of-task run is the contract, not a substitute.</td>
+</tr>
+<tr>
+<td>"The plan is wrong here, I'll just do the right thing"</td>
+<td>Do the right thing and ledger the ruling. Unledgered deviation is a decision made in secret.</td>
+</tr>
+<tr>
+<td>"I'll write the ledger lines after a few tasks"</td>
+<td>Compaction does not wait for a convenient moment. One line per task, in the same message as the commit.</td>
+</tr>
+<tr>
+<td>"Let me check in before the next task"</td>
+<td>They chose inline to spend less. Progress prompts spend their time instead. Only the four stops stop you.</td>
+</tr>
+<tr>
+<td>"I read my own diff carefully; the final reviewer is redundant"</td>
+<td>Same author, same blind spots. The reviewer is the only fresh context this run buys.</td>
+</tr>
+<tr>
+<td>"Tests should pass, the change was trivial"</td>
+<td>"Should" is not evidence. The contract requires the command and its output.</td>
+</tr>
+<tr>
+<td>"Subagents are slow and expensive, I'll skip the final review too"</td>
+<td>Inline already removed the per-task reviewers. One review of the whole branch is the floor, not the ceiling.</td>
+</tr>
+<tr>
+<td>"The reviewer said Minor, so it's Minor"</td>
+<td>The label graded the spec's silence. Grade what the person gets. Re-grade, then gate.</td>
+</tr>
+<tr>
+<td>"The fix is obvious, no need for a failing test first"</td>
+<td>The failing test is the only proof the finding was real and is now gone. Without it you have a diff and a hope.</td>
+</tr>
+<tr>
+<td>"I'll fix the minors too while I'm in there"</td>
+<td>Every minor you fix is a test, a fix, and a suite run your partner did not ask for. Ledger them; your partner decides.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="example-workflow">Example Workflow</h2></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>You: I'm using the executing-plans skill to implement this plan inline.
+
+[Setup: worktree verified]
+[Read plan once: docs/superpowers/plans/feature-plan.md; spec read]
+[Resolve workspace: sdd-workspace docs/superpowers/plans/feature-plan.md — no ledger inside, fresh start]
+[Pre-flight scan: 2 shared-interface rows, 4 self-consistency rows, clean; written to ledger]
+[Create todos for all tasks]
+
+Task 1: Hook installation script
+
+[task-start plan 1 → brief read; BASE a1b2c3d]
+[Step 1: write failing test — written]
+[Step 2: run it — FAIL: install_hook not defined. Matches Expected.]
+[Step 3: implement — written]
+[Step 4: run it — PASS 1/1. Matches Expected.]
+[Step 5: commit — d4e5f6a]
+[Contract: tests ran, output read, no deviations]
+[task-done plan 1 a1b2c3d -- npm test -- hooks → ledger: Task 1: complete (commits a1b2c3d..d4e5f6a, tests: npm test -- hooks → 1/1 pass)]
+
+Task 2: Recovery modes
+
+[task-start plan 2 → brief read; BASE d4e5f6a]
+[Step 2: run failing test — FAIL, but on an import error: Task 1 exported
+ installHook, brief consumes install_hook]
+[Ruling: brief's consumer name is a typo against Task 1's Produces block;
+ use installHook — Ledger: Task 2: Ruling: install_hook → installHook — matches Task 1 Produces — cost if wrong: one rename]
+[Steps 2-5 as planned; commit b7c8d9e]
+[task-done plan 2 d4e5f6a -- npm test -- recovery → ledger: Task 2: complete (commits d4e5f6a..b7c8d9e, tests: npm test -- recovery → 8/8 pass)]
+
+...
+
+[After all tasks: review-package plan MERGE_BASE HEAD; dispatch code-reviewer, most capable model]
+Reviewer: One Important finding — progress reporting interval hardcoded. Two Minor.
+[Re-grade: Important stands; minors → ledger as deferred]
+[Fix pass: test_progress_interval_configurable RED → extract PROGRESS_INTERVAL → GREEN; suite 12/12; commit]
+[Ledger: Final: fixed hardcoded interval — test_progress_interval_configurable RED→GREEN, suite 12/12]
+
+Rulings I made:
+- Task 2: install_hook → installHook (brief typo; cost if wrong: one rename)
+
+Deferred minors:
+- README lacks a usage example
+- recovery.js could split verify/repair into two files
+
+[Delete this plan's workspace — the record now lives in git]
+
+Using superpowers:finishing-a-development-branch.
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
 
 </div>
 </body>

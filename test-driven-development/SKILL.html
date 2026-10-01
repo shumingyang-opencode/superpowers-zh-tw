@@ -253,44 +253,27 @@
 - 輸出乾淨（沒有錯誤、警告）</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Test fails?</strong> Fix code, not test.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>測試失敗了？</strong> 修程式碼，不是修測試。</p></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>Other tests fail?</strong> Fix now.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>其他測試失敗？</strong> 現在就修。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3 id="refactor-clean-up">REFACTOR - Clean Up</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="重構-清理">重構 - 清理</h3></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>After green only:
-- Remove duplication
-- Improve names
-- Extract helpers</p></div><div class="col-zh" lang="zh-Hant"><p>只在變綠之後：
+<div class="pair"><div class="col-en" lang="en"><p><strong>"Other tests" means the project's suite, not just your file.</strong> A
+green run of the test you wrote is not a green suite. Before you call
+the change done, run the project's test command (bare <code>pytest</code>,
+<code>npm test</code>, <code>cargo test</code> — whatever the repo uses) even when your task
+named only one test file. A scope statement in your task bounds the
+deliverable, not your verification. Any failure that run shows —
+including one you didn't cause — goes in your report by name; a red
+test you watched scroll past and didn't mention is a report falsified
+by omission.</p></div><div class="col-zh" lang="zh-Hant"><h3 id="重構-清理">重構 - 清理</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="refactor-clean-up">REFACTOR - Clean Up</h3></div><div class="col-zh" lang="zh-Hant"><p>只在變綠之後：
 - 移除重複
 - 改善命名
 - 抽取輔助函式</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Keep tests green. Don't add behavior.</p></div><div class="col-zh" lang="zh-Hant"><p>保持測試變綠。不要加行為。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h3 id="repeat">Repeat</h3></div><div class="col-zh" lang="zh-Hant"><h3 id="重複">重複</h3></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Next failing test for next feature.</p></div><div class="col-zh" lang="zh-Hant"><p>為下一個功能寫下一支失敗的測試。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="good-tests">Good Tests</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="好測試">好測試</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><table>
-<thead>
-<tr>
-<th>Quality</th>
-<th>Good</th>
-<th>Bad</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Minimal</strong></td>
-<td>One thing. "and" in name? Split it.</td>
-<td><code>test('validates email and domain and whitespace')</code></td>
-</tr>
-<tr>
-<td><strong>Clear</strong></td>
-<td>Name describes behavior</td>
-<td><code>test('test1')</code></td>
-</tr>
-<tr>
-<td><strong>Shows intent</strong></td>
-<td>Demonstrates desired API</td>
-<td>Obscures what code should do</td>
-</tr>
-</tbody>
-</table></div><div class="col-zh" lang="zh-Hant"><table>
+<div class="pair"><div class="col-en" lang="en"><p>After green only:
+- Remove duplication
+- Improve names
+- Extract helpers</p></div><div class="col-zh" lang="zh-Hant"><p>保持測試變綠。不要加行為。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Keep tests green. Don't add behavior.</p></div><div class="col-zh" lang="zh-Hant"><h3 id="重複">重複</h3></div></div>
+<div class="pair"><div class="col-en" lang="en"><h3 id="repeat">Repeat</h3></div><div class="col-zh" lang="zh-Hant"><p>為下一個功能寫下一支失敗的測試。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Next failing test for next feature.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="好測試">好測試</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="good-tests">Good Tests</h2></div><div class="col-zh" lang="zh-Hant"><table>
 <thead>
 <tr>
 <th>品質</th>
@@ -316,70 +299,42 @@
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>When writing or changing any test, read <a href="writing-good-tests.html">writing-good-tests.md</a> for the rules that keep tests honest:
-- Name the production change that would make the test fail — before writing it
-- Assert on real behavior, never on mock behavior
-- Keep test-only code in test utilities, out of production classes
-- Understand a dependency's side effects before mocking it</p></div><div class="col-zh" lang="zh-Hant"><p>寫或修改任何測試時，閱讀 <a href="writing-good-tests.html">writing-good-tests.md</a> 中讓測試保持誠實的規則：
-- 在寫之前，說出會讓測試失敗的正式程式碼變更——在寫它之前
-- 斷言真實行為，絕不斷言 mock 行為
-- 把僅供測試的程式碼放在測試工具中，別放進正式類別
-- 在模擬相依物件之前，先了解它的副作用</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="common-rationalizations">Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="常見合理化藉口">常見合理化藉口</h2></div></div>
 <div class="pair"><div class="col-en" lang="en"><table>
 <thead>
 <tr>
-<th>Excuse</th>
-<th>Reality</th>
+<th>Quality</th>
+<th>Good</th>
+<th>Bad</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>"Too simple to test"</td>
-<td>Simple code breaks. Test takes 30 seconds.</td>
+<td><strong>Minimal</strong></td>
+<td>One thing. "and" in name? Split it.</td>
+<td><code>test('validates email and domain and whitespace')</code></td>
 </tr>
 <tr>
-<td>"I'll test after"</td>
-<td>Tests written after pass immediately — which proves nothing. They may test the wrong thing, test the implementation instead of the behavior, or miss the edge case you forgot. You never watched it fail, so you never proved it can catch the bug. Test-first forces that failure.</td>
+<td><strong>Clear</strong></td>
+<td>Name describes behavior</td>
+<td><code>test('test1')</code></td>
 </tr>
 <tr>
-<td>"Tests after achieve same goals (spirit not ritual)"</td>
-<td>Tests-after answer "what does this do?"; tests-first answer "what should this do?" Tests written after are biased by the code you already wrote — you verify the cases you remembered, not the ones you'd have discovered. Coverage without proof the tests work.</td>
-</tr>
-<tr>
-<td>"Already manually tested"</td>
-<td>Manual testing is ad-hoc: no record of what you covered, no way to re-run it when the code changes, easy to forget cases under pressure. "Worked when I tried it" ≠ comprehensive. Automated tests run the same way every time.</td>
-</tr>
-<tr>
-<td>"Deleting X hours is wasteful"</td>
-<td>Sunk cost fallacy — that time is already spent either way. The real choice: rewrite with TDD (high confidence) vs. keep it and bolt tests on after (low confidence, likely bugs). Keeping code you can't trust is the waste.</td>
-</tr>
-<tr>
-<td>"Keep as reference, write tests first"</td>
-<td>You'll adapt it. That's testing after. Delete means delete.</td>
-</tr>
-<tr>
-<td>"Need to explore first"</td>
-<td>Fine. Throw away exploration, start with TDD.</td>
-</tr>
-<tr>
-<td>"Test hard = design unclear"</td>
-<td>Listen to test. Hard to test = hard to use.</td>
-</tr>
-<tr>
-<td>"TDD will slow me down"</td>
-<td>TDD IS the pragmatic path: catches bugs before commit, prevents regressions, lets you refactor without fear. "Pragmatic" shortcuts mean debugging in production — slower, not faster.</td>
-</tr>
-<tr>
-<td>"Manual test faster"</td>
-<td>Manual doesn't prove edge cases. You'll re-test every change.</td>
-</tr>
-<tr>
-<td>"Existing code has no tests"</td>
-<td>You're improving it. Add tests for existing code.</td>
+<td><strong>Shows intent</strong></td>
+<td>Demonstrates desired API</td>
+<td>Obscures what code should do</td>
 </tr>
 </tbody>
-</table></div><div class="col-zh" lang="zh-Hant"><table>
+</table></div><div class="col-zh" lang="zh-Hant"><p>寫或修改任何測試時，閱讀 <a href="writing-good-tests.html">writing-good-tests.md</a> 中讓測試保持誠實的規則：
+- 在寫之前，說出會讓測試失敗的正式程式碼變更——在寫它之前
+- 斷言真實行為，絕不斷言 mock 行為
+- 把僅供測試的程式碼放在測試工具中，別放進正式類別
+- 在模擬相依物件之前，先了解它的副作用</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>When writing or changing any test, read <a href="writing-good-tests.html">writing-good-tests.md</a> for the rules that keep tests honest:
+- Name the production change that would make the test fail — before writing it
+- Assert on real behavior, never on mock behavior
+- Keep test-only code in test utilities, out of production classes
+- Understand a dependency's side effects before mocking it</p></div><div class="col-zh" lang="zh-Hant"><h2 id="常見合理化藉口">常見合理化藉口</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="common-rationalizations">Common Rationalizations</h2></div><div class="col-zh" lang="zh-Hant"><table>
 <thead>
 <tr>
 <th>藉口</th>
@@ -433,22 +388,61 @@
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="red-flags-stop-and-start-over">Red Flags - STOP and Start Over</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="紅旗-停重新開始">紅旗 - 停，重新開始</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><ul>
-<li>Code before test</li>
-<li>Test after implementation</li>
-<li>Test passes immediately</li>
-<li>Can't explain why test failed</li>
-<li>Tests added "later"</li>
-<li>Rationalizing "just this once"</li>
-<li>"I already manually tested it"</li>
-<li>"Tests after achieve the same purpose"</li>
-<li>"It's about spirit not ritual"</li>
-<li>"Keep as reference" or "adapt existing code"</li>
-<li>"Already spent X hours, deleting is wasteful"</li>
-<li>"TDD is dogmatic, I'm being pragmatic"</li>
-<li>"This is different because..."</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Excuse</th>
+<th>Reality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Too simple to test"</td>
+<td>Simple code breaks. Test takes 30 seconds.</td>
+</tr>
+<tr>
+<td>"I'll test after"</td>
+<td>Tests written after pass immediately — which proves nothing. They may test the wrong thing, test the implementation instead of the behavior, or miss the edge case you forgot. You never watched it fail, so you never proved it can catch the bug. Test-first forces that failure.</td>
+</tr>
+<tr>
+<td>"Tests after achieve same goals (spirit not ritual)"</td>
+<td>Tests-after answer "what does this do?"; tests-first answer "what should this do?" Tests written after are biased by the code you already wrote — you verify the cases you remembered, not the ones you'd have discovered. Coverage without proof the tests work.</td>
+</tr>
+<tr>
+<td>"Already manually tested"</td>
+<td>Manual testing is ad-hoc: no record of what you covered, no way to re-run it when the code changes, easy to forget cases under pressure. "Worked when I tried it" ≠ comprehensive. Automated tests run the same way every time.</td>
+</tr>
+<tr>
+<td>"Deleting X hours is wasteful"</td>
+<td>Sunk cost fallacy — that time is already spent either way. The real choice: rewrite with TDD (high confidence) vs. keep it and bolt tests on after (low confidence, likely bugs). Keeping code you can't trust is the waste.</td>
+</tr>
+<tr>
+<td>"Keep as reference, write tests first"</td>
+<td>You'll adapt it. That's testing after. Delete means delete.</td>
+</tr>
+<tr>
+<td>"Need to explore first"</td>
+<td>Fine. Throw away exploration, start with TDD.</td>
+</tr>
+<tr>
+<td>"Test hard = design unclear"</td>
+<td>Listen to test. Hard to test = hard to use.</td>
+</tr>
+<tr>
+<td>"TDD will slow me down"</td>
+<td>TDD IS the pragmatic path: catches bugs before commit, prevents regressions, lets you refactor without fear. "Pragmatic" shortcuts mean debugging in production — slower, not faster.</td>
+</tr>
+<tr>
+<td>"Manual test faster"</td>
+<td>Manual doesn't prove edge cases. You'll re-test every change.</td>
+</tr>
+<tr>
+<td>"Existing code has no tests"</td>
+<td>You're improving it. Add tests for existing code.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><h2 id="紅旗-停重新開始">紅旗 - 停，重新開始</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="red-flags-stop-and-start-over">Red Flags - STOP and Start Over</h2></div><div class="col-zh" lang="zh-Hant"><ul>
 <li>測試之前先寫了程式碼</li>
 <li>實作之後才寫測試</li>
 <li>測試立刻通過</li>
@@ -463,34 +457,41 @@
 <li>「TDD 太教條，我只是務實」</li>
 <li>「這次不一樣，因為……」</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>All of these mean: Delete code. Start over with TDD.</strong></p></div><div class="col-zh" lang="zh-Hant"><p><strong>所有這些都代表：刪掉程式碼。用 TDD 重新開始。</strong></p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="example-bug-fix">Example: Bug Fix</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="範例修-bug">範例：修 bug</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Bug:</strong> Empty email accepted</p></div><div class="col-zh" lang="zh-Hant"><p><strong>Bug：</strong> 空 email 被接受</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>Code before test</li>
+<li>Test after implementation</li>
+<li>Test passes immediately</li>
+<li>Can't explain why test failed</li>
+<li>Tests added "later"</li>
+<li>Rationalizing "just this once"</li>
+<li>"I already manually tested it"</li>
+<li>"Tests after achieve the same purpose"</li>
+<li>"It's about spirit not ritual"</li>
+<li>"Keep as reference" or "adapt existing code"</li>
+<li>"Already spent X hours, deleting is wasteful"</li>
+<li>"TDD is dogmatic, I'm being pragmatic"</li>
+<li>"This is different because..."</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p><strong>所有這些都代表：刪掉程式碼。用 TDD 重新開始。</strong></p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>All of these mean: Delete code. Start over with TDD.</strong></p></div><div class="col-zh" lang="zh-Hant"><h2 id="範例修-bug">範例：修 bug</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="example-bug-fix">Example: Bug Fix</h2></div><div class="col-zh" lang="zh-Hant"><p><strong>Bug：</strong> 空 email 被接受</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Bug:</strong> Empty email accepted</p></div><div class="col-zh" lang="zh-Hant"><p><strong>紅</strong></p>
+<pre><code class="language-typescript">test('rejects empty email', async () =&gt; {
+  const result = await submitForm({ email: '' });
+  expect(result.error).toBe('Email required');
+});
+</code></pre></div></div>
 <div class="pair"><div class="col-en" lang="en"><p><strong>RED</strong></p>
 <pre><code class="language-typescript">test('rejects empty email', async () =&gt; {
   const result = await submitForm({ email: '' });
   expect(result.error).toBe('Email required');
 });
-</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>紅</strong></p>
-<pre><code class="language-typescript">test('rejects empty email', async () =&gt; {
-  const result = await submitForm({ email: '' });
-  expect(result.error).toBe('Email required');
-});
-</code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Verify RED</strong></p>
-<pre><code class="language-bash">$ npm test
-FAIL: expected 'Email required', got undefined
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>驗證紅</strong></p>
 <pre><code class="language-bash">$ npm test
 FAIL: expected 'Email required', got undefined
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>GREEN</strong></p>
-<pre><code class="language-typescript">function submitForm(data: FormData) {
-  if (!data.email?.trim()) {
-    return { error: 'Email required' };
-  }
-  // ...
-}
+<div class="pair"><div class="col-en" lang="en"><p><strong>Verify RED</strong></p>
+<pre><code class="language-bash">$ npm test
+FAIL: expected 'Email required', got undefined
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>綠</strong></p>
 <pre><code class="language-typescript">function submitForm(data: FormData) {
   if (!data.email?.trim()) {
@@ -499,28 +500,26 @@ FAIL: expected 'Email required', got undefined
   // ...
 }
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>Verify GREEN</strong></p>
-<pre><code class="language-bash">$ npm test
-PASS
+<div class="pair"><div class="col-en" lang="en"><p><strong>GREEN</strong></p>
+<pre><code class="language-typescript">function submitForm(data: FormData) {
+  if (!data.email?.trim()) {
+    return { error: 'Email required' };
+  }
+  // ...
+}
 </code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>驗證綠</strong></p>
 <pre><code class="language-bash">$ npm test
 PASS
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><p><strong>REFACTOR</strong>
-Extract validation for multiple fields if needed.</p></div><div class="col-zh" lang="zh-Hant"><p><strong>重構</strong>
+<div class="pair"><div class="col-en" lang="en"><p><strong>Verify GREEN</strong></p>
+<pre><code class="language-bash">$ npm test
+PASS
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p><strong>重構</strong>
 如有需要，抽取多欄位的驗證邏輯。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="verification-checklist">Verification Checklist</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="驗證檢查清單">驗證檢查清單</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Before marking work complete:</p></div><div class="col-zh" lang="zh-Hant"><p>在標記工作完成之前：</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><ul>
-<li>[ ] Every new function/method has a test</li>
-<li>[ ] Watched each test fail before implementing</li>
-<li>[ ] Each test failed for expected reason (feature missing, not typo)</li>
-<li>[ ] Wrote minimal code to pass each test</li>
-<li>[ ] All tests pass</li>
-<li>[ ] Output pristine (no errors, warnings)</li>
-<li>[ ] Tests use real code (mocks only if unavoidable)</li>
-<li>[ ] Edge cases and errors covered</li>
-</ul></div><div class="col-zh" lang="zh-Hant"><ul>
+<div class="pair"><div class="col-en" lang="en"><p><strong>REFACTOR</strong>
+Extract validation for multiple fields if needed.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="驗證檢查清單">驗證檢查清單</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="verification-checklist">Verification Checklist</h2></div><div class="col-zh" lang="zh-Hant"><p>在標記工作完成之前：</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Before marking work complete:</p></div><div class="col-zh" lang="zh-Hant"><ul>
 <li>[ ] 每個新函式／方法都有測試</li>
 <li>[ ] 在實作之前看著每個測試失敗</li>
 <li>[ ] 每個測試都以預期的原因失敗（功能缺失，不是打錯字）</li>
@@ -530,34 +529,18 @@ Extract validation for multiple fields if needed.</p></div><div class="col-zh" l
 <li>[ ] 測試使用真實程式碼（除非無可避免，否則不用 mock）</li>
 <li>[ ] 邊緣案例與錯誤都涵蓋</li>
 </ul></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Can't check all boxes? You skipped TDD. Start over.</p></div><div class="col-zh" lang="zh-Hant"><p>勾不完？你跳過了 TDD。重新開始。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="when-stuck">When Stuck</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="卡住時">卡住時</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><table>
-<thead>
-<tr>
-<th>Problem</th>
-<th>Solution</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Don't know how to test</td>
-<td>Write wished-for API. Write assertion first. Ask your human partner.</td>
-</tr>
-<tr>
-<td>Test too complicated</td>
-<td>Design too complicated. Simplify interface.</td>
-</tr>
-<tr>
-<td>Must mock everything</td>
-<td>Code too coupled. Use dependency injection.</td>
-</tr>
-<tr>
-<td>Test setup huge</td>
-<td>Extract helpers. Still complex? Simplify design.</td>
-</tr>
-</tbody>
-</table></div><div class="col-zh" lang="zh-Hant"><table>
+<div class="pair"><div class="col-en" lang="en"><ul>
+<li>[ ] Every new function/method has a test</li>
+<li>[ ] Watched each test fail before implementing</li>
+<li>[ ] Each test failed for expected reason (feature missing, not typo)</li>
+<li>[ ] Wrote minimal code to pass each test</li>
+<li>[ ] All tests pass</li>
+<li>[ ] Output pristine (no errors, warnings)</li>
+<li>[ ] Tests use real code (mocks only if unavoidable)</li>
+<li>[ ] Edge cases and errors covered</li>
+</ul></div><div class="col-zh" lang="zh-Hant"><p>勾不完？你跳過了 TDD。重新開始。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Can't check all boxes? You skipped TDD. Start over.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="卡住時">卡住時</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="when-stuck">When Stuck</h2></div><div class="col-zh" lang="zh-Hant"><table>
 <thead>
 <tr>
 <th>問題</th>
@@ -583,16 +566,42 @@ Extract validation for multiple fields if needed.</p></div><div class="col-zh" l
 </tr>
 </tbody>
 </table></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="debugging-integration">Debugging Integration</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="除錯整合">除錯整合</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.</p></div><div class="col-zh" lang="zh-Hant"><p>發現 bug？寫一支重現它的失敗測試。遵循 TDD 循環。測試證明修復並防止迴歸。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>Never fix bugs without a test.</p></div><div class="col-zh" lang="zh-Hant"><p>絕不沒有測試就修 bug。</p></div></div>
-<div class="pair"><div class="col-en" lang="en"><h2 id="final-rule">Final Rule</h2></div><div class="col-zh" lang="zh-Hant"><h2 id="最終規則">最終規則</h2></div></div>
-<div class="pair"><div class="col-en" lang="en"><pre><code>Production code → test exists and failed first
-Otherwise → not TDD
-</code></pre></div><div class="col-zh" lang="zh-Hant"><pre><code>正式程式碼 → 測試存在且先失敗過
+<div class="pair"><div class="col-en" lang="en"><table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Don't know how to test</td>
+<td>Write wished-for API. Write assertion first. Ask your human partner.</td>
+</tr>
+<tr>
+<td>Test too complicated</td>
+<td>Design too complicated. Simplify interface.</td>
+</tr>
+<tr>
+<td>Must mock everything</td>
+<td>Code too coupled. Use dependency injection.</td>
+</tr>
+<tr>
+<td>Test setup huge</td>
+<td>Extract helpers. Still complex? Simplify design.</td>
+</tr>
+</tbody>
+</table></div><div class="col-zh" lang="zh-Hant"><h2 id="除錯整合">除錯整合</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="debugging-integration">Debugging Integration</h2></div><div class="col-zh" lang="zh-Hant"><p>發現 bug？寫一支重現它的失敗測試。遵循 TDD 循環。測試證明修復並防止迴歸。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Bug found? Write failing test reproducing it. Follow TDD cycle. Test proves fix and prevents regression.</p></div><div class="col-zh" lang="zh-Hant"><p>絕不沒有測試就修 bug。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>Never fix bugs without a test.</p></div><div class="col-zh" lang="zh-Hant"><h2 id="最終規則">最終規則</h2></div></div>
+<div class="pair"><div class="col-en" lang="en"><h2 id="final-rule">Final Rule</h2></div><div class="col-zh" lang="zh-Hant"><pre><code>正式程式碼 → 測試存在且先失敗過
 否則 → 不是 TDD
 </code></pre></div></div>
-<div class="pair"><div class="col-en" lang="en"><p>No exceptions without your human partner's permission.</p></div><div class="col-zh" lang="zh-Hant"><p>未經你的真人夥伴允許，沒有例外。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><pre><code>Production code → test exists and failed first
+Otherwise → not TDD
+</code></pre></div><div class="col-zh" lang="zh-Hant"><p>未經你的真人夥伴允許，沒有例外。</p></div></div>
+<div class="pair"><div class="col-en" lang="en"><p>No exceptions without your human partner's permission.</p></div><div class="col-zh" lang="zh-Hant"><p class="en-only">（無繁中對照）</p></div></div>
 
 </div>
 </body>
